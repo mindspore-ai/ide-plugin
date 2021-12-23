@@ -1,14 +1,15 @@
-set -ex
-set -o pipefail
-
 cd $(dirname $0)
 pwd
 
 gradle buildPlugin
-cd build/distributions
+
+mkdir output
+mv build/distributions/* output/
+cd output
+
 for file in `ls`
 do
-  echo ${file}
-  echo ${file%.*}-sum.md5
-  md5sum ${file} > build/distribution/ide-plugin-1.0-SNAPSHOT
+  #echo ${file}
+  #echo ${file%}.md5
+  md5sum ${file} > ${file}.md5
 done
