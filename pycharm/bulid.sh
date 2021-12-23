@@ -11,5 +11,5 @@ for file in `ls`
 do
   #echo ${file}
   #echo ${file%}.md5
-  md5sum ${file} > ${file}.md5
+  sha256sum -b ${file} > ${file}.sha256
 done
