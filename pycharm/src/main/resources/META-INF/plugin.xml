@@ -11,11 +11,29 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
+        <completion.contributor id="SmartCompletion" language="any"
+                                implementationClass="com.mindspore.ide.toolkit.services.complete.SmartCompletion"
+                                order="first" />
+        <toolWindow id="MindSpore" factoryClass="com.mindspore.ide.toolkit.ui.search.BrowserWindowFactory" canCloseContents="false" anchor="right" icon="MsIcons.MS_ICON_16PXWP"/>
+        <searchEverywhereContributor implementation="com.mindspore.ide.toolkit.search.MindSporeSearchEverywhereContributor$Factory"/>
+        <directoryProjectGenerator implementation="com.mindspore.ide.toolkit.wizard.MindSporeProjectGenerator" />
     </extensions>
 
     <actions>
         <!-- Add your actions here -->
+        <action class="com.mindspore.ide.toolkit.transplugins.PopupModelArts">
+            <keyboard-shortcut first-keystroke="ctrl alt shift g" keymap="$default">
+            </keyboard-shortcut>
+        </action>
+        <action class="com.mindspore.ide.toolkit.ui.guide.DontAskAgainAction" text="不再提示"/>
+        <action class="com.mindspore.ide.toolkit.ui.guide.GuideAction" text="查看使用说明"/>
+        <action class="com.mindspore.ide.toolkit.ui.search.SearchRefreshAction" id="mindSporeRefreshAction" icon="/icons/mindspore_refresh.png"/>
+
     </actions>
+    <projectListeners>
+        <listener class="com.mindspore.ide.toolkit.services.OpenCloseListener" topic="com.intellij.openapi.project.ProjectManagerListener"/>
+        <listener class="com.mindspore.ide.toolkit.ui.search.MindSporeToolWindowListener" topic="com.intellij.openapi.wm.ex.ToolWindowManagerListener"/>
+    </projectListeners>
     <applicationListeners>
         <listener class="com.mindspore.ide.toolkit.Initializer" topic="com.intellij.ide.AppLifecycleListener"/>
     </applicationListeners>

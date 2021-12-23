@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.mindspore.ide.toolkit.ui.wizard.AbstractMsSettingProjectPeer">
+  <grid id="27dc6" binding="mainPanel" layout-manager="GridBagLayout">
+    <constraints>
+      <xy x="20" y="20" width="646" height="415"/>
+    </constraints>
+    <properties>
+      <maximumSize width="1000" height="400"/>
+      <minimumSize width="500" height="400"/>
+      <preferredSize width="500" height="400"/>
+    </properties>
+    <border type="none"/>
+    <children>
+      <component id="a5efa" class="javax.swing.JLabel" binding="templateLabel">
+        <constraints>
+          <grid row="9" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="316" height="17"/>
+          </grid>
+          <gridbag weightx="0.0" weighty="1.0"/>
+        </constraints>
+        <properties>
+          <text value="MindSpore Template"/>
+        </properties>
+      </component>
+      <component id="5f5a5" class="javax.swing.JLabel" binding="hardwareLabel">
+        <constraints>
+          <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="316" height="17"/>
+          </grid>
+          <gridbag weightx="0.0" weighty="1.0"/>
+        </constraints>
+        <properties>
+          <text value="Hardware Platform:"/>
+        </properties>
+      </component>
+      <component id="99789" class="javax.swing.JComboBox" binding="hardwareSelector">
+        <constraints>
+          <grid row="7" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="0" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+          <gridbag weightx="1.0" weighty="1.0"/>
+        </constraints>
+        <properties>
+          <model/>
+        </properties>
+      </component>
+      <component id="4d746" class="javax.swing.JLabel" binding="OsLabel">
+        <constraints>
+          <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="316" height="17"/>
+          </grid>
+          <gridbag weightx="0.0" weighty="1.0"/>
+        </constraints>
+        <properties>
+          <text value="Operating System:"/>
+        </properties>
+      </component>
+      <component id="3356c" class="javax.swing.JComboBox" binding="OsSelector">
+        <constraints>
+          <grid row="8" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="0" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+          <gridbag weightx="1.0" weighty="1.0"/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="4b6ad" class="javax.swing.JLabel" binding="textJLabel">
+        <constraints>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="316" height="17"/>
+          </grid>
+          <gridbag weightx="0.0" weighty="1.0"/>
+        </constraints>
+        <properties>
+          <text value="Conda executable:"/>
+        </properties>
+      </component>
+      <component id="cc67b" class="com.intellij.openapi.ui.TextFieldWithBrowseButton" binding="browseButton">
+        <constraints>
+          <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <gridbag weightx="1.0" weighty="1.0"/>
+        </constraints>
+        <properties>
+          <text value=""/>
+        </properties>
+      </component>
+      <component id="da971" class="javax.swing.JRadioButton" binding="newEnvironmentUsingRadioButton" default-binding="true">
+        <constraints>
+          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="316" height="24"/>
+          </grid>
+          <gridbag weightx="0.0" weighty="1.0"/>
+        </constraints>
+        <properties>
+          <horizontalTextPosition value="11"/>
+          <label value="New environment using"/>
+          <selected value="true"/>
+          <text value="New environment using"/>
+        </properties>
+      </component>
+      <component id="4c470" class="javax.swing.JRadioButton" binding="existingEnvironmentRadioButton" default-binding="true">
+        <constraints>
+          <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="316" height="24"/>
+          </grid>
+          <gridbag weightx="0.0" weighty="1.0"/>
+        </constraints>
+        <properties>
+          <label value="Existing environment"/>
+          <selected value="false"/>
+          <text value="Existing environment"/>
+        </properties>
+      </component>
+      <component id="e256a" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="316" height="19"/>
+          </grid>
+          <gridbag weightx="0.0" weighty="1.0"/>
+        </constraints>
+        <properties>
+          <text value="      Interpreter:"/>
+        </properties>
+      </component>
+      <component id="b586e" class="javax.swing.JComboBox" binding="existEnv">
+        <constraints>
+          <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="0" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+          <gridbag weightx="1.0" weighty="1.0"/>
+        </constraints>
+        <properties>
+          <enabled value="false"/>
+          <model/>
+        </properties>
+      </component>
+      <component id="bd778" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="316" height="17"/>
+          </grid>
+          <gridbag weightx="0.0" weighty="1.0"/>
+        </constraints>
+        <properties>
+          <text value="      Location:"/>
+        </properties>
+      </component>
+      <component id="11b9c" class="com.intellij.openapi.ui.TextFieldWithBrowseButton" binding="condaEnvBrowserButton">
+        <constraints>
+          <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <gridbag weightx="1.0" weighty="1.0"/>
+        </constraints>
+        <properties>
+          <text value=""/>
+        </properties>
+      </component>
+      <component id="1f9de" class="javax.swing.JComboBox" binding="pythonVersionCombo">
+        <constraints>
+          <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+          <gridbag weightx="1.0" weighty="1.0"/>
+        </constraints>
+        <properties>
+          <model>
+            <item value="3.7.5"/>
+            <item value="3.9.0"/>
+          </model>
+        </properties>
+      </component>
+      <component id="e5e2" class="javax.swing.JLabel" binding="pythonVersion">
+        <constraints>
+          <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <gridbag weightx="0.0" weighty="1.0"/>
+        </constraints>
+        <properties>
+          <text value="      Python version:"/>
+        </properties>
+      </component>
+      <component id="f996c" class="javax.swing.JLabel" binding="pyVersionWarnLabel">
+        <constraints>
+          <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <gridbag weightx="1.0" weighty="1.0"/>
+        </constraints>
+        <properties>
+          <foreground color="-19406"/>
+          <text value=""/>
+        </properties>
+      </component>
+      <component id="b394" class="javax.swing.JButton" binding="downloadMiniCondaButton">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+            <preferred-size width="250" height="40"/>
+          </grid>
+          <gridbag weightx="0.0" weighty="1.0"/>
+        </constraints>
+        <properties>
+          <horizontalTextPosition value="11"/>
+          <text value="Install Miniconda Automatically"/>
+        </properties>
+      </component>
+      <component id="bfc2c" class="javax.swing.JComboBox" binding="templateSelector">
+        <constraints>
+          <grid row="9" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+          <gridbag weightx="0.0" weighty="0.0"/>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="ad2a2" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="11" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <gridbag weightx="0.0" weighty="0.0"/>
+        </constraints>
+        <properties>
+          <font style="1"/>
+          <foreground color="-19406"/>
+          <text value="If you would like to use other method like pip, please use 'Pure Python' option."/>
+        </properties>
+      </component>
+      <component id="5b49c" class="javax.swing.JLabel" binding="PipLabel">
+        <constraints>
+          <grid row="10" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <gridbag top="10" left="0" bottom="0" right="0" weightx="0.0" weighty="0.0"/>
+        </constraints>
+        <properties>
+          <font style="1"/>
+          <foreground color="-19406"/>
+          <text value="It is strongly recommended to use Conda for new MindSpore project."/>
+        </properties>
+      </component>
+    </children>
+  </grid>
+  <buttonGroups>
+    <group name="envButtons" bound="true">
+      <member id="da971"/>
+      <member id="4c470"/>
+    </group>
+  </buttonGroups>
+</form>

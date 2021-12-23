@@ -1,32 +1,90 @@
 plugins {
-    id 'org.jetbrains.intellij' version '0.6.3'
     id 'java'
+    id "org.jetbrains.intellij" version "0.6.3"
+    id 'com.google.protobuf' version '0.8.14'
+}
+
+allprojects {
+    repositories {
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+        mavenCentral()
+    }
 }
 
 group 'com.mindspore'
 version '1.0-SNAPSHOT'
 
-repositories {
-    maven { url 'https://maven.aliyun.com/repository/public/' }
-    mavenCentral()
-}
-
-dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
-}
-
-// See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
     type = 'PC'
     version = '2020.3'
     buildSearchableOptions.enabled = false
 }
+
 patchPluginXml {
-    changeNotes = """
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>"""
+    sinceBuild '193'
+    untilBuild ''
 }
-test {
-    useJUnitPlatform()
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven {
+        url "https://www.jetbrains.com/intellij-repository/releases"
+    }
+    maven {
+        url "https://cache-redirector.jetbrains.com/intellij-dependencies"
+    }
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    compileOnly 'org.projectlombok:lombok:1.18.12'
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
+    implementation 'net.engio:mbassador:1.3.0'
+    implementation "com.google.protobuf:protobuf-java-util:3.7.1"
+    implementation "io.grpc:grpc-protobuf:1.33.1"
+    implementation "io.grpc:grpc-stub:1.33.1"
+    implementation "com.google.protobuf:protobuf-gradle-plugin:0.8.1"
+    implementation "io.grpc:grpc-all:1.33.1"
+    compileOnly(fileTree("libs"))
+    testImplementation(fileTree("libs"))
+}
+
+protobuf{
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.7.1"
+    }
+    plugins {
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.33.1'
+        }
+    }
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {}
+        }
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs "build/generated/source/proto/main/grpc"
+            srcDirs "build/generated/source/proto/main/java"
+        }
+    }
+}
+
+tasks.forEach {
+    if (it.name.equals("buildSearchableOptions")) {
+        it.enabled = false
+    }
+}
+
+tasks {
+    tasks.withType(JavaCompile) {
+        compileJava.options.encoding = 'UTF-8'
+        options.encoding = 'UTF-8'
+    }
 }

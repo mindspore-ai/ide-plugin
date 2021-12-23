@@ -1,0 +1,5 @@
+resourceFolder: ".mindspore"
+downloadBaseUrl: ""
+toolWindowName: "MindSpore"
+toolWindowSearchContent: "SearchDoc"
+toolWindowUrl: "https://www.mindspore.cn/search"
