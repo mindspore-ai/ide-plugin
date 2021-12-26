@@ -1,0 +1,5 @@
+guideConfig: "guide"
+guideConfigFile: "guideConfig.yaml"
+guideUrl: ""
+pluginVersion: "0.0.1"
+guideSettingUrl: ""
