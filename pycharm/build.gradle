@@ -1,9 +1,9 @@
 plugins {
     id 'java'
+    id 'com.github.spotbugs' version "5.0.3"
     id "org.jetbrains.intellij" version "0.6.3"
     id 'com.google.protobuf' version '0.8.14'
 }
-
 allprojects {
     repositories {
         maven { url 'https://maven.aliyun.com/repository/public/' }
@@ -86,5 +86,24 @@ tasks {
     tasks.withType(JavaCompile) {
         compileJava.options.encoding = 'UTF-8'
         options.encoding = 'UTF-8'
+    }
+}
+
+spotbugs{
+    ignoreFailures = false
+    showStackTraces =true
+    showProgress = true
+    effort = 'default'
+    reportLevel = 'default'
+    reportsDir = file("$buildDir/spotbugs")
+}
+
+spotbugsMain {
+    reports {
+        html {
+            required = true
+            outputLocation = file("$buildDir/reports/spotbugs.html")
+            stylesheet = 'fancy-hist.xsl'
+        }
     }
 }
