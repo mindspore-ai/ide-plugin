@@ -9,8 +9,6 @@ import java.nio.charset.Charset;
 import java.util.List;
 
 public class RunExecUtils {
-    private String stdout = "";
-    private String stderr = "";
 
     public static String runExec(List<String> cmd) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();

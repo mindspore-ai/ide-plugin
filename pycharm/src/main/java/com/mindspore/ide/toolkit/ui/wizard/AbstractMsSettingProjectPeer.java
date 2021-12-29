@@ -1,10 +1,12 @@
 package com.mindspore.ide.toolkit.ui.wizard;
 
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 
+@SuppressFBWarnings({"EI_EXPOSE_REP", "UWF_UNWRITTEN_FIELD"})
 public abstract class AbstractMsSettingProjectPeer {
     private JPanel mainPanel;
     private JLabel hardwareLabel;
@@ -22,8 +24,10 @@ public abstract class AbstractMsSettingProjectPeer {
     private JRadioButton existingEnvironmentRadioButton;
     private JComboBox existEnv;
     private JComboBox pythonVersionCombo;
+    @SuppressFBWarnings("URF_UNREAD_FIELD")
     private JLabel pythonVersion;
     private JComboBox templateSelector;
+    @SuppressFBWarnings("URF_UNREAD_FIELD")
     private JLabel PipLabel;
 
     public AbstractMsSettingProjectPeer() {

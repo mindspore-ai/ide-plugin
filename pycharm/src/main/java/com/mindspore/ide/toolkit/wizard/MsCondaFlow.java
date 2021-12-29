@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,7 +25,11 @@ import java.util.List;
 @Slf4j
 public class MsCondaFlow {
     public static Sdk newFlow(Project project, Module module, String condaExecutor, String condaEnvPath, String version) {
-        String name = Paths.get(condaEnvPath).getFileName().toString();
+        Path condaFile = Paths.get(condaEnvPath).getFileName();
+        if(condaFile == null){
+            return null;
+        }
+        String name = condaFile.toString();
         if (!Files.exists(Paths.get(condaEnvPath))) {
             CondaCmdProcessor.parseCondaResponse(createCondaEnv(condaExecutor, condaEnvPath, version), "Create conda environment");
         }

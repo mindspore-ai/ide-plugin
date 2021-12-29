@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SearchConfig {
+public class SearchConfig implements Cloneable{
     private String ipAddress;
 
     private int port;
@@ -17,4 +17,14 @@ public class SearchConfig {
     private String mdbSize;
 
     private String udbSize;
+
+    @Override
+    public SearchConfig clone() {
+        try {
+            SearchConfig clone = (SearchConfig) super.clone();
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
 }

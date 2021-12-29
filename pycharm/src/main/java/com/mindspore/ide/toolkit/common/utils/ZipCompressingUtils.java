@@ -15,7 +15,10 @@ public class ZipCompressingUtils {
     public static void unzipFile(String filePath, String targetDirPath) throws IOException {
         File pathFile = new File(targetDirPath);
         if (!pathFile.exists()) {
-            pathFile.mkdirs();
+           boolean mkDir= pathFile.mkdirs();
+           if(!mkDir){
+               return;
+           }
         }
         String tempTargetDirPath = targetDirPath;
         if (!tempTargetDirPath.equals("")) {

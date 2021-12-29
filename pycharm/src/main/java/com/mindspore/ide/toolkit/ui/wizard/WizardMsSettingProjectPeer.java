@@ -138,7 +138,7 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
     }
 
     @Override
-    public @NotNull JComponent getComponent() {
+    public JComponent getComponent() {
         return super.getMainPanel();
     }
 
@@ -238,7 +238,7 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
     private void buttonListener() {
         condaEnvBrowserButton.addBrowseFolderListener(new TextBrowseFolderListener(new FileChooserDescriptor(false, true, false, false, false, false)) {
             @Override
-            protected @NotNull @NlsSafe String chosenFileToResultingText(@NotNull VirtualFile chosenFile) {
+            protected @NlsSafe String chosenFileToResultingText(@NotNull VirtualFile chosenFile) {
                 if (chosenFile.findChild("mindspore") == null) {
                     return chosenFile.getPresentableUrl() + File.separator + "mindspore";
                 }
@@ -251,7 +251,7 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
         });
         browseButton.addBrowseFolderListener(new TextBrowseFolderListener(new FileChooserDescriptor(true, false, false, false, false, false)) {
             @Override
-            protected @NotNull @NlsSafe String chosenFileToResultingText(@NotNull VirtualFile chosenFile) {
+            protected @NlsSafe String chosenFileToResultingText(@NotNull VirtualFile chosenFile) {
                 return super.chosenFileToResultingText(chosenFile);
             }
         });

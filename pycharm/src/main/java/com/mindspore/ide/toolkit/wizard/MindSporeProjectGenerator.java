@@ -51,7 +51,7 @@ public class MindSporeProjectGenerator extends WebProjectTemplate implements Cus
         return PROJECT_WIZARD_DESCRIPTION;
     }
 
-    public @NotNull @Nls(capitalization = Nls.Capitalization.Title) String getName() {
+    public @Nls(capitalization = Nls.Capitalization.Title) String getName() {
         return PROJECT_WIZARD_NAME;
     }
 
