@@ -95,15 +95,4 @@ spotbugs{
     showProgress = true
     effort = 'default'
     reportLevel = 'default'
-    reportsDir = file("$buildDir/spotbugs")
-}
-
-spotbugsMain {
-    reports {
-        html {
-            required = true
-            outputLocation = file("$buildDir/reports/spotbugs.html")
-            stylesheet = 'fancy-hist.xsl'
-        }
-    }
 }
