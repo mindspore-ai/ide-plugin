@@ -5,11 +5,11 @@
 
 <!-- TOC -->
 
-- [MindSpore Dev Toolkit介绍](#mindspore-dev-toolkit-介绍)
-    - [MindSpore运行管理](#MindSpore运行管理)
+- [MindSpore Dev Toolkit介绍](#mindspore-dev-toolkit介绍)
+    - [MindSpore运行管理](#mindspore运行管理)
     - [对接智能知识搜索](#对接智能知识搜索)
-    - [智能代码补全【TODO】](#智能代码补全【TODO】)
-    - [算子互搜【TODO】](#算子互搜【TODO】)
+    - [智能代码补全【TODO】](#智能代码补全todo)
+    - [算子互搜【TODO】](#算子互搜todo)
 - [构建](#构建)
     - [依赖](#依赖)
     - [安装](#安装)
@@ -27,7 +27,8 @@
 
 ## MindSpore Dev ToolKit介绍
 
-MindSpore Dev Toolkit是一款面向MindSpore开发者的开发套件。通过深度学习、智能搜索及智能推荐等技术，打造只能计算最佳体验，致力于全面提升MindSpore框架的易用性，助力MindSpore生态推广。 MindSpore Dev Toolkit提供如下功能：
+MindSpore Dev Toolkit是一款面向MindSpore开发者的开发套件。通过深度学习、智能搜索及智能推荐等技术，打造智能计算最佳体验，致力于全面提升MindSpore框架的易用性，助力MindSpore生态推广。 
+MindSpore Dev Toolkit提供如下功能：
 
 ### MindSpore运行管理
 * 创建Conda环境或选择已有Conda环境，并安装MindSpore二进制包至Conda环境。
