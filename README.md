@@ -94,7 +94,7 @@ git clone https://gitee.com/mindspore/ide-plugin.git
 
 ## 快速入门
 
-参考[快速入门](./MindSpore Dev Toolkit.md)。
+参考[快速入门](https://gitee.com/mindspore/ide-plugin/blob/master/MindSpore%20Dev%20Toolkit.md)。
 
 ## 社区
 
