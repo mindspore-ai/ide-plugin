@@ -10,9 +10,11 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.openapi.vcs.changes.ignore.util.RegexUtil;
 import com.intellij.util.Processor;
 import com.mindspore.ide.toolkit.common.config.GlobalConfig;
 import com.mindspore.ide.toolkit.common.events.EventCenter;
+import com.mindspore.ide.toolkit.common.utils.RegularUtils;
 import com.mindspore.ide.toolkit.search.entity.DocumentSearch;
 import com.mindspore.ide.toolkit.search.entity.DocumentValue;
 import com.mindspore.ide.toolkit.search.entity.OpenMindSporeActionModel;
@@ -37,13 +39,18 @@ public class MindSporeSearchEverywhereContributor implements SearchEverywhereCon
 
 
     @Override
-    public @NotNull String getSearchProviderId() {
+    public String getSearchProviderId() {
         return getClass().getSimpleName();
     }
 
     @Override
-    public @NotNull @Nls String getGroupName() {
-        return GlobalConfig.get().getToolWindowName();
+    public @Nls String getGroupName() {
+        String groupName = GlobalConfig.get().getToolWindowName();
+        if(groupName!=null){
+            return groupName;
+        }else{
+            return "mindspore";
+        }
     }
 
     @Override

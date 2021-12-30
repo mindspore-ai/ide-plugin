@@ -16,13 +16,13 @@ public class PropertiesUtil {
 
     }
 
-    public static void registerProperties(final String path) {
+    public static void registerProperties(String path) {
+        if(path == null ){
+            return;
+        }
         try (InputStream in = PropertiesUtil.class.getClassLoader().getResourceAsStream(path)) {
-            if (in == null) {
-                return;
-            }
             prop.load(in);
-        } catch (IOException e) {
+        } catch (IOException|NullPointerException e) {
             e.printStackTrace();
         }
     }

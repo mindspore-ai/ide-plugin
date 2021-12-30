@@ -69,7 +69,8 @@ public class MindSporeListCellRenderer extends DefaultListCellRenderer {
                 if(value instanceof DocumentValue){
                     String str = ((DocumentValue)value).getTitle();
                     nameComponent.append(str,
-                            new SimpleTextAttributes(SimpleTextAttributes.STYLE_PLAIN,defaultActionForeground(isSelected,cellHasFocus,null)));
+                            new SimpleTextAttributes(SimpleTextAttributes.STYLE_PLAIN,
+                                    UIUtil.getListForeground()));
                 }
             }
         }

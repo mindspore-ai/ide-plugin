@@ -30,10 +30,13 @@ public class ResourceManager {
     public static boolean downloadResource(String uri, String resourceLocation, String token) {
         boolean downloadSucceed = false;
         try (CloseableHttpResponse response = HttpUtils.doGet(uri, buildDownloadHeader(token))) {
-            if (response.getStatusLine().getStatusCode() == HttpURLConnection.HTTP_OK) {
+            if(response == null ){
+                downloadSucceed = false;
+            }else if (response.getStatusLine().getStatusCode() == HttpURLConnection.HTTP_OK) {
                 FileUtils.writeFile(resourceLocation, response.getEntity().getContent());
                 downloadSucceed = true;
-
+            }else {
+                downloadSucceed = false;
             }
         } catch (IOException ioException) {
             log.info("Download resource failed,", ioException);

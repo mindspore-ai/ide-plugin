@@ -58,7 +58,7 @@ public class MyDialog extends JDialog {
         this.add(teXtJLabelNoPath);
         browseButton.addBrowseFolderListener(new TextBrowseFolderListener(new FileChooserDescriptor(false, true, false, false, false, false)) {
             @Override
-            protected @NotNull @NlsSafe String chosenFileToResultingText(@NotNull VirtualFile chosenFile) {
+            protected @NlsSafe String chosenFileToResultingText(@NotNull VirtualFile chosenFile) {
                 String text= super.chosenFileToResultingText(chosenFile);
                 teXtJLabelNoPath.setVisible(text.equals(""));
                 return super.chosenFileToResultingText(chosenFile);

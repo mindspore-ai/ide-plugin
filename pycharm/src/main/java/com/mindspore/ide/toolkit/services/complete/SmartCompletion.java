@@ -57,7 +57,7 @@ public class SmartCompletion extends CompletionContributor {
         PrefixMatcher originalMatcher = result.getPrefixMatcher();
         LookupElementWeigher lookupElementWeigher = new LookupElementWeigher("SmartComplete", false, false) {
             @Override
-            public @NotNull Integer weigh(@NotNull LookupElement element) {
+            public Integer weigh(@NotNull LookupElement element) {
                 if (smartCompleteResult.contains(element)) {
                     return smartCompleteResult.indexOf(element);
                 }
