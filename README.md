@@ -58,7 +58,7 @@ MindSpore Dev Toolkit提供如下功能：
 
 * JDK(>=11)
 
-运行 git clone命令下载代码，在IDE Terminal中运行以下命令进行编译：
+运行 git clone命令下载代码，通过IDE打开项目，在IDE Terminal中运行以下命令进行编译：
 
   ```
 $ gradle buildPlugin
