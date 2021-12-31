@@ -70,7 +70,7 @@ $ gradle buildPlugin
 
 获取插件Zip包。
 
-启动Pycharm单击左上菜单栏，选择File->Settings->Plugins->Install Plugin from Disk
+启动Pycharm单击左上菜单栏，选择File->Settings->Plugins->Install Plugin from Disk。
 
 ![image-20211223175637989](./images/image-20211223175637989.png)
 
@@ -89,9 +89,9 @@ git clone https://gitee.com/mindspore/ide-plugin.git
 
    * reload 成功后，可以单击ide-plugin->Tasks->build->build,等待工程编译成功。
 
-   * 单击ide-plugin->Tasks->intellij->runIde,可以启动沙盒
+   * 单击ide-plugin->Tasks->intellij->runIde,可以启动沙盒。
 
-3. 现在您可以点击运行，方式为点击Run>Run(build/runIde) 或者run>Debug(安全模式)
+3. 现在您可以点击运行，方式为点击Run>Run(build/runIde) 或者run>Debug(安全模式)。
 
 ## 快速入门
 
@@ -105,7 +105,7 @@ git clone https://gitee.com/mindspore/ide-plugin.git
 
 ### 交流
 
-- [MindSpore Slack](https://join.slack.com/t/mindspore/shared_invite/zt-dgk65rli-3ex4xvS4wHX7UDmsQmfu8w) 开发者交流平台。
+- [MindSpore Slack](https://join.slack.com/t/mindspore/shared_invite/zt-dgk65rli-3ex4xvS4wHX7UDmsQmfu8w) 开发者交流平台
 - `#mindspore`IRC频道（仅用于会议记录）
 - 视频会议：待定
 - 邮件列表：<https://mailweb.mindspore.cn/postorius/lists>
