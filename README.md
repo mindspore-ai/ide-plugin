@@ -50,7 +50,7 @@ MindSpore Dev Toolkit提供如下功能：
 
 ## 构建
 
-### 依赖
+### 依赖与编译
 
 基本要求：
 
@@ -58,7 +58,7 @@ MindSpore Dev Toolkit提供如下功能：
 
 * JDK(>=11)
 
-运行 git clone命令下载代码，在IDE Terminal中运行以下命令：
+运行 git clone命令下载代码，在IDE Terminal中运行以下命令进行编译：
 
   ```
 $ gradle buildPlugin
@@ -79,19 +79,19 @@ $ gradle buildPlugin
 
 ### 运行和调试
 
-1 运行git clone命令下载代码
+1. 运行git clone命令下载代码
 
 ```
 git clone https://gitee.com/mindspore/ide-plugin.git
 ```
 
-2 在位于gradle的toolwindow，点击图标"Reload all Gradle Projects"
+2. 在位于gradle的toolwindow，点击图标"Reload all Gradle Projects"
 
-* reload 成功后，可以单击ide-plugin->Tasks->build->build,等待工程编译成功。
+   * reload 成功后，可以单击ide-plugin->Tasks->build->build,等待工程编译成功。
 
-* 单击ide-plugin->Tasks->intellij->runIde,可以启动沙盒
+   * 单击ide-plugin->Tasks->intellij->runIde,可以启动沙盒
 
-3 现在您可以点击运行，方式为点击Run>Run(build/runIde) 或者run>Debug(安全模式)
+3. 现在您可以点击运行，方式为点击Run>Run(build/runIde) 或者run>Debug(安全模式)
 
 ## 快速入门
 
