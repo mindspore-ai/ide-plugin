@@ -33,19 +33,19 @@ MindSpore Dev Toolkit提供如下功能：
 ### MindSpore运行管理
 * 创建Conda环境或选择已有Conda环境，并安装MindSpore二进制包至Conda环境。
 * 部署最佳实践模版。不仅可以测试环境是否安装成功，对新用户也提供了一个MindSpore的入门介绍。
-* 在网络状况良好时，10分钟之内即可完成环境安装，开始体验MindSpore。最大可节约新用户80%的环境配置时间
+* 在网络状况良好时，10分钟之内即可完成环境安装，开始体验MindSpore。最大可节约新用户80%的环境配置时间。
 
 ### 对接智能知识搜索
-* 定向推荐：根据用户使用习惯，提供更精准的搜索结果
+* 定向推荐：根据用户使用习惯，提供更精准的搜索结果。
 * 沉浸式资料检索体检，避免在IDE和浏览器之间的互相切换。适配侧边栏，提供窄屏适配界面。
 
 ### 智能代码补全【TODO】
 * 提供基于MindSpore项目的AI代码补全。
-* 无需安装MindSpore环境，也可轻松开发MindSpore
+* 无需安装MindSpore环境，也可轻松开发MindSpore。
 
 ### 算子互搜【TODO】
-* 快速搜索MindSpore算子，在侧边栏直接展示算子详情
-* 为方便其他机器学习框架用户，通过搜索其他主流框架算子，联想匹配对应MindSpore算子
+* 快速搜索MindSpore算子，在侧边栏直接展示算子详情。
+* 为方便其他机器学习框架用户，通过搜索其他主流框架算子，联想匹配对应MindSpore算子。
 
 
 ## 构建
@@ -58,7 +58,7 @@ MindSpore Dev Toolkit提供如下功能：
 
 * JDK(>=11)
 
-运行 git clone命令下载代码，运行以下命令：
+运行 git clone命令下载代码，在IDE Terminal中运行以下命令：
 
   ```
 $ gradle buildPlugin
@@ -79,19 +79,19 @@ $ gradle buildPlugin
 
 ### 运行和调试
 
-1.运行git clone命令下载代码
+1 运行git clone命令下载代码
 
 ```
 git clone https://gitee.com/mindspore/ide-plugin.git
 ```
 
-2.在位于gradle的toolwindow，点击图标"Reload all Gradle Projects"
+2 在位于gradle的toolwindow，点击图标"Reload all Gradle Projects"
 
 * reload 成功后，可以单击ide-plugin->Tasks->build->build,等待工程编译成功。
 
 * 单击ide-plugin->Tasks->intellij->runIde,可以启动沙盒
 
-3.现在您可以点击运行，方式为点击Run>Run(build/runIde) 或者run>Debug(安全模式)
+3 现在您可以点击运行，方式为点击Run>Run(build/runIde) 或者run>Debug(安全模式)
 
 ## 快速入门
 
