@@ -78,6 +78,7 @@ public abstract class AbstractMsSettingProjectPeer {
         return OsSelector;
     }
 
+    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings("EI_EXPOSE_REP")
     public JCheckBox getTemplateCheckBox() {
         return templateCheckBox;
     }
