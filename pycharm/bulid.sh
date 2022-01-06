@@ -1,13 +1,16 @@
-cd $(dirname $0)
-pwd
+#!/bin/bash
 
+set -e
+BASEPATH=$(cd "$(dirname $0)"; pwd)
+
+gradle spotbugsMain
 gradle buildPlugin
 
 mkdir output
-mv build/distributions/* output/
-cd output
+mv $BASEPATH/build/distributions/* $BASEPATH/output/
+cd $BASEPATH/output
 
-for file in `ls`
+for file in ./*
 do
   #echo ${file}
   #echo ${file%}.md5
