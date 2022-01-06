@@ -1,3 +1,19 @@
+/*
+ * Copyright 2021-2022 Huawei Technologies Co., Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.mindspore.ide.toolkit.ui.wizard;
 
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
@@ -11,11 +27,10 @@ public abstract class AbstractMsSettingProjectPeer {
     private JPanel mainPanel;
     private JLabel hardwareLabel;
     private JComboBox hardwareSelector;
-    private JComboBox OsSelector;
     private JCheckBox templateCheckBox;
     private JLabel pyVersionWarnLabel;
     private JLabel templateLabel;
-    private JLabel OsLabel;
+    private JLabel osLabel;
     private TextFieldWithBrowseButton browseButton;
     private JButton downloadMiniCondaButton;
     private JLabel textJLabel;
@@ -24,11 +39,10 @@ public abstract class AbstractMsSettingProjectPeer {
     private JRadioButton existingEnvironmentRadioButton;
     private JComboBox existEnv;
     private JComboBox pythonVersionCombo;
-    @SuppressFBWarnings("URF_UNREAD_FIELD")
     private JLabel pythonVersion;
     private JComboBox templateSelector;
-    @SuppressFBWarnings("URF_UNREAD_FIELD")
-    private JLabel PipLabel;
+    private JLabel pipLabel;
+    private JLabel osName;
 
     public AbstractMsSettingProjectPeer() {
         newEnvironmentUsingRadioButton.addChangeListener(this::changeEnvState);
@@ -51,9 +65,6 @@ public abstract class AbstractMsSettingProjectPeer {
         return existEnv;
     }
 
-
-
-
     public abstract void addItemsToHardwareSelector();
 
     public JRadioButton getNewEnvironmentUsingRadioButton() {
@@ -74,11 +85,6 @@ public abstract class AbstractMsSettingProjectPeer {
         return hardwareSelector;
     }
 
-    public JComboBox getOsSelector() {
-        return OsSelector;
-    }
-
-    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings("EI_EXPOSE_REP")
     public JCheckBox getTemplateCheckBox() {
         return templateCheckBox;
     }
@@ -96,7 +102,7 @@ public abstract class AbstractMsSettingProjectPeer {
     }
 
     public JLabel getOsLabel() {
-        return OsLabel;
+        return osLabel;
     }
 
     public JButton getDownloadMiniCondaButton() {
@@ -121,5 +127,9 @@ public abstract class AbstractMsSettingProjectPeer {
 
     public JComboBox getTemplateSelector() {
         return templateSelector;
+    }
+
+    public JLabel getOsName() {
+        return osName;
     }
 }

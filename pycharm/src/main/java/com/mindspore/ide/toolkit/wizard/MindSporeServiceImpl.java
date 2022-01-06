@@ -1,3 +1,19 @@
+/*
+ * Copyright 2021-2022 Huawei Technologies Co., Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.mindspore.ide.toolkit.wizard;
 
 import com.google.gson.reflect.TypeToken;
@@ -60,13 +76,17 @@ public class MindSporeServiceImpl implements MindSporeService {
             String cmdReturnInfo = installLocalWhlPackage(sdkPath, mindsporeFilePath);
 
             if (isSpecialMindSporeExist(sdkPath, hpName)) {
-                eventNotifyServiceProxy.eventNotify(EnumNotifyGroup.MIND_SPORE, "MindSpore installed successfully.", NotificationType.INFORMATION);
+                eventNotifyServiceProxy.eventNotify(EnumNotifyGroup.MIND_SPORE,
+                        "MindSpore installed successfully.", NotificationType.INFORMATION);
             } else {
-                eventNotifyServiceProxy.eventNotify(EnumNotifyGroup.MIND_SPORE, "MindSpore install failed." + System.lineSeparator() + cmdReturnInfo, NotificationType.INFORMATION);
+                eventNotifyServiceProxy.eventNotify(EnumNotifyGroup.MIND_SPORE,
+                        "MindSpore install failed." + System.lineSeparator() + cmdReturnInfo,
+                        NotificationType.INFORMATION);
             }
         } catch (SocketTimeoutException | HttpHostConnectException exception) {
             LOG.error(exception.getMessage(), exception);
-            eventNotifyServiceProxy.eventNotify(EnumNotifyGroup.MIND_SPORE, "setup failed. Please add your intellij http proxy", NotificationType.WARNING);
+            eventNotifyServiceProxy.eventNotify(EnumNotifyGroup.MIND_SPORE,
+                    "setup failed. Please add your intellij http proxy", NotificationType.WARNING);
         } catch (IOException exception) {
             LOG.error(exception.getMessage(), exception);
             installMindSporeWarning();
@@ -94,10 +114,15 @@ public class MindSporeServiceImpl implements MindSporeService {
             ZipCompressingUtils.unzipFile(TEMP_PATH + fileName + ".zip", targetFilePath);
             return true;
         } catch (FileNotFoundException exception) {
-            eventNotifyServiceProxy.eventNotify(EnumNotifyGroup.MIND_SPORE, "Unable to create MindSpore template", "zip file not find, unable to create MindSpore template", exception, NotificationType.ERROR);
+            eventNotifyServiceProxy.eventNotify(EnumNotifyGroup.MIND_SPORE,
+                    "Unable to create MindSpore template",
+                    "zip file not find, unable to create MindSpore template",
+                    exception, NotificationType.ERROR);
             return false;
         } catch (IOException exception) {
-            eventNotifyServiceProxy.eventNotify(EnumNotifyGroup.MIND_SPORE, "Unable to create MindSpore template", "IOException", exception, NotificationType.ERROR);
+            eventNotifyServiceProxy.eventNotify(EnumNotifyGroup.MIND_SPORE,
+                    "Unable to create MindSpore template",
+                    "IOException", exception, NotificationType.ERROR);
             return false;
         }
     }
@@ -105,8 +130,9 @@ public class MindSporeServiceImpl implements MindSporeService {
     @Override
     public List<String> listTemplates() {
         try (InputStream input = MindSporeServiceImpl.class.getResourceAsStream(TEMP_PATH_ENTRIES);
-        InputStreamReader reader = new InputStreamReader(input, StandardCharsets.UTF_8)){
-            return GsonUtils.INSTANCE.getGson().fromJson(reader, TypeToken.getParameterized(List.class,String.class).getType());
+             InputStreamReader reader = new InputStreamReader(input, StandardCharsets.UTF_8)){
+            return GsonUtils.INSTANCE.getGson().fromJson(reader,
+                    TypeToken.getParameterized(List.class, String.class).getType());
         } catch (IOException exception) {
             return new ArrayList<>();
         }
@@ -116,15 +142,18 @@ public class MindSporeServiceImpl implements MindSporeService {
     public void installAstroid(Sdk sdk, String localFileCacheDir) {
         try {
             if (MindSporeUtils.isPackageExist(ASTROID, sdk)) {
-                eventNotifyServiceProxy.eventNotify(EnumNotifyGroup.MIND_SPORE, "astroid installed before", NotificationType.INFORMATION);
+                eventNotifyServiceProxy.eventNotify(EnumNotifyGroup.MIND_SPORE,
+                        "astroid installed before", NotificationType.INFORMATION);
                 return;
             }
             String astroidDestPath = astroidWhlPkgFileCopyToProject(localFileCacheDir);
             String result = installLocalWhlPackage(sdk.getHomePath(), astroidDestPath);
             if (MindSporeUtils.isPackageExist(ASTROID, sdk)) {
-                eventNotifyServiceProxy.eventNotify(EnumNotifyGroup.MIND_SPORE, "astroid installed successfully.", NotificationType.INFORMATION);
+                eventNotifyServiceProxy.eventNotify(EnumNotifyGroup.MIND_SPORE,
+                        "astroid installed successfully.", NotificationType.INFORMATION);
             } else {
-                eventNotifyServiceProxy.eventNotify(EnumNotifyGroup.MIND_SPORE, "astroid install failed." + System.lineSeparator() + result, NotificationType.WARNING);
+                eventNotifyServiceProxy.eventNotify(EnumNotifyGroup.MIND_SPORE,
+                        "astroid install failed." + System.lineSeparator() + result, NotificationType.WARNING);
 
             }
         } catch (BizException | IOException exception) {
@@ -138,7 +167,8 @@ public class MindSporeServiceImpl implements MindSporeService {
         List<String> dirs;
         try (InputStream input = MindSporeServiceImpl.class.getResourceAsStream(TEMP_PATH_STRUCTURE);
              InputStreamReader reader = new InputStreamReader(input, StandardCharsets.UTF_8)){
-            dirs = GsonUtils.INSTANCE.getGson().fromJson(reader, TypeToken.getParameterized(List.class,String.class).getType());
+            dirs = GsonUtils.INSTANCE.getGson().fromJson(reader,
+                    TypeToken.getParameterized(List.class, String.class).getType());
         } catch (IOException exception) {
             return false;
         }
@@ -163,7 +193,8 @@ public class MindSporeServiceImpl implements MindSporeService {
         } else {
             LOG.warn("unexpected file exist");
         }
-        try (InputStream inputStream = MindSporeServiceImpl.class.getResourceAsStream("/staticAnalyzer/astroid-2.5.0-py3-none-any.whl");
+        try (InputStream inputStream = MindSporeServiceImpl.class.getResourceAsStream(
+                "/staticAnalyzerastroid-2.5.0-py3-none-any.whl");
              OutputStream outputStream = new FileOutputStream(astroidDestFile)) {
             byte[] buff = new byte[1024];
             int length;
@@ -197,7 +228,9 @@ public class MindSporeServiceImpl implements MindSporeService {
     }
 
     private String installLocalWhlPackage(String sdkPath, String localFilePath) throws IOException {
-        String cmdReturnInfo = RunExecUtils.runExec(Arrays.asList(sdkPath, PythonCommand.CHAR_MODULE, PythonCommand.PIP, PythonCommand.INSTALL, localFilePath));
+        String cmdReturnInfo = RunExecUtils.runExec(Arrays.asList(sdkPath,
+                PythonCommand.CHAR_MODULE, PythonCommand.PIP,
+                PythonCommand.INSTALL, localFilePath));
         return cmdReturnInfo;
     }
 
@@ -206,7 +239,9 @@ public class MindSporeServiceImpl implements MindSporeService {
             return Optional.empty();
         }
         for (EnumHardWarePlatform hardWarePlatform : EnumHardWarePlatform.values()) {
-            String result = RunExecUtils.runExec(Arrays.asList(sdkPath, PythonCommand.CHAR_MODULE, PythonCommand.PIP, PythonCommand.SHOW, hardWarePlatform.getMindsporeMapping()));
+            String result = RunExecUtils.runExec(Arrays.asList(sdkPath,
+                    PythonCommand.CHAR_MODULE, PythonCommand.PIP,
+                    PythonCommand.SHOW, hardWarePlatform.getMindsporeMapping()));
             if (StringUtils.isNotBlank(result) && result.contains("Home-page")) {
                 return Optional.of(hardWarePlatform.getMindsporeMapping());
             }
@@ -215,11 +250,15 @@ public class MindSporeServiceImpl implements MindSporeService {
     }
 
     private void installMindSporeWarning() {
-        eventNotifyServiceProxy.eventNotify(EnumNotifyGroup.MIND_SPORE, "MindSpore has not installed. Please check it", NotificationType.WARNING);
+        eventNotifyServiceProxy.eventNotify(EnumNotifyGroup.MIND_SPORE,
+                "MindSpore has not installed. Please check it",
+                NotificationType.WARNING);
     }
 
     private void installAstroidWarning() {
-        eventNotifyServiceProxy.eventNotify(EnumNotifyGroup.MIND_SPORE, "Astroid install failed. Please check it", NotificationType.INFORMATION);
+        eventNotifyServiceProxy.eventNotify(EnumNotifyGroup.MIND_SPORE,
+                "Astroid install failed. Please check it",
+                NotificationType.INFORMATION);
     }
 
     private static class Singleton {
@@ -229,6 +268,11 @@ public class MindSporeServiceImpl implements MindSporeService {
         }
     }
 
+    /**
+     * get mindspore service instance
+     *
+     * @return mindspore service
+     */
     public static MindSporeService getInstance() {
         return Singleton.INSTANCE;
     }

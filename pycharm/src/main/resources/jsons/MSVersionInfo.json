@@ -1,53 +1,31 @@
 [
   {
     "name" : "Ascend",
+    "des": "For Ascend AI processors",
     "osInfoList" : [
-      {
-        "name" : "Ubuntu-x86_64",
-        "url" : "https://ms-release.obs.cn-north-4.myhuaweicloud.com/1.2.0-rc1/MindSpore/ascend/ubuntu_x86/mindspore_ascend-1.2.0rc1-cp37-cp37m-linux_x86_64.whl"
-      },
-      {
-        "name" : "Ubuntu-aarch64",
-        "url" : "https://ms-release.obs.cn-north-4.myhuaweicloud.com/1.2.0-rc1/MindSpore/ascend/ubuntu_aarch64/mindspore_ascend-1.2.0rc1-cp37-cp37m-linux_aarch64.whl"
-      },
-      {
-        "name" : "EulerOS-aarch64",
-        "url" : "https://ms-release.obs.cn-north-4.myhuaweicloud.com/1.2.0-rc1/MindSpore/ascend/euleros_aarch64/mindspore_ascend-1.2.0rc1-cp37-cp37m-linux_aarch64.whl"
-      },
-      {
-        "name" : "CentOS-x86",
-        "url" : "https://ms-release.obs.cn-north-4.myhuaweicloud.com/1.2.0-rc1/MindSpore/ascend/centos_x86/mindspore_ascend-1.2.0rc1-cp37-cp37m-linux_x86_64.whl"
-      },
-      {
-        "name" : "CentOS-aarch64",
-        "url" : "https://ms-release.obs.cn-north-4.myhuaweicloud.com/1.2.0-rc1/MindSpore/ascend/centos_aarch64/mindspore_ascend-1.2.0rc1-cp37-cp37m-linux_aarch64.whl"
-      }
+      "linux"
     ]
   },
   {
     "name" : "GPU CUDA 10.1",
+    "des": "For CUDA versions between 10.1 and 11.1",
     "osInfoList" : [
-      {
-        "name" : "Ubuntu-x86_64",
-        "url" : "https://ms-release.obs.cn-north-4.myhuaweicloud.com/1.2.0-rc1/MindSpore/gpu/ubuntu_x86/cuda-10.1/mindspore_gpu-1.2.0rc1-cp37-cp37m-linux_x86_64.whl"
-      }
+      "linux"
+    ]
+  },
+  {
+    "name" : "GPU CUDA 11.1",
+    "des": "For CUDA versions above 11.1",
+    "osInfoList" : [
+      "linux"
     ]
   },
   {
     "name" : "CPU",
+    "des": "For CPU-only machines or CUDA versions below 10.1",
     "osInfoList" : [
-      {
-        "name" : "Ubuntu-x86_64",
-        "url" : "https://ms-release.obs.cn-north-4.myhuaweicloud.com/1.2.0-rc1/MindSpore/cpu/ubuntu_x86/mindspore-1.2.0rc1-cp37-cp37m-linux_x86_64.whl"
-      },
-      {
-        "name" : "Ubuntu-aarch64",
-        "url" : "https://ms-release.obs.cn-north-4.myhuaweicloud.com/1.2.0-rc1/MindSpore/cpu/ubuntu_aarch64/mindspore-1.2.0rc1-cp37-cp37m-linux_aarch64.whl"
-      },
-      {
-        "name" : "Windows-x64",
-        "url" : "https://ms-release.obs.cn-north-4.myhuaweicloud.com/1.2.0-rc1/MindSpore/cpu/windows_x64/mindspore-1.2.0rc1-cp37-cp37m-win_amd64.whl"
-      }
+      "windows",
+      "linux"
     ]
   }
 ]

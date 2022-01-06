@@ -1,7 +1,30 @@
+/*
+ * Copyright 2021-2022 Huawei Technologies Co., Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.mindspore.ide.toolkit.ui.wizard;
 
+import com.intellij.execution.ExecutionException;
 import com.intellij.ide.util.projectWizard.SettingsStep;
+import com.intellij.openapi.application.Application;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.ex.ApplicationEx;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.projectRoots.ProjectJdkTable;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.ui.Messages;
@@ -12,34 +35,53 @@ import com.intellij.openapi.util.NlsSafe;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.platform.ProjectGeneratorPeer;
-import com.intellij.util.ArrayUtilRt;
 import com.intellij.util.containers.ContainerUtil;
 import com.jetbrains.python.newProject.PyNewProjectSettings;
 import com.jetbrains.python.packaging.PyCondaPackageService;
 import com.jetbrains.python.sdk.PythonSdkUtil;
+import com.jetbrains.python.sdk.flavors.PyCondaRunKt;
 import com.mindspore.ide.toolkit.common.utils.FileUtils;
-import com.mindspore.ide.toolkit.wizard.MindSporeServiceImpl;
-import com.mindspore.ide.toolkit.wizard.MiniCondaService;
 import com.mindspore.ide.toolkit.wizard.MsVersionManager;
+import com.mindspore.ide.toolkit.wizard.MiniCondaService;
+import com.mindspore.ide.toolkit.wizard.MSVersionInfo;
 import com.mindspore.ide.toolkit.wizard.OSInfoUtils;
+import com.mindspore.ide.toolkit.wizard.MindSporeServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.*;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JCheckBox;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComponent;
+import javax.swing.ListCellRenderer;
+import javax.swing.JList;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.Arrays;
 
 @Slf4j
+/**
+ * project peer
+ *
+ * @since 1.0
+ */
 public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer implements ProjectGeneratorPeer {
     public String getCondaPath() {
         return browseButton.getText();
@@ -47,11 +89,9 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
 
     private String condaPath;
 
-    private String condaEnv;
-
     private JComboBox hardwareSelector = getHardwareSelector();
 
-    private JComboBox osSelector = getOsSelector();
+    private JLabel osName = getOsName();
 
     private JLabel pyVersionWarnLabel = getPyVersionWarnLabel();
 
@@ -77,6 +117,13 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
 
     private JComboBox templateSelector = getTemplateSelector();
 
+    private String condaEnvPathAll = "";
+
+    private HashSet<MSVersionInfo> hardwarePlatformSet;
+
+    /**
+     * construct for peer
+     */
     public WizardMsSettingProjectPeer() {
         addMsProjectComboboxListener();
         addItemsToHardwareSelector();
@@ -87,6 +134,12 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
         pyVersionWarnLabel.setText("Python version must equal to 3.7.5 or 3.9.0");
     }
 
+    /**
+     * get conda sdk from maps
+     *
+     * @param key keys
+     * @return sdk
+     */
     public Sdk getCondaSdk(String key) {
         return condaMap.get(key);
     }
@@ -99,38 +152,38 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
         getExistEnv().addActionListener(tListener -> settingsListener.stateChanged(false));
         getCondaEnvBrowserButton().getTextField().getDocument().addDocumentListener(new DocumentListener() {
             @Override
-            public void insertUpdate(DocumentEvent e) {
+            public void insertUpdate(DocumentEvent event) {
                 settingsListener.stateChanged(false);
             }
 
             @Override
-            public void removeUpdate(DocumentEvent e) {
+            public void removeUpdate(DocumentEvent event) {
                 settingsListener.stateChanged(false);
             }
 
             @Override
-            public void changedUpdate(DocumentEvent e) {
+            public void changedUpdate(DocumentEvent event) {
                 settingsListener.stateChanged(false);
             }
         });
         getMainPanel().addComponentListener(new ComponentListener() {
             @Override
-            public void componentResized(ComponentEvent e) {
+            public void componentResized(ComponentEvent event) {
 
             }
 
             @Override
-            public void componentMoved(ComponentEvent e) {
+            public void componentMoved(ComponentEvent event) {
 
             }
 
             @Override
-            public void componentShown(ComponentEvent e) {
+            public void componentShown(ComponentEvent event) {
                 settingsListener.stateChanged(false);
             }
 
             @Override
-            public void componentHidden(ComponentEvent e) {
+            public void componentHidden(ComponentEvent event) {
 
             }
         });
@@ -138,7 +191,9 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
     }
 
     @Override
-    public JComponent getComponent() {
+    public
+    @NotNull
+    JComponent getComponent() {
         return super.getMainPanel();
     }
 
@@ -163,82 +218,120 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
         return null;
     }
 
+    /**
+     * is background job running
+     *
+     * @return true or false
+     */
     @Override
     public boolean isBackgroundJobRunning() {
         return false;
     }
 
+    /**
+     * add item to hardware selector
+     */
     @Override
     public void addItemsToHardwareSelector() {
-        Set<String> hardwarePlatformSet = msVersionManager.hardwarePlatformInfo();
-        hardwareSelector.setModel(new DefaultComboBoxModel(ArrayUtilRt.toStringArray(hardwarePlatformSet)));
+        hardwarePlatformSet = MsVersionManager.INSTANCE.hardwarePlatformInfo();
+        hardwareSelector.setModel(new DefaultComboBoxModel(hardwarePlatformSet.toArray(new MSVersionInfo[0])));
+        hardwareSelector.setRenderer(new ListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList list, Object value, int index,
+                boolean isSelected, boolean isCellHasFocus) {
+                JPanel panel = new JPanel();
+                if (value instanceof MSVersionInfo) {
+                    MSVersionInfo info = (MSVersionInfo) value;
+                    panel.setLayout(new BorderLayout());
+                    JLabel hardware = new JLabel(info.getName());
+                    JLabel desc = new JLabel(info.getDes());
+                    desc.setForeground(new Color(255, 180, 35));
+                    panel.add(hardware, BorderLayout.WEST);
+                    panel.add(desc, BorderLayout.EAST);
+                    if (isSelected) {
+                        panel.setBackground(new Color(75, 110, 175));
+                    }
+                }
+                return panel;
+            }
+        });
         hardwareSelector.setSelectedIndex(0);
-        osSelector.removeAllItems();
-        if (hardwareSelector.getSelectedItem() instanceof String) {
-            addItemsToOsSelector((String) hardwareSelector.getSelectedItem());
+        if (hardwareSelector.getSelectedItem() instanceof MSVersionInfo) {
+            addItemsToOsSelector(((MSVersionInfo) hardwareSelector.getSelectedItem()).getName());
         }
     }
 
+    /**
+     * add item to os selector
+     *
+     * @param parSelectStr select str
+     */
     @Override
     public void addItemsToOsSelector(String parSelectStr) {
         Map<String, String> opVersionMap = msVersionManager.operatingSystemInfo(parSelectStr);
         if (opVersionMap == null || opVersionMap.size() == 0) {
+            osName.setText("Unsupported operating system");
             return;
         }
         versionUrlMap = opVersionMap;
         Set<String> opVersionSet = opVersionMap.keySet();
         for (String opVersionString : opVersionSet) {
-            osSelector.addItem(opVersionString);
+            osName.setText(opVersionString);
         }
-        osSelector.setSelectedIndex(0);
     }
 
+    /**
+     * add ms project combox listener
+     */
     public void addMsProjectComboboxListener() {
         hardwareSelector.addItemListener(event -> {
-            osSelector.removeAllItems();
             if (event.getItem() instanceof String) {
                 addItemsToOsSelector((String) event.getItem());
             }
         });
     }
 
-    public String getCurrentSystemUrl() {
-        if (versionUrlMap == null) {
-            return "";
-        }
-        return versionUrlMap.get(osSelector.getSelectedItem());
-    }
-
+    /**
+     * get hardware value
+     *
+     * @return hardware value
+     */
     public String getHardwareValue() {
-        if (hardwareSelector.getSelectedItem() instanceof String) {
-            return (String) hardwareSelector.getSelectedItem();
+        if (hardwareSelector.getSelectedItem() instanceof MSVersionInfo) {
+            return ((MSVersionInfo) hardwareSelector.getSelectedItem()).getName();
         }
         return "";
     }
 
-    public String getOsValue() {
-        if (osSelector.getSelectedItem() instanceof String) {
-            return (String) osSelector.getSelectedItem();
-        }
-        return "";
-    }
-
-    public Boolean isCreateTemplete() {
+    /**
+     * is created template
+     *
+     * @return true or false
+     */
+    public Boolean isCreateTemplate() {
         return templateCheckBox.isSelected();
     }
 
     private void initCondaMap() {
-        List<Sdk> condaList = ContainerUtil.filter(ProjectJdkTable.getInstance().getAllJdks(), PythonSdkUtil::isConda);
+        List<Sdk> condaList = ContainerUtil.filter(ProjectJdkTable.getInstance().getAllJdks(),
+                PythonSdkUtil::isConda);
         condaList.forEach((conda) -> {
-            condaMap.put(String.join(", ", new String[]{conda.getName(), conda.getHomePath(), conda.getVersionString()}), conda);
+            condaMap.put(String.join(", ", new String[]{conda.getName(),
+                    conda.getHomePath(), conda.getVersionString()}), conda);
         });
         condaMap.keySet().forEach(getExistEnv()::addItem);
     }
 
     private void buttonListener() {
-        condaEnvBrowserButton.addBrowseFolderListener(new TextBrowseFolderListener(new FileChooserDescriptor(false, true, false, false, false, false)) {
+        condaEnvBrowserButton.getButton().setEnabled(true);
+        browseButton.getButton().setEnabled(true);
+        condaEnvBrowserButton.addBrowseFolderListener(new TextBrowseFolderListener(new FileChooserDescriptor(false,
+                true, false, false, false, false)) {
             @Override
-            protected @NlsSafe String chosenFileToResultingText(@NotNull VirtualFile chosenFile) {
+            protected
+            @NotNull
+            @NlsSafe
+            String chosenFileToResultingText(@NotNull VirtualFile chosenFile) {
                 if (chosenFile.findChild("mindspore") == null) {
                     return chosenFile.getPresentableUrl() + File.separator + "mindspore";
                 }
@@ -249,35 +342,62 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
                 return chosenFile.getPresentableUrl() + File.separator + "mindspore" + suffix;
             }
         });
-        browseButton.addBrowseFolderListener(new TextBrowseFolderListener(new FileChooserDescriptor(true, false, false, false, false, false)) {
+        browseButton.addBrowseFolderListener(new TextBrowseFolderListener(
+                new FileChooserDescriptor(true, false, false,
+                        false, false, false)) {
             @Override
-            protected @NlsSafe String chosenFileToResultingText(@NotNull VirtualFile chosenFile) {
+            protected
+            @NotNull
+            @NlsSafe
+            String chosenFileToResultingText(@NotNull VirtualFile chosenFile) {
+                condaPath = chosenFile.getPath();
+                initCondaEnvPath();
                 return super.chosenFileToResultingText(chosenFile);
             }
         });
+        addDownloadButtonListener();
+    }
+
+    private void addDownloadButtonListener() {
         downloadMiniCondaButton.addActionListener(actionEvent -> {
             MyDialog myDialog = new MyDialog();
             myDialog.setMyDialogListener(path -> {
                 if (path.isEmpty()) {
-                    miniCondaService.dialogNotification("Please select the conda download and installation path first.");
+                    miniCondaService.dialogNotification(
+                            "Please select the conda download and installation path first.");
                 } else {
                     myDialog.dispose();
-                    if (miniCondaService.downloadMiniConda(path)) {
-                        addDownloadMiniCondaButton(path);
-                    } else {
-                        Messages.showErrorDialog("Miniconda download installation failed. Please check network.","Miniconda installation failed");
-                    }
+                    downloadAction(path);
                 }
             });
             myDialog.setVisible(true);
         });
     }
 
+    private void downloadAction(String path) {
+        if (miniCondaService.downloadMiniConda(path)) {
+            int result = Messages.showYesNoDialog("Install MiniConda success，Please restart Ide!",
+                    "restart ide", "Restart", "Cancel", Messages.getInformationIcon());
+            if (result == Messages.YES) {
+                Application app = ApplicationManager.getApplication();
+                if (app instanceof ApplicationEx) {
+                    ((ApplicationEx) app).restart(true);
+                }
+            } else {
+                addDownloadMiniCondaButton(path);
+            }
+        } else {
+            Messages.showErrorDialog("Miniconda download installation failed. Please check network.",
+                    "Miniconda installation failed");
+        }
+    }
+
     private void addDownloadMiniCondaButton(String path) {
         // get conda exe path
         if (!path.equals("")) {
             if (OSInfoUtils.isWindows()) {
-                String condaExePath = path + File.separator + "Miniconda3" + File.separator + "Scripts" + File.separator + "conda.exe";
+                String condaExePath = path + File.separator + "Miniconda3" + File.separator
+                        + "Scripts" + File.separator + "conda.exe";
                 PyCondaPackageService.onCondaEnvCreated(condaExePath);
                 condaPath = condaExePath;
                 log.info("condaPath:{}", condaPath);
@@ -287,6 +407,10 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
         } else {
             condaPath = PyCondaPackageService.getCondaExecutable(null);
         }
+        initCondaEnvPath();
+    }
+
+    private void initCondaEnvPath() {
         log.info("condaPath:{}", condaPath);
         boolean isFile = FileUtils.isFile(condaPath);
         if (!StringUtil.isEmptyOrSpaces(condaPath) && isFile) {
@@ -299,21 +423,57 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
                 File fileNew = new File(condaEnvPath);
                 condaEnvPath = fileNew.getParent();
             }
-            String condaEnvPathAll = condaEnvPath + File.separator + "envs" + File.separator + "mindspore";
-            if (Files.exists(Path.of(condaEnvPathAll))) {
-                int suffix = 0;
-                do {
-                    suffix++;
-                } while (Files.exists(Path.of(condaEnvPathAll + suffix)));
-                condaEnvPathAll = condaEnvPathAll + suffix;
-            }
-            condaEnvBrowserButton.setText(condaEnvPathAll);
+            condaEnvPathAll = condaEnvPath + File.separator + "envs" + File.separator;
+            runSyncCondaEnvironments();
+            setCondaEnvPath("mindspore");
         } else {
             downloadMiniCondaButton.setVisible(true);
             downloadMiniCondaButton.setEnabled(true);
         }
     }
 
+    private void runSyncCondaEnvironments() {
+        Task task = new Task.Backgroundable(null, "synchronized conda environment ") {
+            @Override
+            public void run(@NotNull
+                                    ProgressIndicator indicator) {
+                try {
+                    PyCondaRunKt.runConda(condaPath, Arrays.asList("env", "list", "--json"));
+                } catch (ExecutionException exception) {
+                    log.info(exception.getMessage());
+                }
+            }
+        };
+        ProgressManager.getInstance().run(task);
+    }
+
+    /**
+     * set conda env path
+     *
+     * @param projectName project name
+     */
+    public void setCondaEnvPath(final String projectName) {
+        String name = "";
+        if (projectName.contains(":")) {
+            name = projectName.replace(":", "");
+        }
+        String envPath = condaEnvPathAll + name;
+        if (Files.exists(Path.of(envPath))) {
+            int suffix = 0;
+            do {
+                suffix++;
+            } while (Files.exists(Path.of(envPath + suffix)));
+            envPath = envPath + suffix;
+        }
+        condaEnvBrowserButton.setText(envPath);
+        validate();
+    }
+
+    /**
+     * get conda env path
+     *
+     * @return conda env path
+     */
     public String getCondaEnvPath() {
         if (getNewEnvironmentUsingRadioButton().isSelected()) {
             return condaEnvBrowserButton.getText();

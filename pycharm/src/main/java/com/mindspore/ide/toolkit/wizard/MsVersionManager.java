@@ -1,3 +1,19 @@
+/*
+ * Copyright 2021-2022 Huawei Technologies Co., Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.mindspore.ide.toolkit.wizard;
 
 import com.google.common.reflect.TypeToken;
@@ -15,11 +31,16 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.*;
 
+/**
+ * ms version manager
+ *
+ * @since 1.0
+ */
 public enum MsVersionManager {
     INSTANCE;
 
     private final Logger LOG = LoggerFactory.getLogger(MsVersionManager.class);
-    private HashMap<String, List<OSInfo>> mindSporeMap = new HashMap();
+    private HashMap<String, MSVersionInfo> mindSporeMap = new HashMap();
     private String curOsDesc = OsUtils.getDescriptionOPfCurrentOperatingSystem();
 
     MsVersionManager() {
@@ -34,21 +55,26 @@ public enum MsVersionManager {
             }.getType();
             Collection<MSVersionInfo> msVersionInfos = GsonUtils.INSTANCE.getGson().fromJson(reader, collectionType);
             for (MSVersionInfo msVersionInfo : msVersionInfos) {
-                map.put(msVersionInfo.getName(), msVersionInfo.getOsInfoList());
+                map.put(msVersionInfo.getName(), msVersionInfo);
             }
         } catch (IOException | JsonParseException exception) {
             LOG.error("Error of reading from file : path is {}", jsonFile);
         }
     }
 
-    public HashSet<String> hardwarePlatformInfo() {
-        HashSet<String> resList = new HashSet<>();
+    /**
+     * get hardware platform info
+     *
+     * @return ms version info
+     */
+    public HashSet<MSVersionInfo> hardwarePlatformInfo() {
+        HashSet<MSVersionInfo> resList = new HashSet<>();
         mindSporeMap.forEach(
                 (key, value) ->
-                        value.forEach(
+                        value.getOsInfoList().forEach(
                                 info -> {
-                                    if (info.getUrl().toLowerCase(Locale.ENGLISH).indexOf(curOsDesc) >= 0) {
-                                        resList.add(key);
+                                    if (info.contains(curOsDesc)) {
+                                        resList.add(value);
                                     }
                                 }
                         )
@@ -56,13 +82,19 @@ public enum MsVersionManager {
         return resList;
     }
 
+    /**
+     * get operating system info
+     *
+     * @param hardware hardware info
+     * @return hashMap
+     */
     public HashMap<String, String> operatingSystemInfo(@NotNull String hardware) {
         HashMap<String, String> resMap = new HashMap<>();
-        mindSporeMap.get(hardware)
+        mindSporeMap.get(hardware).getOsInfoList()
                 .forEach(
                         value -> {
-                            if (value.getUrl().toLowerCase(Locale.ENGLISH).indexOf(curOsDesc) >= 0) {
-                                resMap.put(value.getName(), value.getUrl());
+                            if (value.toLowerCase(Locale.ENGLISH).contains(curOsDesc)) {
+                                resMap.put(value, "");
                             }
                         }
                 );
