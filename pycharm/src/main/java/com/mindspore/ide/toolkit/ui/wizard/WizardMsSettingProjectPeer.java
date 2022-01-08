@@ -453,7 +453,7 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
      * @param projectName project name
      */
     public void setCondaEnvPath(final String projectName) {
-        String name = "";
+        String name = projectName;
         if (projectName.contains(":")) {
             name = projectName.replace(":", "");
         }
