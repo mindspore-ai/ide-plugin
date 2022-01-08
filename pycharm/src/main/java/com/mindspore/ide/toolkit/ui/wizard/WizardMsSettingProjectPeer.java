@@ -312,13 +312,17 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
         return templateCheckBox.isSelected();
     }
 
-    private void initCondaMap() {
+    /**
+     * refresh interpreter
+     */
+    public void initCondaMap() {
         List<Sdk> condaList = ContainerUtil.filter(ProjectJdkTable.getInstance().getAllJdks(),
                 PythonSdkUtil::isConda);
         condaList.forEach((conda) -> {
             condaMap.put(String.join(", ", new String[]{conda.getName(),
                     conda.getHomePath(), conda.getVersionString()}), conda);
         });
+        getExistEnv().removeAllItems();
         condaMap.keySet().forEach(getExistEnv()::addItem);
     }
 
