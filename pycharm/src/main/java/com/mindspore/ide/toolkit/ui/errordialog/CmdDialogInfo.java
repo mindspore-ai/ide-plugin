@@ -64,7 +64,7 @@ public class CmdDialogInfo extends DialogInfo {
         if (!isSuccessful()) {
             ApplicationManager.getApplication().invokeLater(() -> {
                 int choiceCode = Messages.showYesNoDialog(getTitle() + " failed. "
-                        + solution, getTitle(), Messages.getErrorIcon());
+                        + solution + " Do you want to check error message?", getTitle(), Messages.getErrorIcon());
                 if (choiceCode == 0) {
                     new CmdExecuteErrorDialog(this).show();
                 }
