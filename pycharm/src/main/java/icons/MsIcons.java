@@ -1,4 +1,4 @@
-package com.mindspore.ide.toolkit.icons;
+package icons;
 
 import com.intellij.openapi.util.IconLoader;
 import com.mindspore.ide.toolkit.common.beans.NormalInfoConstants;

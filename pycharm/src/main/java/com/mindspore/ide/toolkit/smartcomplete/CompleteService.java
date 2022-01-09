@@ -4,7 +4,7 @@ import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.util.TextRange;
 import com.mindspore.ide.toolkit.common.events.SmartCompleteEvents;
-import com.mindspore.ide.toolkit.icons.MsIcons;
+import icons.MsIcons;
 import com.mindspore.ide.toolkit.protomessage.CompleteReply;
 import com.mindspore.ide.toolkit.protomessage.ResultEntries;
 import com.mindspore.ide.toolkit.protomessage.ResultEntry;
