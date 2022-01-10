@@ -135,6 +135,16 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
     }
 
     /**
+     * reset browser button
+     */
+    public void resetBrowserButton() {
+        condaEnvBrowserButton.getButton().setFocusable(true);
+        condaEnvBrowserButton.getTextField().setEditable(true);
+        browseButton.getButton().setFocusable(true);
+        browseButton.getTextField().setEditable(true);
+    }
+
+    /**
      * get conda sdk from maps
      *
      * @param key keys
