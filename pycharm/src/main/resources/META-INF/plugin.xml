@@ -11,9 +11,9 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
-        <completion.contributor id="SmartCompletion" language="any"
-                                implementationClass="com.mindspore.ide.toolkit.services.complete.SmartCompletion"
-                                order="first" />
+<!--        <completion.contributor id="SmartCompletion" language="any"-->
+<!--                                implementationClass="com.mindspore.ide.toolkit.services.complete.SmartCompletion"-->
+<!--                                order="first" />-->
         <toolWindow id="MindSpore" factoryClass="com.mindspore.ide.toolkit.ui.search.BrowserWindowFactory" canCloseContents="false" anchor="right" icon="MsIcons.MS_ICON_16PXWP"/>
         <searchEverywhereContributor implementation="com.mindspore.ide.toolkit.search.MindSporeSearchEverywhereContributor$Factory"/>
         <directoryProjectGenerator implementation="com.mindspore.ide.toolkit.wizard.MindSporeProjectGenerator" />
@@ -27,7 +27,7 @@
         </action>
         <action class="com.mindspore.ide.toolkit.ui.guide.DontAskAgainAction" text="不再提示"/>
         <action class="com.mindspore.ide.toolkit.ui.guide.GuideAction" text="查看使用说明"/>
-        <action class="com.mindspore.ide.toolkit.ui.search.SearchRefreshAction" id="mindSporeRefreshAction" icon="/icons/mindspore_refresh.png"/>
+        <action class="com.mindspore.ide.toolkit.ui.search.SearchRefreshAction" id="mindSporeRefreshAction" icon="/icons/search_home.png"/>
 
     </actions>
     <projectListeners>
