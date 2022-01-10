@@ -76,6 +76,7 @@ public class MindSporeProjectGenerator extends PythonProjectGenerator<PyNewProje
             customMSProjectStep = new CustomMSProjectStep(this, callback, msSettingProjectPeer);
         }
         msSettingProjectPeer.initCondaMap(); // refresh exist interpreter
+        msSettingProjectPeer.resetBrowserButton();
         return customMSProjectStep;
     }
 
