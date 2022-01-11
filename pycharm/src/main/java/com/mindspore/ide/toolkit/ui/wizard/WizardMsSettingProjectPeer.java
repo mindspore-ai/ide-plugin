@@ -127,7 +127,7 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
     public WizardMsSettingProjectPeer() {
         addMsProjectComboboxListener();
         addItemsToHardwareSelector();
-        addDownloadMiniCondaButton("");
+        setCondExePath("");
         buttonListener();
         initCondaMap();
         initTemplate();
@@ -392,13 +392,12 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
         if (miniCondaService.downloadMiniConda(path)) {
             int result = Messages.showYesNoDialog("Install MiniConda success，Please restart Ide!",
                     "restart ide", "Restart", "Cancel", Messages.getInformationIcon());
+            setCondExePath(path);
             if (result == Messages.YES) {
                 Application app = ApplicationManager.getApplication();
                 if (app instanceof ApplicationEx) {
                     ((ApplicationEx) app).restart(true);
                 }
-            } else {
-                addDownloadMiniCondaButton(path);
             }
         } else {
             Messages.showErrorDialog("Miniconda download installation failed. Please check network.",
@@ -406,7 +405,7 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
         }
     }
 
-    private void addDownloadMiniCondaButton(String path) {
+    private void setCondExePath(String path) {
         // get conda exe path
         if (!path.equals("")) {
             if (OSInfoUtils.isWindows()) {
@@ -414,9 +413,13 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
                         + "Scripts" + File.separator + "conda.exe";
                 PyCondaPackageService.onCondaEnvCreated(condaExePath);
                 condaPath = condaExePath;
-                log.info("condaPath:{}", condaPath);
+                log.info("windows condaExePath:{}", condaExePath);
             } else {
-                condaPath = PyCondaPackageService.getCondaExecutable(null);
+                String condaExePath = path + File.separator + "Miniconda3" + File.separator
+                        + "Scripts" + File.separator + "conda";
+                PyCondaPackageService.onCondaEnvCreated(condaExePath);
+                condaPath = condaExePath;
+                log.info("other condaExePath:{}", condaExePath);
             }
         } else {
             condaPath = PyCondaPackageService.getCondaExecutable(null);
