@@ -1,8 +1,6 @@
 package com.mindspore.ide.toolkit.smartcomplete;
 
-import com.intellij.notification.NotificationType;
 import com.mindspore.ide.toolkit.common.utils.FileUtils;
-import com.mindspore.ide.toolkit.common.utils.NotificationUtils;
 import com.mindspore.ide.toolkit.smartcomplete.grpc.CompletionException;
 import com.mindspore.ide.toolkit.smartcomplete.grpc.PortUtil;
 import io.grpc.ManagedChannel;
@@ -42,9 +40,6 @@ public class ModelProcess {
         try {
             initProcess();
         } catch (IOException ioException) {
-            NotificationUtils.notify(NotificationUtils.NotifyGroup.SMART_COMPLETE,
-                    NotificationType.ERROR,
-                    "init smart complete model failed.");
             log.info("Init smart complete model failed.", ioException);
         }
     }
@@ -54,9 +49,6 @@ public class ModelProcess {
         try {
             communicateWithModel("smartcoder shutdown");
         } catch (IOException ioException) {
-            NotificationUtils.notify(NotificationUtils.NotifyGroup.SMART_COMPLETE,
-                    NotificationType.ERROR,
-                    "down smart complete model failed.");
             log.info("Shut down smart complete model failed.", ioException);
         }
         proc.destroy();
