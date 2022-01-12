@@ -132,10 +132,7 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
      * reset browser button
      */
     public void resetBrowserButton() {
-        condaEnvBrowserButton.getButton().setFocusable(true);
-        condaEnvBrowserButton.getTextField().setEditable(true);
-        browseButton.getButton().setFocusable(true);
-        browseButton.getTextField().setEditable(true);
+        buttonListener();
     }
 
     /**
@@ -333,6 +330,10 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
     private void buttonListener() {
         condaEnvBrowserButton.getButton().setEnabled(true);
         browseButton.getButton().setEnabled(true);
+        if (condaEnvBrowserButton.getButton().getActionListeners().length > 0 || browseButton
+                .getButton().getActionListeners().length > 0) {
+            return;
+        }
         condaEnvBrowserButton.addBrowseFolderListener(new TextBrowseFolderListener(new FileChooserDescriptor(false,
                 true, false, false, false, false)) {
             @Override
