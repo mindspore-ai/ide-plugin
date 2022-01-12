@@ -16,15 +16,11 @@
 
 package com.mindspore.ide.toolkit.ui.wizard;
 
-import com.intellij.execution.ExecutionException;
 import com.intellij.ide.util.projectWizard.SettingsStep;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ex.ApplicationEx;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
-import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.projectRoots.ProjectJdkTable;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.ui.Messages;
@@ -39,7 +35,6 @@ import com.intellij.util.containers.ContainerUtil;
 import com.jetbrains.python.newProject.PyNewProjectSettings;
 import com.jetbrains.python.packaging.PyCondaPackageService;
 import com.jetbrains.python.sdk.PythonSdkUtil;
-import com.jetbrains.python.sdk.flavors.PyCondaRunKt;
 import com.mindspore.ide.toolkit.common.utils.FileUtils;
 import com.mindspore.ide.toolkit.wizard.MsVersionManager;
 import com.mindspore.ide.toolkit.wizard.MiniCondaService;
@@ -74,7 +69,6 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Arrays;
 
 @Slf4j
 /**
@@ -441,27 +435,11 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
                 condaEnvPath = fileNew.getParent();
             }
             condaEnvPathAll = condaEnvPath + File.separator + "envs" + File.separator;
-            runSyncCondaEnvironments();
             setCondaEnvPath("mindspore");
         } else {
             downloadMiniCondaButton.setVisible(true);
             downloadMiniCondaButton.setEnabled(true);
         }
-    }
-
-    private void runSyncCondaEnvironments() {
-        Task task = new Task.Backgroundable(null, "synchronized conda environment ") {
-            @Override
-            public void run(@NotNull
-                                    ProgressIndicator indicator) {
-                try {
-                    PyCondaRunKt.runConda(condaPath, Arrays.asList("env", "list", "--json"));
-                } catch (ExecutionException exception) {
-                    log.info(exception.getMessage());
-                }
-            }
-        };
-        ProgressManager.getInstance().run(task);
     }
 
     /**
