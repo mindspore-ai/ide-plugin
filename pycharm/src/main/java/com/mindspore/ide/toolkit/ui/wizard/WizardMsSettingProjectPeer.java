@@ -411,7 +411,7 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
                 log.info("windows condaExePath:{}", condaExePath);
             } else {
                 String condaExePath = path + File.separator + "Miniconda3" + File.separator
-                        + "Scripts" + File.separator + "conda";
+                        + "bin" + File.separator + "conda";
                 PyCondaPackageService.onCondaEnvCreated(condaExePath);
                 condaPath = condaExePath;
                 log.info("other condaExePath:{}", condaExePath);
