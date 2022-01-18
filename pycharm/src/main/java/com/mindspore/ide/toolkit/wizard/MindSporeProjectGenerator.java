@@ -33,7 +33,6 @@ import com.jetbrains.python.remote.PyProjectSynchronizer;
 import com.mindspore.ide.toolkit.common.beans.NormalInfoConstants;
 import com.mindspore.ide.toolkit.common.dialog.DialogInfo;
 import com.mindspore.ide.toolkit.common.dialog.DialogInfoListener;
-import com.mindspore.ide.toolkit.common.enums.EnumHardWarePlatform;
 import com.mindspore.ide.toolkit.common.events.EventCenter;
 import com.mindspore.ide.toolkit.common.utils.PropertiesUtil;
 import com.mindspore.ide.toolkit.ui.wizard.WizardMsSettingProjectPeer;
@@ -43,9 +42,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * mindspore project generator
@@ -105,9 +101,9 @@ public class MindSporeProjectGenerator extends PythonProjectGenerator<PyNewProje
                                     @NotNull Module module,
                                     @Nullable PyProjectSynchronizer synchronizer) {
         super.configureProject(project, baseDir, settings, module, synchronizer);
-        MindSporeServiceImpl.getInstance().createMindSporeTemplate(baseDir.getPresentableUrl(),
+        MindSporeService.createMindSporeTemplate(baseDir.getPresentableUrl(),
                 msSettingProjectPeer.getTemplateSelector().getSelectedItem().toString());
-        MindSporeServiceImpl.getInstance().createStructure(baseDir.getPresentableUrl());
+        MindSporeService.createStructure(baseDir.getPresentableUrl());
         Task.WithResult condaEnv = new Task.WithResult<Sdk, Exception>(project, "create conda env", true) {
             @Override
             protected Sdk compute(@NotNull ProgressIndicator indicator) {
@@ -133,7 +129,8 @@ public class MindSporeProjectGenerator extends PythonProjectGenerator<PyNewProje
                 "Install MindSpore into conda", false) {
             @Override
             public Integer compute(@NotNull ProgressIndicator indicator) {
-                DialogInfo dialogInfo = installMindSporeIntoConda(sdk);
+                String hardwarePlatform = msSettingProjectPeer.getHardwareValue();
+                DialogInfo dialogInfo = MindSporeService.installMindSporeIntoConda(hardwarePlatform, sdk);
                 dialogInfo.setTitle("Install MindSpore into conda");
                 EventCenter.INSTANCE.publish(dialogInfo);
                 return dialogInfo.isSuccessful() ? 0 : -1;
@@ -143,28 +140,6 @@ public class MindSporeProjectGenerator extends PythonProjectGenerator<PyNewProje
         if (result != 0) {
             return;
         }
-    }
-
-    private DialogInfo installMindSporeIntoConda(Sdk sdk) {
-        String hardwarePlatform = msSettingProjectPeer.getHardwareValue();
-        List<String> cmdList;
-        //conda这里需要完善获取命令的方法
-        if (hardwarePlatform.contains(EnumHardWarePlatform.CPU.getCode())) {
-            cmdList = Arrays.asList("install", String.format("mindspore-%s=1.5.0",
-                    EnumHardWarePlatform.CPU.getCode().toLowerCase(Locale.ROOT)),
-                    "-c", "mindspore", "-c", "conda-forge", "-y");
-        } else if (hardwarePlatform.contains(EnumHardWarePlatform.GPU.getCode())) {
-            String version = hardwarePlatform.split(" ")[2];
-            cmdList = Arrays.asList("install", String.format("mindspore-%s=1.5.0",
-                    EnumHardWarePlatform.GPU.getCode().toLowerCase(Locale.ROOT)),
-                    String.format("cudatoolkit=%s", version), "cudnn", "-c", "mindspore",
-                    "-c", "conda-forge", "-y");
-        } else {
-            cmdList = Arrays.asList("install", String.format("mindspore-%s=1.5.0",
-                    EnumHardWarePlatform.ASCEND.getCode().toLowerCase(Locale.ROOT)),
-                    "-c", "mindspore", "-c", "conda-forge", "-y");
-        }
-        return CondaCmdProcessor.executeCondaCmd(sdk, null, cmdList);
     }
 
     @Override
