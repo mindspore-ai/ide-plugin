@@ -345,10 +345,9 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
         condaEnvBrowserButton.addBrowseFolderListener(new TextBrowseFolderListener(new FileChooserDescriptor(false,
                 true, false, false, false, false)) {
             @Override
-            protected
             @NotNull
             @NlsSafe
-            String chosenFileToResultingText(@NotNull VirtualFile chosenFile) {
+            protected String chosenFileToResultingText(@NotNull VirtualFile chosenFile) {
                 if (chosenFile.findChild("mindspore") == null) {
                     return chosenFile.getPresentableUrl() + File.separator + "mindspore";
                 }
@@ -356,18 +355,20 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
                 do {
                     suffix++;
                 } while ((chosenFile.findChild("mindspore" + suffix) != null));
-                return chosenFile.getPresentableUrl() + File.separator + "mindspore" + suffix;
+                String condaEnvPath = chosenFile.getPresentableUrl() + File.separator + "mindspore" + suffix;
+                log.info("Select the conda env address path : {}", condaEnvPath);
+                return condaEnvPath;
             }
         });
         browseButton.addBrowseFolderListener(new TextBrowseFolderListener(
                 new FileChooserDescriptor(true, false, false,
                         false, false, false)) {
             @Override
-            protected
             @NotNull
             @NlsSafe
-            String chosenFileToResultingText(@NotNull VirtualFile chosenFile) {
+            protected String chosenFileToResultingText(@NotNull VirtualFile chosenFile) {
                 condaPath = chosenFile.getPath();
+                log.info("Select the conda exe address path : {}", condaPath);
                 initCondaEnvPath();
                 return super.chosenFileToResultingText(chosenFile);
             }
@@ -399,6 +400,7 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
             if (result == Messages.YES) {
                 Application app = ApplicationManager.getApplication();
                 if (app instanceof ApplicationEx) {
+                    log.info("Restart IDE conda path : {}", path);
                     ((ApplicationEx) app).restart(true);
                 }
             }
@@ -426,6 +428,7 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
             }
         } else {
             condaPath = PyCondaPackageService.getCondaExecutable(null);
+            log.info("First entry acquisition path : {}", condaPath);
         }
         initCondaEnvPath();
     }
