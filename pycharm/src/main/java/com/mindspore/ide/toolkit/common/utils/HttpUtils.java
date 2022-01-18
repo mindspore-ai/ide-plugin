@@ -70,9 +70,11 @@ public class HttpUtils {
 
     public static void download(String url, String filePath, int timeOut) throws IOException {
         File file = new File(filePath);
-        boolean mkDirs = file.getParentFile().mkdirs();
-        if(!mkDirs){
-            return;
+        if (!file.getParentFile().exists()) {
+            boolean mkDirs = file.getParentFile().mkdirs();
+            if (!mkDirs) {
+                return;
+            }
         }
         HttpURLConnection httpUrlConnect = HttpConfigurable.getInstance().openHttpConnection(url);
         httpUrlConnect.setReadTimeout(timeOut);

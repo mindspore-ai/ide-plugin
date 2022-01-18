@@ -16,15 +16,11 @@
 
 package com.mindspore.ide.toolkit.ui.wizard;
 
-import com.intellij.execution.ExecutionException;
 import com.intellij.ide.util.projectWizard.SettingsStep;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ex.ApplicationEx;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
-import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.projectRoots.ProjectJdkTable;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.ui.Messages;
@@ -39,7 +35,6 @@ import com.intellij.util.containers.ContainerUtil;
 import com.jetbrains.python.newProject.PyNewProjectSettings;
 import com.jetbrains.python.packaging.PyCondaPackageService;
 import com.jetbrains.python.sdk.PythonSdkUtil;
-import com.jetbrains.python.sdk.flavors.PyCondaRunKt;
 import com.mindspore.ide.toolkit.common.utils.FileUtils;
 import com.mindspore.ide.toolkit.wizard.MsVersionManager;
 import com.mindspore.ide.toolkit.wizard.MiniCondaService;
@@ -74,7 +69,6 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Arrays;
 
 @Slf4j
 /**
@@ -83,6 +77,14 @@ import java.util.Arrays;
  * @since 1.0
  */
 public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer implements ProjectGeneratorPeer {
+    private static final String WINDOWS_CONDA_PARENT_PATH_NAME = "Scripts";
+
+    private static final String LINUX_CONDA_PARENT_PATH_NAME = "bin";
+
+    private static final String WINDOWS_CONDA_NAME = "conda.exe";
+
+    private static final String LINUX_CONDA_NAME = "conda";
+
     public String getCondaPath() {
         return browseButton.getText();
     }
@@ -138,10 +140,7 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
      * reset browser button
      */
     public void resetBrowserButton() {
-        condaEnvBrowserButton.getButton().setFocusable(true);
-        condaEnvBrowserButton.getTextField().setEditable(true);
-        browseButton.getButton().setFocusable(true);
-        browseButton.getTextField().setEditable(true);
+        buttonListener();
     }
 
     /**
@@ -339,6 +338,10 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
     private void buttonListener() {
         condaEnvBrowserButton.getButton().setEnabled(true);
         browseButton.getButton().setEnabled(true);
+        if (condaEnvBrowserButton.getButton().getActionListeners().length > 0 || browseButton
+                .getButton().getActionListeners().length > 0) {
+            return;
+        }
         condaEnvBrowserButton.addBrowseFolderListener(new TextBrowseFolderListener(new FileChooserDescriptor(false,
                 true, false, false, false, false)) {
             @Override
@@ -374,17 +377,17 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
 
     private void addDownloadButtonListener() {
         downloadMiniCondaButton.addActionListener(actionEvent -> {
-            MyDialog myDialog = new MyDialog();
-            myDialog.setMyDialogListener(path -> {
+            CondaDownloadAndInstallDialog condaDownloadAndInstallDialog = new CondaDownloadAndInstallDialog();
+            condaDownloadAndInstallDialog.setCondaDownloadAndInstallListener(path -> {
                 if (path.isEmpty()) {
                     miniCondaService.dialogNotification(
                             "Please select the conda download and installation path first.");
                 } else {
-                    myDialog.dispose();
+                    condaDownloadAndInstallDialog.dispose();
                     downloadAction(path);
                 }
             });
-            myDialog.setVisible(true);
+            condaDownloadAndInstallDialog.setVisible(true);
         });
     }
 
@@ -410,13 +413,13 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
         if (!path.equals("")) {
             if (OSInfoUtils.isWindows()) {
                 String condaExePath = path + File.separator + "Miniconda3" + File.separator
-                        + "Scripts" + File.separator + "conda.exe";
+                        + WINDOWS_CONDA_PARENT_PATH_NAME + File.separator + WINDOWS_CONDA_NAME;
                 PyCondaPackageService.onCondaEnvCreated(condaExePath);
                 condaPath = condaExePath;
                 log.info("windows condaExePath:{}", condaExePath);
             } else {
                 String condaExePath = path + File.separator + "Miniconda3" + File.separator
-                        + "Scripts" + File.separator + "conda";
+                        + LINUX_CONDA_PARENT_PATH_NAME + File.separator + LINUX_CONDA_NAME;
                 PyCondaPackageService.onCondaEnvCreated(condaExePath);
                 condaPath = condaExePath;
                 log.info("other condaExePath:{}", condaExePath);
@@ -436,32 +439,17 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
             browseButton.getTextField().setText(condaPath);
             File file = new File(condaPath);
             String condaEnvPath = file.getParent();
-            if (condaEnvPath.endsWith("Scripts")) {
+            if (condaEnvPath.endsWith(WINDOWS_CONDA_PARENT_PATH_NAME)
+                    || condaEnvPath.endsWith(LINUX_CONDA_PARENT_PATH_NAME)) {
                 File fileNew = new File(condaEnvPath);
                 condaEnvPath = fileNew.getParent();
             }
             condaEnvPathAll = condaEnvPath + File.separator + "envs" + File.separator;
-            runSyncCondaEnvironments();
             setCondaEnvPath("mindspore");
         } else {
             downloadMiniCondaButton.setVisible(true);
             downloadMiniCondaButton.setEnabled(true);
         }
-    }
-
-    private void runSyncCondaEnvironments() {
-        Task task = new Task.Backgroundable(null, "synchronized conda environment ") {
-            @Override
-            public void run(@NotNull
-                                    ProgressIndicator indicator) {
-                try {
-                    PyCondaRunKt.runConda(condaPath, Arrays.asList("env", "list", "--json"));
-                } catch (ExecutionException exception) {
-                    log.info(exception.getMessage());
-                }
-            }
-        };
-        ProgressManager.getInstance().run(task);
     }
 
     /**
