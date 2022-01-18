@@ -77,6 +77,14 @@ import java.util.Set;
  * @since 1.0
  */
 public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer implements ProjectGeneratorPeer {
+    private static final String WINDOWS_CONDA_PARENT_PATH_NAME = "Scripts";
+
+    private static final String LINUX_CONDA_PARENT_PATH_NAME = "bin";
+
+    private static final String WINDOWS_CONDA_NAME = "conda.exe";
+
+    private static final String LINUX_CONDA_NAME = "conda";
+
     public String getCondaPath() {
         return browseButton.getText();
     }
@@ -369,17 +377,17 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
 
     private void addDownloadButtonListener() {
         downloadMiniCondaButton.addActionListener(actionEvent -> {
-            MyDialog myDialog = new MyDialog();
-            myDialog.setMyDialogListener(path -> {
+            CondaDownloadAndInstallDialog condaDownloadAndInstallDialog = new CondaDownloadAndInstallDialog();
+            condaDownloadAndInstallDialog.setCondaDownloadAndInstallListener(path -> {
                 if (path.isEmpty()) {
                     miniCondaService.dialogNotification(
                             "Please select the conda download and installation path first.");
                 } else {
-                    myDialog.dispose();
+                    condaDownloadAndInstallDialog.dispose();
                     downloadAction(path);
                 }
             });
-            myDialog.setVisible(true);
+            condaDownloadAndInstallDialog.setVisible(true);
         });
     }
 
@@ -405,13 +413,13 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
         if (!path.equals("")) {
             if (OSInfoUtils.isWindows()) {
                 String condaExePath = path + File.separator + "Miniconda3" + File.separator
-                        + "Scripts" + File.separator + "conda.exe";
+                        + WINDOWS_CONDA_PARENT_PATH_NAME + File.separator + WINDOWS_CONDA_NAME;
                 PyCondaPackageService.onCondaEnvCreated(condaExePath);
                 condaPath = condaExePath;
                 log.info("windows condaExePath:{}", condaExePath);
             } else {
                 String condaExePath = path + File.separator + "Miniconda3" + File.separator
-                        + "bin" + File.separator + "conda";
+                        + LINUX_CONDA_PARENT_PATH_NAME + File.separator + LINUX_CONDA_NAME;
                 PyCondaPackageService.onCondaEnvCreated(condaExePath);
                 condaPath = condaExePath;
                 log.info("other condaExePath:{}", condaExePath);
@@ -431,7 +439,8 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
             browseButton.getTextField().setText(condaPath);
             File file = new File(condaPath);
             String condaEnvPath = file.getParent();
-            if (condaEnvPath.endsWith("Scripts")) {
+            if (condaEnvPath.endsWith(WINDOWS_CONDA_PARENT_PATH_NAME)
+                    || condaEnvPath.endsWith(LINUX_CONDA_PARENT_PATH_NAME)) {
                 File fileNew = new File(condaEnvPath);
                 condaEnvPath = fileNew.getParent();
             }
