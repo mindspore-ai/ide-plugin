@@ -40,7 +40,7 @@ import com.mindspore.ide.toolkit.wizard.MsVersionManager;
 import com.mindspore.ide.toolkit.wizard.MiniCondaService;
 import com.mindspore.ide.toolkit.wizard.MSVersionInfo;
 import com.mindspore.ide.toolkit.wizard.OSInfoUtils;
-import com.mindspore.ide.toolkit.wizard.MindSporeServiceImpl;
+import com.mindspore.ide.toolkit.wizard.MindSporeService;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -489,6 +489,6 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
 
     private void initTemplate() {
         templateSelector.addItem("<empty>");
-        MindSporeServiceImpl.getInstance().listTemplates().stream().forEach(templateSelector::addItem);
+        MindSporeService.listTemplates().stream().forEach(templateSelector::addItem);
     }
 }
