@@ -22,6 +22,7 @@ import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.util.NlsSafe;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.SystemProperties;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.JDialog;
@@ -36,11 +37,12 @@ import java.awt.event.ActionListener;
  *
  * @since 1.0
  */
+@Slf4j
 public class CondaDownloadAndInstallDialog extends JDialog {
-    JLabel textJLabel;
-    JLabel textJLabel2;
-    TextFieldWithBrowseButton browseButton;
-    JButton button;
+    JLabel firstLinePromptJLabel;
+    JLabel secondLinePromptJLabel;
+    TextFieldWithBrowseButton pathBrowseButton;
+    JButton installButton;
     JLabel textJLabelNoPath;
     CondaDownloadAndInstallListener condaDownloadAndInstallListener;
 
@@ -66,43 +68,46 @@ public class CondaDownloadAndInstallDialog extends JDialog {
     }
 
     private void init() {
-        textJLabel = new JLabel();
-        textJLabel2 = new JLabel();
-        browseButton = new TextFieldWithBrowseButton();
-        button = new JButton();
+        firstLinePromptJLabel = new JLabel();
+        secondLinePromptJLabel = new JLabel();
+        pathBrowseButton = new TextFieldWithBrowseButton();
+        installButton = new JButton();
         textJLabelNoPath = new JLabel();
-        textJLabel.setBounds(50, 35, 550, 30);
-        textJLabel2.setBounds(50, 70, 550, 30);
-        browseButton.setBounds(50, 105, 350, 30);
-        button.setBounds(450, 105, 100, 35);
+        firstLinePromptJLabel.setBounds(50, 35, 550, 30);
+        secondLinePromptJLabel.setBounds(50, 70, 550, 30);
+        pathBrowseButton.setBounds(50, 105, 350, 30);
+        installButton.setBounds(450, 105, 100, 35);
         textJLabelNoPath.setBounds(50, 150, 400, 20);
-        textJLabel.setText("Select the CONDA installation path. It is recommended to choose an exist directory.");
-        textJLabel2.setText("Miniconda will be installed into a new directory called 'Miniconda3'");
-        button.setText("Install");
+        firstLinePromptJLabel
+                .setText("Select the CONDA installation path. It is recommended to choose an exist directory.");
+        secondLinePromptJLabel.setText("Miniconda will be installed into a new directory called 'Miniconda3'");
+        installButton.setText("Install");
         textJLabelNoPath.setText("Please select the conda download and installation path first");
         textJLabelNoPath.setForeground(Color.red);
         textJLabelNoPath.setVisible(false);
-        browseButton.setText(SystemProperties.getUserHome());
-        this.add(textJLabel);
-        this.add(textJLabel2);
-        this.add(browseButton);
-        this.add(button);
+        pathBrowseButton.setText(SystemProperties.getUserHome());
+        this.add(firstLinePromptJLabel);
+        this.add(secondLinePromptJLabel);
+        this.add(pathBrowseButton);
+        this.add(installButton);
         this.add(textJLabelNoPath);
-        browseButton.addBrowseFolderListener(new TextBrowseFolderListener(new FileChooserDescriptor(false,
+        pathBrowseButton.addBrowseFolderListener(new TextBrowseFolderListener(new FileChooserDescriptor(false,
                 true, false, false, false, false)) {
             @Override
             @NlsSafe
             protected String chosenFileToResultingText(@NotNull VirtualFile chosenFile) {
-                String text = super.chosenFileToResultingText(chosenFile);
-                textJLabelNoPath.setVisible(text.equals(""));
+                String textPath = super.chosenFileToResultingText(chosenFile);
+                log.info("Select the CONDA download installation address path : {}", textPath);
+                textJLabelNoPath.setVisible(textPath.equals(""));
                 return super.chosenFileToResultingText(chosenFile);
             }
         });
-        button.addActionListener(new ActionListener() {
+        installButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                textJLabelNoPath.setVisible(browseButton.getText().equals(""));
-                condaDownloadAndInstallListener.getTextString(browseButton.getText());
+                log.info("Click the CONDA download install button");
+                textJLabelNoPath.setVisible(pathBrowseButton.getText().equals(""));
+                condaDownloadAndInstallListener.getTextString(pathBrowseButton.getText());
             }
         });
     }
