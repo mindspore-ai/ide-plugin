@@ -29,6 +29,7 @@ import com.intellij.openapi.wm.impl.welcomeScreen.AbstractActionWithPanel;
 import com.intellij.platform.DirectoryProjectGenerator;
 import com.jetbrains.python.newProject.PyNewProjectSettings;
 import com.jetbrains.python.newProject.PythonProjectGenerator;
+import com.jetbrains.python.packaging.PyCondaPackageService;
 import com.jetbrains.python.remote.PyProjectSynchronizer;
 import com.mindspore.ide.toolkit.common.beans.NormalInfoConstants;
 import com.mindspore.ide.toolkit.common.dialog.DialogInfo;
@@ -129,6 +130,7 @@ public class MindSporeProjectGenerator extends PythonProjectGenerator<PyNewProje
         if (sdk == null || sdk.getHomePath() == null) {
             return;
         }
+        PyCondaPackageService.onCondaEnvCreated(msSettingProjectPeer.getCondaPath());
         Task.WithResult task = new Task.WithResult<Integer, Exception>(project,
                 "Install MindSpore into conda", false) {
             @Override
