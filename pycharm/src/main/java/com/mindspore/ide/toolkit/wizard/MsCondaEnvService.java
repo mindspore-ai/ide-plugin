@@ -70,7 +70,7 @@ public class MsCondaEnvService {
         sdk.setVersionString(version);
         PythonSdkAdditionalData additionalData = new PythonSdkAdditionalData(CondaEnvSdkFlavor.getInstance());
         sdk.setSdkAdditionalData(additionalData);
-        exitingCondaEnvironment(project, module, sdk);
+        exitingCondaEnvironment(project, module, sdk, true);
         return sdk;
     }
 
@@ -83,9 +83,24 @@ public class MsCondaEnvService {
      * @return sdk
      */
     public static Sdk exitingCondaEnvironment(Project project, Module module, Sdk sdk) {
+        return exitingCondaEnvironment(project, module, sdk, true);
+    }
+
+    /**
+     * get exist conda environment
+     *
+     * @param project current project
+     * @param module current module
+     * @param sdk sdk
+     * @param isNewSdk is new sdk
+     * @return sdk
+     */
+    public static Sdk exitingCondaEnvironment(Project project, Module module, Sdk sdk, boolean isNewSdk) {
         VirtualFileManager.getInstance().asyncRefresh(() -> {
             PySdkUtil.activateVirtualEnv(sdk);
-            ProjectJdkTable.getInstance().addJdk(sdk);
+            if (isNewSdk) {
+                ProjectJdkTable.getInstance().addJdk(sdk);
+            }
             ProjectRootManager.getInstance(project).setProjectSdk(sdk);
             PySdkExtKt.setPythonSdk(project, sdk);
             PySdkExtKt.setPythonSdk(module, sdk);

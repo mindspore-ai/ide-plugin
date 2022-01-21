@@ -327,6 +327,7 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
     public void initCondaMap() {
         List<Sdk> condaList = ContainerUtil.filter(ProjectJdkTable.getInstance().getAllJdks(),
                 PythonSdkUtil::isConda);
+        condaMap.clear();
         condaList.forEach((conda) -> {
             condaMap.put(String.join(", ", new String[]{conda.getName(),
                     conda.getHomePath(), conda.getVersionString()}), conda);
