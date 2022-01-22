@@ -1,12 +1,9 @@
 package com.mindspore.ide.toolkit.common.enums;
 
-
-import com.mindspore.ide.toolkit.common.utils.PropertiesUtil;
-
 public enum EnumNotifyGroup {
-    MIND_SPORE(PropertiesUtil.getProperty("project.ward.name"),
-            PropertiesUtil.getProperty("project.ward.name"),
-            PropertiesUtil.getProperty("project.ward.name"));
+    MIND_SPORE(EnumProperties.MIND_SPORE_PROPERTIES.getProperty("project.ward.name"),
+            EnumProperties.MIND_SPORE_PROPERTIES.getProperty("project.ward.name"),
+            EnumProperties.MIND_SPORE_PROPERTIES.getProperty("project.ward.name"));
 
     private String displayId;
     private String title;

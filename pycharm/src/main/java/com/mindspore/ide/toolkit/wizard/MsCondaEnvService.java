@@ -29,9 +29,9 @@ import com.jetbrains.python.sdk.PythonSdkAdditionalData;
 import com.jetbrains.python.sdk.PySdkUtil;
 import com.jetbrains.python.sdk.PySdkExtKt;
 import com.jetbrains.python.sdk.flavors.CondaEnvSdkFlavor;
-import com.mindspore.ide.toolkit.common.dialog.DialogInfo;
-import com.mindspore.ide.toolkit.common.events.EventCenter;
-import com.mindspore.ide.toolkit.ui.errordialog.CmdDialogInfo;
+import com.mindspore.ide.toolkit.common.dialoginfo.DialogInfo;
+import com.mindspore.ide.toolkit.common.dialoginfo.ExceptionDialogInfo;
+import com.mindspore.ide.toolkit.common.exceptions.MsToolKitException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.Files;
@@ -60,10 +60,13 @@ public class MsCondaEnvService {
         String condaExecutor, String condaEnvPath, String version) {
         String name = Paths.get(condaEnvPath).getFileName().toString();
         if (!Files.exists(Paths.get(condaEnvPath))) {
-            CondaCmdProcessor.executeCondaCmd(null, condaExecutor, Arrays.asList("env", "list", "-q"));
-            DialogInfo dialogInfo = createCondaEnv(condaExecutor, condaEnvPath, version);
-            dialogInfo.setTitle("Create conda environment");
-            EventCenter.INSTANCE.publish(dialogInfo);
+            try {
+                CondaCmdProcessor.executeCondaCmd(null, condaExecutor, Arrays.asList("env", "list", "-q"));
+                DialogInfo dialogInfo = createCondaEnv(condaExecutor, condaEnvPath, version);
+                dialogInfo.showDialog("Create conda environment");
+            } catch (MsToolKitException msToolKitException) {
+                ExceptionDialogInfo.parseException(msToolKitException).showDialog("Create conda environment");
+            }
         }
         ProjectJdkImpl sdk = new ProjectJdkImpl(name, PythonSdkType.getInstance());
         sdk.setHomePath(PythonSdkUtil.getPythonExecutable(condaEnvPath));
@@ -108,11 +111,11 @@ public class MsCondaEnvService {
         return sdk;
     }
 
-    private static DialogInfo createCondaEnv(String condaExecutable, String condaEnvPath, String version) {
+    private static DialogInfo createCondaEnv(String condaExecutable, String condaEnvPath, String version) throws MsToolKitException {
         if (condaExecutable == null || condaEnvPath == null || version == null) {
             log.info("create conda environment failed. condaExecutable: {}, condaEnvPath: {}, version: {}",
                     condaExecutable, condaEnvPath, version);
-            return new CmdDialogInfo.Builder().isSuccessful(false)
+            return new ExceptionDialogInfo.Builder().isSuccessful(false)
                     .description("conda executable or env path or version is null")
                     .output("")
                     .build();

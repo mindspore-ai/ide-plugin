@@ -32,10 +32,10 @@ import com.jetbrains.python.newProject.PythonProjectGenerator;
 import com.jetbrains.python.packaging.PyCondaPackageService;
 import com.jetbrains.python.remote.PyProjectSynchronizer;
 import com.mindspore.ide.toolkit.common.beans.NormalInfoConstants;
-import com.mindspore.ide.toolkit.common.dialog.DialogInfo;
-import com.mindspore.ide.toolkit.common.dialog.DialogInfoListener;
-import com.mindspore.ide.toolkit.common.events.EventCenter;
-import com.mindspore.ide.toolkit.common.utils.PropertiesUtil;
+import com.mindspore.ide.toolkit.common.dialoginfo.DialogInfo;
+import com.mindspore.ide.toolkit.common.dialoginfo.ExceptionDialogInfo;
+import com.mindspore.ide.toolkit.common.enums.EnumProperties;
+import com.mindspore.ide.toolkit.common.exceptions.MsToolKitException;
 import com.mindspore.ide.toolkit.ui.wizard.WizardMsSettingProjectPeer;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nls;
@@ -53,13 +53,9 @@ import javax.swing.*;
 @Slf4j
 public class MindSporeProjectGenerator extends PythonProjectGenerator<PyNewProjectSettings>
         implements CustomStepProjectGenerator<PyNewProjectSettings> {
-    private static final String PROJECT_WIZARD_NAME = PropertiesUtil.getProperty("project.wizard.name");
+    private static final String PROJECT_WIZARD_NAME = EnumProperties.MIND_SPORE_PROPERTIES.getProperty("project.wizard.name");
 
-    private static final String PROJECT_WIZARD_DESCRIPTION = PropertiesUtil.getProperty("project.wizard.description");
-
-    static {
-        EventCenter.INSTANCE.subscribe(new DialogInfoListener());
-    }
+    private static final String PROJECT_WIZARD_DESCRIPTION = EnumProperties.MIND_SPORE_PROPERTIES.getProperty("project.wizard.description");
 
     private WizardMsSettingProjectPeer msSettingProjectPeer;
 
@@ -132,10 +128,15 @@ public class MindSporeProjectGenerator extends PythonProjectGenerator<PyNewProje
             @Override
             public Integer compute(@NotNull ProgressIndicator indicator) {
                 String hardwarePlatform = msSettingProjectPeer.getHardwareValue();
-                DialogInfo dialogInfo = MindSporeService.installMindSporeIntoConda(hardwarePlatform, sdk);
-                dialogInfo.setTitle("Install MindSpore into conda");
-                EventCenter.INSTANCE.publish(dialogInfo);
-                return dialogInfo.isSuccessful() ? 0 : -1;
+                DialogInfo dialogInfo = null;
+                try {
+                    dialogInfo = MindSporeService.installMindSporeIntoConda(hardwarePlatform, sdk);
+                    dialogInfo.showDialog("Install MindSpore into conda");
+                    return dialogInfo.isSuccessful() ? 0 : -1;
+                } catch (MsToolKitException msToolKitException) {
+                    ExceptionDialogInfo.parseException(msToolKitException).showDialog("Install MindSpore into conda");
+                    return -1;
+                }
             }
         };
         int result = (int) ProgressManager.getInstance().run(task);

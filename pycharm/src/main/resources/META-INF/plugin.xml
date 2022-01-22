@@ -1,4 +1,4 @@
-<idea-plugin>
+<idea-plugin require-restart="true">
     <id>com.mindspore</id>
     <name>MindSpore Dev ToolKit</name>
     <vendor>MindSpore</vendor>
@@ -11,9 +11,9 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
-<!--        <completion.contributor id="SmartCompletion" language="any"-->
-<!--                                implementationClass="com.mindspore.ide.toolkit.services.complete.SmartCompletion"-->
-<!--                                order="first" />-->
+        <completion.contributor id="SmartCompletion" language="any"
+                                implementationClass="com.mindspore.ide.toolkit.services.complete.SmartCompletion"
+                                order="first" />
         <toolWindow id="MindSpore" factoryClass="com.mindspore.ide.toolkit.ui.search.BrowserWindowFactory" canCloseContents="false" anchor="right" icon="MsIcons.MS_ICON_16PXWP"/>
         <searchEverywhereContributor implementation="com.mindspore.ide.toolkit.search.MindSporeSearchEverywhereContributor$Factory"/>
         <directoryProjectGenerator implementation="com.mindspore.ide.toolkit.wizard.MindSporeProjectGenerator" />

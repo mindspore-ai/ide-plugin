@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mindspore.ide.toolkit.common.dialog;
+package com.mindspore.ide.toolkit.common.dialoginfo;
 
 import net.engio.mbassy.listener.Handler;
 import net.engio.mbassy.listener.Listener;

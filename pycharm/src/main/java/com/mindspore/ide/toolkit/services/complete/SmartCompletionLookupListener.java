@@ -9,6 +9,11 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * SmartCompletionLookupListener
+ *
+ * @since 2022-1-19
+ */
 @Slf4j
 @Data
 public class SmartCompletionLookupListener implements LookupListener {

@@ -19,19 +19,19 @@ package com.mindspore.ide.toolkit.wizard;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.process.ProcessOutput;
 import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.webcore.packaging.PackageManagementService;
-import com.jetbrains.python.packaging.ui.PyPackageManagementService;
 import com.jetbrains.python.sdk.flavors.PyCondaRunKt;
-import com.mindspore.ide.toolkit.common.dialog.DialogInfo;
-import com.mindspore.ide.toolkit.ui.errordialog.CmdDialogInfo;
+import com.mindspore.ide.toolkit.common.dialoginfo.DialogInfo;
+import com.mindspore.ide.toolkit.common.dialoginfo.ExceptionDialogInfo;
+import com.mindspore.ide.toolkit.common.enums.EnumError;
+import com.mindspore.ide.toolkit.common.exceptions.MsToolKitException;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
 public class CondaCmdProcessor {
+    private CondaCmdProcessor() {}
+
     /**
      * execute conda cmd
      *
@@ -40,43 +40,34 @@ public class CondaCmdProcessor {
      * @param cmdList cmd info
      * @return dialog
      */
-    public static DialogInfo executeCondaCmd(Sdk sdk, String condaPath, List<String> cmdList) {
+    public static DialogInfo executeCondaCmd(Sdk sdk, String condaPath, List<String> cmdList) throws MsToolKitException {
+        if (sdk == null && (condaPath == null || condaPath.equals(""))) {
+            throw new MsToolKitException(EnumError.CONDA_EXECUTABLE_NOT_SPECIFIED);
+        }
         try {
             String command = String.join(" ", cmdList);
             final ProcessOutput result = sdk == null ? PyCondaRunKt.runConda(condaPath, cmdList)
                     : PyCondaRunKt.runConda(sdk, cmdList);
-            if (log.isDebugEnabled()) {
-                log.info("execute conda cmd {}{}." + System.lineSeparator() + "------exitCode: {}"
-                                + System.lineSeparator() + "------stdout: {}"
-                                + System.lineSeparator() + "------stderr: {}",
-                        command,
+            if (log.isInfoEnabled()) {
+                log.info("execute conda command {}." + System.lineSeparator()
+                                + "------command: {}" + System.lineSeparator()
+                                + "------exitCode: {}" + System.lineSeparator()
+                                + "------stdout: {}" + System.lineSeparator()
+                                + "------stderr: {}",
                         result.getExitCode() == 0 ? "succeed" : "failed",
-                        result.getExitCode(), result.getStdout(), result.getStderr());
+                        command,
+                        result.getExitCode(),
+                        result.getStdout(),
+                        result.getStderr());
             }
-            return parseProcessOutput(result, command);
+            return new ExceptionDialogInfo.Builder()
+                    .isSuccessful(result.getExitCode() == 0)
+                    .command(command)
+                    .output(result.getStdout())
+                    .build();
         } catch (ExecutionException executionException) {
-            log.error("execute conda cmd failed.", executionException);
-            return parseExecutionException(executionException, sdk);
+            log.warn("execute conda cmd failed.", executionException);
+            return ExceptionDialogInfo.parseException(executionException, sdk);
         }
-    }
-
-    private static DialogInfo parseExecutionException(ExecutionException executionException, Sdk sdk) {
-        PackageManagementService.ErrorDescription errorDescription =
-                PyPackageManagementService.toErrorDescription(Arrays.asList(executionException), sdk);
-
-        return new CmdDialogInfo.Builder().isSuccessful(false)
-                .description(errorDescription.getMessage())
-                .command(errorDescription.getCommand())
-                .output(errorDescription.getOutput())
-                .solution(errorDescription.getSolution() == null
-                        ? "Please check your network." : errorDescription.getSolution())
-                .build();
-    }
-
-    private static DialogInfo parseProcessOutput(@NotNull ProcessOutput processOutput, String command) {
-        return new CmdDialogInfo.Builder().isSuccessful(processOutput.getExitCode() == 0)
-                .command(command)
-                .output(processOutput.getStdout())
-                .build();
     }
 }
