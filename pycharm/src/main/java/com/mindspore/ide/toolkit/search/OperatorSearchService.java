@@ -55,6 +55,6 @@ public enum OperatorSearchService {
      */
     public Map<String, String> search(String inputString, int count) {
         List<String> topSearch = root.search(inputString, count);
-        return mdFile2Map.assemble(topSearch);
+        return mdFile2Map.assemble(topSearch, inputString);
     }
 }
