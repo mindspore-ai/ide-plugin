@@ -1,33 +1,33 @@
 package com.mindspore.ide.toolkit.search;
 
+import com.mindspore.ide.toolkit.search.entity.OpenMindSporeActionModel;
+import com.mindspore.ide.toolkit.ui.search.BrowserWindowManager;
 import com.mindspore.ide.toolkit.common.config.GlobalConfig;
 import com.mindspore.ide.toolkit.common.events.EventCenter;
 import com.mindspore.ide.toolkit.search.entity.DocumentSearch;
 import com.mindspore.ide.toolkit.search.entity.DocumentValue;
-import com.mindspore.ide.toolkit.search.entity.OpenMindSporeActionModel;
-import com.mindspore.ide.toolkit.ui.search.BrowserWindowManager;
+import com.intellij.ide.actions.searcheverywhere.SearchEverywhereContributorFactory;
+import com.intellij.ide.actions.GotoActionAction;
+import com.intellij.ide.actions.searcheverywhere.SearchEverywhereContributor;
+import com.intellij.openapi.actionSystem.ActionManager;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
-import com.intellij.ide.actions.searcheverywhere.SearchEverywhereContributorFactory;
-import com.intellij.ide.actions.GotoActionAction;
-import com.intellij.ide.actions.searcheverywhere.SearchEverywhereContributor;
-import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.util.Processor;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nls;
 
-import java.lang.ref.WeakReference;
-import java.util.Map;
 import javax.swing.ListCellRenderer;
 import javax.swing.DefaultListCellRenderer;
 import java.awt.Component;
+import java.lang.ref.WeakReference;
+import java.util.Map;
 
 public class MindSporeSearchEverywhereContributor implements SearchEverywhereContributor<DocumentSearch> {
 
@@ -112,7 +112,11 @@ public class MindSporeSearchEverywhereContributor implements SearchEverywhereCon
         if (selected.getValue() instanceof AnAction) {
             GotoActionAction.openOptionOrPerformAction(selected.getValue(), searchText, mindSporeProject,
                     mindSporeContextComponent.get());
+            BrowserWindowManager.getBrowserWindow(mindSporeProject).loadUrl(GlobalConfig.get().getToolWindowUrl());
         } else if (selected.getValue() instanceof Map.Entry) {
+            AnAction anAction = ActionManager.getInstance().getAction("ActivateMindSporeToolWindow");
+            GotoActionAction.openOptionOrPerformAction(anAction, searchText, mindSporeProject,
+                    mindSporeContextComponent.get());
             Map.Entry<String, String> map = (Map.Entry<String, String>) selected.getValue();
             BrowserWindowManager.getBrowserWindow(mindSporeProject).loadUrl(map.getValue());
         } else if (selected.getValue() instanceof DocumentValue) {
