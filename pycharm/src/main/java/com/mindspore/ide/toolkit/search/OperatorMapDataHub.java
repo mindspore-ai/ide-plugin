@@ -22,7 +22,6 @@ import com.vladsch.flexmark.ast.SoftLineBreak;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.data.MutableDataSet;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -36,7 +35,6 @@ import java.util.Set;
  *
  * @since 1.0
  */
-@Slf4j
 public enum OperatorMapDataHub implements SearchEveryWhereDataHub<String> {
     INSTANCE;
 
@@ -52,11 +50,11 @@ public enum OperatorMapDataHub implements SearchEveryWhereDataHub<String> {
     }
 
     @Override
-    public Map<String, String> assemble(List<String> topOperators) {
+    public Map<String, String> assemble(List<String> topOperators, String input) {
         Map<String, String> result = new LinkedHashMap<>();
         for (String operatorAlias : topOperators) {
             String operator = nodeMap.get(operatorAlias);
-            if (operator.endsWith(operatorAlias)) {
+            if (!operator.contains(input)) {
                 continue;
             }
             if (operatorMap.containsKey(operator)) {

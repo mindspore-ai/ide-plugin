@@ -40,7 +40,7 @@ public interface SearchEveryWhereDataHub<T> {
      * @param rawList raw search result from index
      * @return result map to show
      */
-    Map<String, String> assemble(List<T> rawList);
+    Map<String, String> assemble(List<T> rawList, String search);
 
     /**
      * get operator data hub by this interface
