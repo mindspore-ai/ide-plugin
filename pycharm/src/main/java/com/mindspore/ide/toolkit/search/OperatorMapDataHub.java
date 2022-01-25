@@ -45,8 +45,8 @@ public enum OperatorMapDataHub implements SearchEveryWhereDataHub<String> {
     OperatorMapDataHub() {
         mdStringList(MdPathString.PYTORCH_MD_STR);
         mdStringList(MdPathString.TENSORFLOW_MD_STR);
-        operatorMap.entrySet().forEach(entry -> suffixStringSplit(entry.getKey()));
-        linkMap.entrySet().forEach(entry -> suffixStringSplit(entry.getKey()));
+        operatorMap.entrySet().forEach(entry -> suffixStringSplit(entry.getKey(), true));
+        linkMap.entrySet().forEach(entry -> suffixStringSplit(entry.getKey(), false));
     }
 
     @Override
@@ -54,7 +54,7 @@ public enum OperatorMapDataHub implements SearchEveryWhereDataHub<String> {
         Map<String, String> result = new LinkedHashMap<>();
         for (String operatorAlias : topOperators) {
             String operator = nodeMap.get(operatorAlias);
-            if (!operator.contains(input)) {
+            if (!operator.toLowerCase(Locale.ENGLISH).contains(input.toLowerCase(Locale.ENGLISH))) {
                 continue;
             }
             if (operatorMap.containsKey(operator)) {
@@ -128,15 +128,15 @@ public enum OperatorMapDataHub implements SearchEveryWhereDataHub<String> {
         mapList.clear();
     }
 
-    private void suffixStringSplit(String key) {
+    private void suffixStringSplit(String key, boolean isAllowDuplicate) {
         String[] keyNode = key.toLowerCase(Locale.ENGLISH).split("\\.");
         StringBuffer sb = new StringBuffer();
         for (int i = keyNode.length - 1; i >= 0; i--) {
             sb.insert(0, keyNode[i]);
-            if (!nodeMap.containsKey(sb.toString())) {
-                nodeMap.putIfAbsent(sb.toString(), key);
-            } else {
+            if (isAllowDuplicate && nodeMap.containsKey(sb.toString())) {
                 nodeMap.putIfAbsent(sb + "." + keyNode[0], key);
+            } else {
+                nodeMap.putIfAbsent(sb.toString(), key);
             }
             sb.insert(0, ".");
         }
