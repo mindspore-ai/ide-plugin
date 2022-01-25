@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.TreeMap;
 import java.util.Locale;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
@@ -96,7 +97,7 @@ public class TrieNode {
      * @param amount amount
      * @return list
      */
-    public ArrayList<String> search(String input, int amount) {
+    public List<String> search(String input, int amount) {
         String search = input.toLowerCase(Locale.ENGLISH);
         Optional<TrieNode> nextNode;
         if (lastWord != null && search.startsWith(lastWord)) {
@@ -142,7 +143,7 @@ public class TrieNode {
      * @param amount amount
      * @return list
      */
-    public ArrayList<String> dfs(int amount) {
+    public List<String> dfs(int amount) {
         ArrayList<String> result = new ArrayList<>();
         int count = amount;
         LinkedList<TrieNode> nodes = new LinkedList<>();

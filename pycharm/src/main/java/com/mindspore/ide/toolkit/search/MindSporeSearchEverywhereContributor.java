@@ -90,7 +90,7 @@ public class MindSporeSearchEverywhereContributor implements SearchEverywhereCon
         }
 
         //不调用搜索接口
-        Map<String, String> model = OperatorSearch.INSTANCE.search(pattern, 10);
+        Map<String, String> model = OperatorSearchService.INSTANCE.search(pattern, 10);
         if (model != null) {
             for (Map.Entry<String, String> entry : model.entrySet()) {
                 DocumentSearch search = new DocumentSearch(entry, pattern);
