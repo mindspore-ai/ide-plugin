@@ -80,26 +80,7 @@ public class ExceptionDialogInfo extends DialogInfo {
             return;
         }
         ApplicationManager.getApplication().invokeLater(() -> {
-            String defaultTitle = "Something wrong";
-            String title = getTitle();
-            StringBuilder messageSb = new StringBuilder();
-
-            if (title == null || title.equals("")) {
-                messageSb.append(defaultTitle);
-                title = defaultTitle;
-            } else {
-                messageSb.append(title).append(" failed.");
-            }
-            if (solution != null && !solution.equals("")) {
-                messageSb.append(System.lineSeparator()).append(solution);
-            }
-            messageSb.append(System.lineSeparator()).append(System.lineSeparator())
-                    .append("Do you want to check error message?");
-
-            int choiceCode = Messages.showYesNoDialog(messageSb.toString(), title, Messages.getErrorIcon());
-            if (choiceCode == 0) {
-                new ExceptionDialog(this).show();
-            }
+            showDialogSync();
         });
     }
 
@@ -225,6 +206,12 @@ public class ExceptionDialogInfo extends DialogInfo {
     }
 
     private static ExceptionDialogInfo parsePyExecutionException(Exception exception, Object... extraArgs) {
+        if (!(exception instanceof PyExecutionException)) {
+            return new ExceptionDialogInfo.Builder()
+                    .description("Unknown exception")
+                    .build();
+        }
+
         Sdk sdk = null;
         if (extraArgs != null && extraArgs.length == 1) {
             Object obj = extraArgs[0];
@@ -309,6 +296,29 @@ public class ExceptionDialogInfo extends DialogInfo {
             }
         } else {
             return null;
+        }
+    }
+
+    private void showDialogSync() {
+        String defaultTitle = "Something wrong";
+        String title = getTitle();
+        StringBuilder messageSb = new StringBuilder();
+
+        if (title == null || title.equals("")) {
+            messageSb.append(defaultTitle);
+            title = defaultTitle;
+        } else {
+            messageSb.append(title).append(" failed.");
+        }
+        if (solution != null && !solution.equals("")) {
+            messageSb.append(System.lineSeparator()).append(solution);
+        }
+        messageSb.append(System.lineSeparator()).append(System.lineSeparator())
+                .append("Do you want to check error message?");
+
+        int choiceCode = Messages.showYesNoDialog(messageSb.toString(), title, Messages.getErrorIcon());
+        if (choiceCode == Messages.YES) {
+            new ExceptionDialog(this).show();
         }
     }
 }
