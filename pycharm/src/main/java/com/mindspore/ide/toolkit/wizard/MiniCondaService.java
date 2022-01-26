@@ -6,6 +6,7 @@ import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.mindspore.ide.toolkit.common.utils.HttpUtils;
+import com.mindspore.ide.toolkit.common.utils.NotificationUtils;
 import com.mindspore.ide.toolkit.common.utils.RunExecUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -39,12 +40,18 @@ public class MiniCondaService {
         try {
             String exePath = path + File.separator + "Miniconda3-latest-Windows-x86_64.exe";
             HttpUtils.download("https://repo.anaconda.com/miniconda/Miniconda3-py39_4.10.3-Windows-x86_64.exe", exePath, 30000);
-            dialogNotification("download MiniConda success");
+            NotificationUtils.notify(NotificationUtils.NotifyGroup.NEW_PROJECT,
+                    NotificationType.INFORMATION,
+                    "download MiniConda success");
             installWindowPackage(exePath, path);
-            dialogNotification("install MiniConda success");
+            NotificationUtils.notify(NotificationUtils.NotifyGroup.NEW_PROJECT,
+                    NotificationType.INFORMATION,
+                    "install MiniConda success");
             return true;
         } catch (IOException e) {
-            dialogNotification("Miniconda download installation failed");
+            NotificationUtils.notify(NotificationUtils.NotifyGroup.NEW_PROJECT,
+                    NotificationType.ERROR,
+                    "Miniconda download installation failed");
             log.info(e.getMessage());
             return false;
         }
@@ -62,12 +69,18 @@ public class MiniCondaService {
         try {
             String shPath = path + File.separator + "Miniconda3-latest-Linux-x86_64.sh";
             HttpUtils.download("https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh", shPath, 30000);
-            dialogNotification("download MiniConda success");
+            NotificationUtils.notify(NotificationUtils.NotifyGroup.NEW_PROJECT,
+                    NotificationType.INFORMATION,
+                    "download MiniConda success");
             installLinuxPackage(shPath, path);
-            dialogNotification("install MiniConda success");
+            NotificationUtils.notify(NotificationUtils.NotifyGroup.NEW_PROJECT,
+                    NotificationType.INFORMATION,
+                    "install MiniConda success");
             return true;
         } catch (IOException e) {
-            dialogNotification("Miniconda download installation failed");
+            NotificationUtils.notify(NotificationUtils.NotifyGroup.NEW_PROJECT,
+                    NotificationType.ERROR,
+                    "Miniconda download installation failed");
             log.info(e.getMessage());
             return false;
         }
@@ -86,12 +99,18 @@ public class MiniCondaService {
         try {
             String shPath = path + File.separator + "Miniconda3-latest-MacOSX-x86_64.sh";
             HttpUtils.download("https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh", shPath, 30000);
-            dialogNotification("download MiniConda success");
+            NotificationUtils.notify(NotificationUtils.NotifyGroup.NEW_PROJECT,
+                    NotificationType.INFORMATION,
+                    "download MiniConda success");
             installMacOSPackage(shPath, path);
-            dialogNotification("install MiniConda success");
+            NotificationUtils.notify(NotificationUtils.NotifyGroup.NEW_PROJECT,
+                    NotificationType.INFORMATION,
+                    "install MiniConda success");
             return true;
         } catch (IOException e) {
-            dialogNotification("Miniconda download installation failed");
+            NotificationUtils.notify(NotificationUtils.NotifyGroup.NEW_PROJECT,
+                    NotificationType.ERROR,
+                    "Miniconda download installation failed");
             log.info(e.getMessage());
             return false;
         }
@@ -104,11 +123,5 @@ public class MiniCondaService {
         String cmdReturnInfo = RunExecUtils.
                 runExec(Arrays.asList("bash", shPath, "-b", "-p", installPath));
         return cmdReturnInfo;
-    }
-
-    public void dialogNotification(String content) {
-        NotificationGroup notify = new NotificationGroup("com.mindspore.ide.toolkit", NotificationDisplayType.BALLOON, true);
-        Notification notification = notify.createNotification(content, NotificationType.INFORMATION);
-        Notifications.Bus.notify(notification);
     }
 }

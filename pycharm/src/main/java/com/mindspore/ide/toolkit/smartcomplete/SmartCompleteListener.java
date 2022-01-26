@@ -11,7 +11,7 @@ import net.engio.mbassy.listener.References;
 public class SmartCompleteListener {
     @Handler(delivery = Invoke.Asynchronously)
     public void ideStart(ProjectEvents.AppFrameCreated init) {
-        ModelManager.INSTANCE.initSmartCompleteModel();
+        ModelManager.INSTANCE.startCompleteModel();
     }
 
     @Handler(delivery = Invoke.Asynchronously)

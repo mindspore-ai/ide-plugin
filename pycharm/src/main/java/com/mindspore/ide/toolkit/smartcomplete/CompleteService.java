@@ -9,23 +9,32 @@ import com.mindspore.ide.toolkit.protomessage.CompleteReply;
 import com.mindspore.ide.toolkit.protomessage.ResultEntries;
 import com.mindspore.ide.toolkit.protomessage.ResultEntry;
 import com.mindspore.ide.toolkit.smartcomplete.grpc.CompletionException;
-import com.mindspore.ide.toolkit.smartcomplete.grpc.SCAIPublicUtils;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.swing.*;
+import javax.swing.Icon;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * CompleteService
+ *
+ * @since 2022-1-19
+ */
 @Slf4j
 public enum CompleteService {
     COMPLETE;
 
     private final Icon icon = MsIcons.MS_ICON_16PX;
 
+    /**
+     * predict code
+     *
+     * @param codeRecommendStart code complete event
+     */
     public void onPredicting(SmartCompleteEvents.CodeRecommendStart codeRecommendStart) {
         String formattedContent = getContentBeforeCursor(codeRecommendStart);
-        log.info("formattedContent:{}", formattedContent);
+        log.info("Data send to model is: {}", formattedContent);
         List<String> backMsgList = getBackMsgFormModelToGrpc(formattedContent, codeRecommendStart.getPrefix());
         List<LookupElement> lookupElements = getListLookUpElement(backMsgList);
         codeRecommendStart.getPredictResult().complete(lookupElements);
@@ -44,17 +53,20 @@ public enum CompleteService {
     private List<String> getBackMsgFormModelToGrpc(String content, String prefix) {
         List<String> predictList = new ArrayList<>();
         try {
-            Optional<CompleteReply> completeReply = SCAIPublicUtils.predictNextToken(content, prefix);
+            Optional<CompleteReply> completeReply = ModelManager.INSTANCE.communicateWithModel(content, prefix);
             if (completeReply.isPresent()) {
                 ResultEntries resultEntries = completeReply.get().getResults();
+                log.info("Has data from model. Data count: {}", resultEntries.getResultEntryCount());
                 for (int index = 0; index < resultEntries.getResultEntryCount(); index++) {
                     ResultEntry entry = resultEntries.getResultEntry(index);
                     predictList.add(entry.getNewPrefix().trim());
-                    log.info("{}:{}", entry.getNewPrefix().trim(), entry.getDetails());
+                    log.info("  Data from model is: {}:{}", entry.getNewPrefix().trim(), entry.getDetails());
                 }
+            } else {
+                log.info("No data from model.");
             }
         } catch (CompletionException completionException) {
-            log.info(completionException.getMessage());
+            log.error("Get message from completion model failed.", completionException);
         }
         return predictList;
     }

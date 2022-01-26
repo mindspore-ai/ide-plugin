@@ -16,9 +16,14 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+/**
+ * SmartCompletion
+ *
+ * @since 2022-1-19
+ */
 @Slf4j
 public class SmartCompletion extends CompletionContributor {
-    private static final long LONGEST_WAITING_TIME = 500;
+    private static final long LONGEST_WAITING_TIME = 500L;
 
     private final SmartCompletionLookupListener smartCompletionLookupListener = new SmartCompletionLookupListener();
 

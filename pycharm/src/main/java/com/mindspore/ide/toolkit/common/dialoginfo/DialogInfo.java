@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package com.mindspore.ide.toolkit.common.dialog;
+package com.mindspore.ide.toolkit.common.dialoginfo;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * dialog info show some thing
+ * 弹窗中需要展示的信息。
+ * 该类作为所有类型弹窗展示信息的父类，充当策略模式的对外超类。
+ * 在需要调出弹窗的时候，只要调用{@link DialogInfo#showDialog}方法即可
  *
  * @since 1.0
  */
@@ -35,4 +37,9 @@ public abstract class DialogInfo {
      * show dialog
      */
     public abstract void showDialog();
+
+    public void showDialog(String title) {
+        this.title = title;
+        showDialog();
+    }
 }

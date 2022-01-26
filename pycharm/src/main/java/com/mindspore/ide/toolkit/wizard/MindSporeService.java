@@ -19,13 +19,12 @@ package com.mindspore.ide.toolkit.wizard;
 import com.google.gson.reflect.TypeToken;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.projectRoots.Sdk;
-import com.mindspore.ide.toolkit.common.dialog.DialogInfo;
+import com.mindspore.ide.toolkit.common.dialoginfo.DialogInfo;
 import com.mindspore.ide.toolkit.common.enums.EnumHardWarePlatform;
-import com.mindspore.ide.toolkit.common.enums.EnumNotifyGroup;
+import com.mindspore.ide.toolkit.common.enums.EnumProperties;
+import com.mindspore.ide.toolkit.common.exceptions.MsToolKitException;
 import com.mindspore.ide.toolkit.common.utils.*;
-import com.mindspore.ide.toolkit.services.notify.EventNotifyServiceProxy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -33,13 +32,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
+@Slf4j
 public class MindSporeService {
-    private static final Logger LOG = LoggerFactory.getLogger(MindSporeService.class);
-    private static final String TEMP_PATH = PropertiesUtil.getProperty("mindspore.template.zip.path");
-    private static final String TEMP_PATH_ENTRIES = PropertiesUtil.getProperty("mindspore.template.zip.path.entries");
-    private static final String TEMP_PATH_STRUCTURE = PropertiesUtil.getProperty("mindspore.path.structure");
-
-    private static EventNotifyServiceProxy eventNotifyServiceProxy = EventNotifyServiceProxy.INSTANCE;
+    private static final String TEMP_PATH = EnumProperties.MIND_SPORE_PROPERTIES.getProperty("mindspore.template.zip.path");
+    private static final String TEMP_PATH_ENTRIES = EnumProperties.MIND_SPORE_PROPERTIES.getProperty("mindspore.template.zip.path.entries");
+    private static final String TEMP_PATH_STRUCTURE = EnumProperties.MIND_SPORE_PROPERTIES.getProperty("mindspore.path.structure");
 
     public static Boolean createMindSporeTemplate(String targetFilePath, String fileName) {
         if (fileName.isEmpty() || fileName.equals("<empty>")) {
@@ -49,15 +46,16 @@ public class MindSporeService {
             ZipCompressingUtils.unzipFile(TEMP_PATH + fileName + ".zip", targetFilePath);
             return true;
         } catch (FileNotFoundException exception) {
-            eventNotifyServiceProxy.eventNotify(EnumNotifyGroup.MIND_SPORE,
-                    "Unable to create MindSpore template",
-                    "zip file not find, unable to create MindSpore template",
-                    exception, NotificationType.ERROR);
+            NotificationUtils.notify(NotificationUtils.NotifyGroup.NEW_PROJECT,
+                    NotificationType.ERROR,
+                    "Unable to create MindSpore template.");
+            log.error("zip file not find, unable to create MindSpore template", exception);
             return false;
         } catch (IOException exception) {
-            eventNotifyServiceProxy.eventNotify(EnumNotifyGroup.MIND_SPORE,
-                    "Unable to create MindSpore template",
-                    "IOException", exception, NotificationType.ERROR);
+            NotificationUtils.notify(NotificationUtils.NotifyGroup.NEW_PROJECT,
+                    NotificationType.ERROR,
+                    "Unable to create MindSpore template.");
+            log.error("Unable to create MindSpore template.", exception);
             return false;
         }
     }
@@ -91,7 +89,7 @@ public class MindSporeService {
         return true;
     }
 
-    public static DialogInfo installMindSporeIntoConda(String hardwarePlatform, Sdk sdk) {
+    public static DialogInfo installMindSporeIntoConda(String hardwarePlatform, Sdk sdk) throws MsToolKitException {
         List<String> cmdList;
         //conda这里需要完善获取命令的方法
         if (hardwarePlatform.contains(EnumHardWarePlatform.CPU.getCode())) {

@@ -33,7 +33,7 @@ public class PathUtils {
     }
 
     public static void initResourceFolder() {
-        File file = FileUtils.getFile(getInstallRootPath());
+        File file = FileUtils.getFile(getDefaultResourcePath());
         if (!file.exists()) {
             if (file.mkdir()) {
                 FileUtils.hideFile(file);

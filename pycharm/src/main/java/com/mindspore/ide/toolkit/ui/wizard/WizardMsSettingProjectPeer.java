@@ -17,6 +17,7 @@
 package com.mindspore.ide.toolkit.ui.wizard;
 
 import com.intellij.ide.util.projectWizard.SettingsStep;
+import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ex.ApplicationEx;
@@ -36,6 +37,7 @@ import com.jetbrains.python.newProject.PyNewProjectSettings;
 import com.jetbrains.python.packaging.PyCondaPackageService;
 import com.jetbrains.python.sdk.PythonSdkUtil;
 import com.mindspore.ide.toolkit.common.utils.FileUtils;
+import com.mindspore.ide.toolkit.common.utils.NotificationUtils;
 import com.mindspore.ide.toolkit.wizard.MsVersionManager;
 import com.mindspore.ide.toolkit.wizard.MiniCondaService;
 import com.mindspore.ide.toolkit.wizard.MSVersionInfo;
@@ -382,7 +384,8 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
             CondaDownloadAndInstallDialog condaDownloadAndInstallDialog = new CondaDownloadAndInstallDialog();
             condaDownloadAndInstallDialog.setCondaDownloadAndInstallListener(path -> {
                 if (path.isEmpty()) {
-                    miniCondaService.dialogNotification(
+                    NotificationUtils.notify(NotificationUtils.NotifyGroup.NEW_PROJECT,
+                            NotificationType.INFORMATION,
                             "Please select the conda download and installation path first.");
                 } else {
                     condaDownloadAndInstallDialog.dispose();
