@@ -17,6 +17,7 @@
 package com.mindspore.ide.toolkit.ui.wizard;
 
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
+import com.mindspore.ide.toolkit.common.utils.OSInfoUtils;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import javax.swing.*;
@@ -24,112 +25,38 @@ import javax.swing.event.ChangeEvent;
 
 @SuppressFBWarnings({"EI_EXPOSE_REP", "UWF_UNWRITTEN_FIELD"})
 public abstract class AbstractMsSettingProjectPeer {
-    private JPanel mainPanel;
-    private JLabel hardwareLabel;
-    private JComboBox hardwareSelector;
-    private JCheckBox templateCheckBox;
-    private JLabel pyVersionWarnLabel;
-    private JLabel templateLabel;
-    private JLabel osLabel;
-    private TextFieldWithBrowseButton browseButton;
-    private JButton downloadMiniCondaButton;
-    private JLabel textJLabel;
-    private TextFieldWithBrowseButton condaEnvBrowserButton;
-    private JRadioButton newEnvironmentUsingRadioButton;
-    private JRadioButton existingEnvironmentRadioButton;
-    private JComboBox existEnv;
-    private JComboBox pythonVersionCombo;
-    private JLabel pythonVersion;
-    private JComboBox templateSelector;
-    private JLabel pipLabel;
-    private JLabel osName;
+    protected JPanel mainPanel;
+    protected JComboBox hardwareSelector;
+    protected TextFieldWithBrowseButton condaExecutableTextField;
+    protected JButton downloadMiniCondaButton;
+    protected TextFieldWithBrowseButton condaEnvTextField;
+    protected JRadioButton newEnvironmentUsingRadioButton;
+    protected JRadioButton existingEnvironmentRadioButton;
+    protected JComboBox existEnvSelector;
+    protected JComboBox pythonVersionSelector;
+    protected JComboBox templateSelector;
+    protected JLabel osName;
+    protected ButtonGroup envButtons;
 
     public AbstractMsSettingProjectPeer() {
         newEnvironmentUsingRadioButton.addChangeListener(this::changeEnvState);
         existingEnvironmentRadioButton.addChangeListener(this::changeEnvState);
+        setOsToLabel();
     }
 
     private void changeEnvState(ChangeEvent actionEvent){
-        condaEnvBrowserButton.setEnabled(newEnvironmentUsingRadioButton.isSelected());
-        pythonVersionCombo.setEnabled(newEnvironmentUsingRadioButton.isSelected());
-        existEnv.setEnabled(existingEnvironmentRadioButton.isSelected());
-    }
-
-    public ButtonGroup getEnvButtons() {
-        return envButtons;
-    }
-
-    private ButtonGroup envButtons;
-
-    public JComboBox getExistEnv() {
-        return existEnv;
+        condaEnvTextField.setEnabled(newEnvironmentUsingRadioButton.isSelected());
+        pythonVersionSelector.setEnabled(newEnvironmentUsingRadioButton.isSelected());
+        existEnvSelector.setEnabled(existingEnvironmentRadioButton.isSelected());
     }
 
     public abstract void addItemsToHardwareSelector();
-
-    public JRadioButton getNewEnvironmentUsingRadioButton() {
-        return newEnvironmentUsingRadioButton;
-    }
-
-    public JRadioButton getExistingEnvironmentRadioButton() {
-        return existingEnvironmentRadioButton;
-    }
-
-    public abstract void addItemsToOsSelector(String parSelectStr);
 
     public JPanel getMainPanel() {
         return mainPanel;
     }
 
-    public JComboBox getHardwareSelector() {
-        return hardwareSelector;
-    }
-
-    public JCheckBox getTemplateCheckBox() {
-        return templateCheckBox;
-    }
-
-    public JLabel getPyVersionWarnLabel() {
-        return pyVersionWarnLabel;
-    }
-
-    public JLabel getHardwareLabel() {
-        return hardwareLabel;
-    }
-
-    public JLabel getTemplateLabel() {
-        return templateLabel;
-    }
-
-    public JLabel getOsLabel() {
-        return osLabel;
-    }
-
-    public JButton getDownloadMiniCondaButton() {
-        return downloadMiniCondaButton;
-    }
-
-    public TextFieldWithBrowseButton getBrowseButton() {
-        return browseButton;
-    }
-
-    public JLabel getTextJLabel() {
-        return textJLabel;
-    }
-
-    public TextFieldWithBrowseButton getCondaEnvBrowserButton() {
-        return condaEnvBrowserButton;
-    }
-
-    public JComboBox getPythonVersionCombo() {
-        return pythonVersionCombo;
-    }
-
-    public JComboBox getTemplateSelector() {
-        return templateSelector;
-    }
-
-    public JLabel getOsName() {
-        return osName;
+    private void setOsToLabel() {
+        osName.setText(OSInfoUtils.INSTANCE.getOsName());
     }
 }

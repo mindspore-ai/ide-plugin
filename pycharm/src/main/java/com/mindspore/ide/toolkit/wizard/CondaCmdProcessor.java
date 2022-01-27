@@ -35,12 +35,13 @@ public class CondaCmdProcessor {
     /**
      * execute conda cmd
      *
-     * @param sdk sdk
+     * @param sdk       sdk
      * @param condaPath conda exe path
-     * @param cmdList cmd info
+     * @param cmdList   cmd info
      * @return dialog
      */
-    public static DialogInfo executeCondaCmd(Sdk sdk, String condaPath, List<String> cmdList) throws MsToolKitException {
+    public static DialogInfo executeCondaCmd(Sdk sdk, String condaPath, List<String> cmdList)
+            throws MsToolKitException {
         if (sdk == null && (condaPath == null || condaPath.equals(""))) {
             throw new MsToolKitException(EnumError.CONDA_EXECUTABLE_NOT_SPECIFIED);
         }
