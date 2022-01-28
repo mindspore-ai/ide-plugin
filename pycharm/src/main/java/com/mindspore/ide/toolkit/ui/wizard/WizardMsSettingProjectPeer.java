@@ -33,6 +33,7 @@ import com.intellij.util.containers.ContainerUtil;
 import com.jetbrains.python.sdk.PythonSdkUtil;
 import com.mindspore.ide.toolkit.common.utils.FileUtils;
 import com.mindspore.ide.toolkit.common.utils.NotificationUtils;
+import com.mindspore.ide.toolkit.common.utils.RegularUtils;
 import com.mindspore.ide.toolkit.wizard.MSVersionInfo;
 import com.mindspore.ide.toolkit.wizard.MindSporeService;
 import com.mindspore.ide.toolkit.wizard.MiniCondaService;
@@ -82,26 +83,56 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer {
         buttonListener();
     }
 
+    /**
+     * get conda path
+     *
+     * @return conda path
+     */
     public String getCondaPath() {
-        return condaExecutableTextField.getText();
+        return RegularUtils.normalizeFilePath(condaExecutableTextField.getText());
     }
 
+    /**
+     * get conda version
+     *
+     * @return conda version
+     */
     public String getPythonVersion() {
         return pythonVersionSelector.getSelectedItem().toString();
     }
 
+    /**
+     * is using new conda env
+     *
+     * @return true or false
+     */
     public boolean isUsingNewCondaEnv() {
         return newEnvironmentUsingRadioButton.isSelected();
     }
 
+    /**
+     * get template
+     *
+     * @return template info
+     */
     public String getTemplate() {
         return templateSelector.getSelectedItem().toString();
     }
 
+    /**
+     * get exist sdk
+     *
+     * @return sdk info
+     */
     public Sdk getExistSdk() {
         return condaMap.get(existEnvSelector.getSelectedItem().toString());
     }
 
+    /**
+     * get exist sdk path
+     *
+     * @return exist string
+     */
     public String getExistSdkString() {
         return existEnvSelector.getSelectedItem().toString();
     }
@@ -226,6 +257,11 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer {
         }
     }
 
+    /**
+     * set conda exe path
+     *
+     * @param path conda exe path
+     */
     public void setCondExePath(String path) {
         initCondaEnvPath(MiniCondaService.setCondaExePathToIde(path));
     }
@@ -281,7 +317,7 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer {
      */
     public String getCondaEnvPath() {
         if (newEnvironmentUsingRadioButton.isSelected()) {
-            return condaEnvTextField.getText();
+            return RegularUtils.normalizeFilePath(condaEnvTextField.getText());
         } else {
             return condaMap.get(existEnvSelector.getSelectedItem().toString()).getHomePath();
         }

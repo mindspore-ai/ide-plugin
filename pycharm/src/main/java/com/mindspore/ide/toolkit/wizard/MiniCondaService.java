@@ -9,6 +9,7 @@ import com.mindspore.ide.toolkit.common.utils.HttpUtils;
 import com.mindspore.ide.toolkit.common.utils.NotificationUtils;
 import com.mindspore.ide.toolkit.common.utils.OSInfoUtils;
 import com.mindspore.ide.toolkit.common.utils.RunExecUtils;
+import com.mindspore.ide.toolkit.common.utils.RegularUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
@@ -80,10 +81,13 @@ public class MiniCondaService {
     /**
      * get conda env path
      *
-     * @param condaPath
+     * @param condaPath conda path
      * @return full conda path
      */
     public static String getCondaEnvsPath(String condaPath) {
+        if (RegularUtils.isEmpty(condaPath)) {
+            return "";
+        }
         File file = new File(condaPath);
         String condaEnvPath = file.getParent();
         if (condaEnvPath.endsWith(WINDOWS_CONDA_PARENT_PATH_NAME)
