@@ -4,7 +4,7 @@ MindSpore Dev Toolkit作为Pycharm插件工具，为用户提供一键安装cond
 
 **前提条件：**
 
-PC已安装2019.3及以上版本的Pycharm IDE。
+PC已安装2020.3及以上版本的Pycharm IDE。
 
 **创建项目**
 
@@ -46,13 +46,14 @@ PC已安装2019.3及以上版本的Pycharm IDE。
 
  
 
-4. 创建或选择已有的conda环境。
+4. 创建或选择已有的conda环境。 <span style="color:red">强烈建议在默认路路径下创建新的conda环境，即只改变末尾的文件夹名称。使用非默认的路径可能会导致安装失败。</span>
 
 ![img](./images/clip_image018.jpg)
 
+
  
 
-5. 选择处理器、操作系统、MindSpore模板。
+5. 选择硬件环境、MindSpore模板。
 
 ![img](./images/clip_image020.jpg)
 
