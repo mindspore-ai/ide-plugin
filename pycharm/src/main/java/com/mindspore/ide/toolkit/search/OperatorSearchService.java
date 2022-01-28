@@ -18,6 +18,7 @@ package com.mindspore.ide.toolkit.search;
 
 import com.mindspore.ide.toolkit.search.structure.TrieNode;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -54,6 +55,9 @@ public enum OperatorSearchService {
      * @return search content
      */
     public Map<String, String> search(String inputString, int count) {
+        if (inputString == null || inputString.isEmpty()) {
+            return new HashMap<>();
+        }
         List<String> topSearch = root.search(inputString, count);
         return mdFile2Map.assemble(topSearch, inputString);
     }
