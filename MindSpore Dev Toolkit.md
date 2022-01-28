@@ -42,8 +42,10 @@ PC已安装2020.3及以上版本的Pycharm IDE。
    
    5. 根据提示重新启动PyCharm或者稍后自行启动PyCharm
 
-   6. 或者自己选择已安装的conda路径。
+      ![img](./images/clip_image015.jpg)
 
+   6. 或者自己选择已安装的conda路径。
+   
    ![img](./images/clip_image016.jpg)
 
  
