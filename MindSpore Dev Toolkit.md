@@ -39,17 +39,18 @@ PC已安装2020.3及以上版本的Pycharm IDE。
    4. Miniconda下载安装完成。
 
    ![img](./images/clip_image014.jpg)
+   
+   5. 根据提示重新启动PyCharm或者稍后自行启动PyCharm
 
-   5. 自己选择已安装的conda路径。
+   6. 或者自己选择已安装的conda路径。
 
    ![img](./images/clip_image016.jpg)
 
  
 
-4. 创建或选择已有的conda环境。 <span style="color:red">强烈建议在默认路路径下创建新的conda环境，即只改变末尾的文件夹名称。使用非默认的路径可能会导致安装失败。</span>
+4. 创建或选择已有的conda环境。 <span style="color:red">强烈建议在默认路路径下创建新的conda环境，即只改变最后环境的文件夹名称。使用非默认的路径可能会导致安装失败。</span>
 
 ![img](./images/clip_image018.jpg)
-
 
  
 
