@@ -11,7 +11,7 @@
     </properties>
     <border type="none"/>
     <children>
-      <component id="a5efa" class="javax.swing.JLabel" binding="templateLabel">
+      <component id="a5efa" class="javax.swing.JLabel">
         <constraints>
           <grid row="10" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
             <preferred-size width="316" height="17"/>
@@ -22,7 +22,7 @@
           <text value="MindSpore Template"/>
         </properties>
       </component>
-      <component id="5f5a5" class="javax.swing.JLabel" binding="hardwareLabel">
+      <component id="5f5a5" class="javax.swing.JLabel">
         <constraints>
           <grid row="9" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
             <preferred-size width="316" height="17"/>
@@ -42,7 +42,7 @@
           <model/>
         </properties>
       </component>
-      <component id="4d746" class="javax.swing.JLabel" binding="osLabel">
+      <component id="4d746" class="javax.swing.JLabel">
         <constraints>
           <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
             <preferred-size width="316" height="17"/>
@@ -53,7 +53,7 @@
           <text value="Operating System:"/>
         </properties>
       </component>
-      <component id="4b6ad" class="javax.swing.JLabel" binding="textJLabel">
+      <component id="4b6ad" class="javax.swing.JLabel">
         <constraints>
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
             <preferred-size width="316" height="17"/>
@@ -64,7 +64,7 @@
           <text value="Conda executable:"/>
         </properties>
       </component>
-      <component id="cc67b" class="com.intellij.openapi.ui.TextFieldWithBrowseButton" binding="browseButton">
+      <component id="cc67b" class="com.intellij.openapi.ui.TextFieldWithBrowseButton" binding="condaExecutableTextField">
         <constraints>
           <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
           <gridbag weightx="1.0" weighty="1.0"/>
@@ -111,7 +111,7 @@
           <text value="      Interpreter:"/>
         </properties>
       </component>
-      <component id="b586e" class="javax.swing.JComboBox" binding="existEnv">
+      <component id="b586e" class="javax.swing.JComboBox" binding="existEnvSelector">
         <constraints>
           <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="0" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
           <gridbag weightx="1.0" weighty="1.0"/>
@@ -132,7 +132,7 @@
           <text value="      Location:"/>
         </properties>
       </component>
-      <component id="11b9c" class="com.intellij.openapi.ui.TextFieldWithBrowseButton" binding="condaEnvBrowserButton">
+      <component id="11b9c" class="com.intellij.openapi.ui.TextFieldWithBrowseButton" binding="condaEnvTextField">
         <constraints>
           <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
           <gridbag weightx="1.0" weighty="1.0"/>
@@ -141,7 +141,7 @@
           <text value=""/>
         </properties>
       </component>
-      <component id="1f9de" class="javax.swing.JComboBox" binding="pythonVersionCombo">
+      <component id="1f9de" class="javax.swing.JComboBox" binding="pythonVersionSelector">
         <constraints>
           <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
           <gridbag weightx="1.0" weighty="1.0"/>
@@ -153,7 +153,7 @@
           </model>
         </properties>
       </component>
-      <component id="e5e2" class="javax.swing.JLabel" binding="pythonVersion">
+      <component id="e5e2" class="javax.swing.JLabel">
         <constraints>
           <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
           <gridbag weightx="0.0" weighty="1.0"/>
@@ -162,14 +162,14 @@
           <text value="      Python version:"/>
         </properties>
       </component>
-      <component id="f996c" class="javax.swing.JLabel" binding="pyVersionWarnLabel">
+      <component id="f996c" class="javax.swing.JLabel">
         <constraints>
           <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
           <gridbag weightx="1.0" weighty="1.0"/>
         </constraints>
         <properties>
           <foreground color="-19406"/>
-          <text value=""/>
+          <text value="Python version must equal to 3.7.5 or 3.9.0"/>
         </properties>
       </component>
       <component id="b394" class="javax.swing.JButton" binding="downloadMiniCondaButton">
@@ -202,7 +202,7 @@
           <text value="If you would like to use other method like pip, please use 'Pure Python' option."/>
         </properties>
       </component>
-      <component id="5b49c" class="javax.swing.JLabel" binding="pipLabel">
+      <component id="5b49c" class="javax.swing.JLabel">
         <constraints>
           <grid row="11" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
           <gridbag top="10" left="0" bottom="0" right="0" weightx="0.0" weighty="0.0"/>

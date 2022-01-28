@@ -18,12 +18,17 @@ package com.mindspore.ide.toolkit.wizard;
 
 import com.google.gson.reflect.TypeToken;
 import com.intellij.notification.NotificationType;
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.Task;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.mindspore.ide.toolkit.common.dialoginfo.DialogInfo;
+import com.mindspore.ide.toolkit.common.dialoginfo.ExceptionDialogInfo;
 import com.mindspore.ide.toolkit.common.enums.EnumHardWarePlatform;
 import com.mindspore.ide.toolkit.common.enums.EnumProperties;
 import com.mindspore.ide.toolkit.common.exceptions.MsToolKitException;
 import com.mindspore.ide.toolkit.common.utils.*;
+import org.jetbrains.annotations.NotNull;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
@@ -33,11 +38,24 @@ import java.nio.file.Path;
 import java.util.*;
 
 @Slf4j
+/**
+ * for install mindspoe and initialize project
+ */
 public class MindSporeService {
-    private static final String TEMP_PATH = EnumProperties.MIND_SPORE_PROPERTIES.getProperty("mindspore.template.zip.path");
-    private static final String TEMP_PATH_ENTRIES = EnumProperties.MIND_SPORE_PROPERTIES.getProperty("mindspore.template.zip.path.entries");
-    private static final String TEMP_PATH_STRUCTURE = EnumProperties.MIND_SPORE_PROPERTIES.getProperty("mindspore.path.structure");
+    private static final String TEMP_PATH = EnumProperties.MIND_SPORE_PROPERTIES.getProperty("mindspore.template.zip"
+            + ".path");
+    private static final String TEMP_PATH_ENTRIES = EnumProperties.MIND_SPORE_PROPERTIES.getProperty("mindspore"
+            + ".template.zip.path.entries");
+    private static final String TEMP_PATH_STRUCTURE = EnumProperties.MIND_SPORE_PROPERTIES.getProperty("mindspore"
+            + ".path.structure");
 
+    /**
+     * create mindspore template
+     *
+     * @param targetFilePath save path
+     * @param fileName filename
+     * @return is success
+     */
     public static Boolean createMindSporeTemplate(String targetFilePath, String fileName) {
         if (fileName.isEmpty() || fileName.equals("<empty>")) {
             return true;
@@ -60,9 +78,14 @@ public class MindSporeService {
         }
     }
 
+    /**
+     * list templates
+     *
+     * @return the list
+     */
     public static List<String> listTemplates() {
         try (InputStream input = MindSporeService.class.getResourceAsStream(TEMP_PATH_ENTRIES);
-             InputStreamReader reader = new InputStreamReader(input, StandardCharsets.UTF_8)){
+             InputStreamReader reader = new InputStreamReader(input, StandardCharsets.UTF_8)) {
             return GsonUtils.INSTANCE.getGson().fromJson(reader,
                     TypeToken.getParameterized(List.class, String.class).getType());
         } catch (IOException exception) {
@@ -70,25 +93,39 @@ public class MindSporeService {
         }
     }
 
+    /**
+     * create project starting files
+     *
+     * @param baseDir path
+     * @return is success
+     */
     public static Boolean createStructure(String baseDir) {
         List<String> dirs;
         try (InputStream input = MindSporeService.class.getResourceAsStream(TEMP_PATH_STRUCTURE);
-             InputStreamReader reader = new InputStreamReader(input, StandardCharsets.UTF_8)){
+             InputStreamReader reader = new InputStreamReader(input, StandardCharsets.UTF_8)) {
             dirs = GsonUtils.INSTANCE.getGson().fromJson(reader,
                     TypeToken.getParameterized(List.class, String.class).getType());
         } catch (IOException exception) {
             return false;
         }
-        for (String dir : dirs){
+        for (String dir : dirs) {
             try {
                 Files.createDirectories(Path.of(baseDir + File.separator + dir));
-            } catch (IOException exception){
+            } catch (IOException exception) {
                 return false;
             }
         }
         return true;
     }
 
+    /**
+     * install mindspore
+     *
+     * @param hardwarePlatform hardware platform
+     * @param sdk sdk
+     * @return message
+     * @throws MsToolKitException when error
+     */
     public static DialogInfo installMindSporeIntoConda(String hardwarePlatform, Sdk sdk) throws MsToolKitException {
         List<String> cmdList;
         //conda这里需要完善获取命令的方法
@@ -108,5 +145,30 @@ public class MindSporeService {
                     "-c", "mindspore", "-c", "conda-forge", "-y");
         }
         return CondaCmdProcessor.executeCondaCmd(sdk, null, cmdList);
+    }
+
+    /**
+     * get a task for running
+     *
+     * @param project project
+     * @param hardware hardware
+     * @param sdk sdk
+     * @return the task
+     */
+    public static Task.WithResult<Boolean, Exception> installMindSporeTask(Project project, String hardware, Sdk sdk) {
+        return new Task.WithResult(project, "Install MindSpore into Conda", true) {
+            @Override
+            public Boolean compute(@NotNull ProgressIndicator indicator) {
+                try {
+                    DialogInfo dialogInfo = MindSporeService.installMindSporeIntoConda(hardware, sdk);
+                    dialogInfo.showDialog("Install MindSpore into conda");
+                    return dialogInfo.isSuccessful()
+                            && MsEnvValidator.validateMindSpore(sdk) == MsEnvValidator.MsEnvStatus.AVAILABLE;
+                } catch (MsToolKitException msToolKitException) {
+                    ExceptionDialogInfo.parseException(msToolKitException).showDialog("Install MindSpore into conda");
+                    return false;
+                }
+            }
+        };
     }
 }
