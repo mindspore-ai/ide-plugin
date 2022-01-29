@@ -27,20 +27,32 @@ import com.mindspore.ide.toolkit.common.dialoginfo.ExceptionDialogInfo;
 import com.mindspore.ide.toolkit.common.enums.EnumHardWarePlatform;
 import com.mindspore.ide.toolkit.common.enums.EnumProperties;
 import com.mindspore.ide.toolkit.common.exceptions.MsToolKitException;
-import com.mindspore.ide.toolkit.common.utils.*;
+import com.mindspore.ide.toolkit.common.utils.GsonUtils;
+import com.mindspore.ide.toolkit.common.utils.NotificationUtils;
+import com.mindspore.ide.toolkit.common.utils.ZipCompressingUtils;
 import org.jetbrains.annotations.NotNull;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 
-@Slf4j
 /**
  * for install mindspoe and initialize project
+ *
+ * @author gaochen
+ * @since 2022-1-28
  */
+@Slf4j
 public class MindSporeService {
     private static final String TEMP_PATH = EnumProperties.MIND_SPORE_PROPERTIES.getProperty("mindspore.template.zip"
             + ".path");
@@ -85,7 +97,7 @@ public class MindSporeService {
      */
     public static List<String> listTemplates() {
         try (InputStream input = MindSporeService.class.getResourceAsStream(TEMP_PATH_ENTRIES);
-             InputStreamReader reader = new InputStreamReader(input, StandardCharsets.UTF_8)) {
+            InputStreamReader reader = new InputStreamReader(input, StandardCharsets.UTF_8)) {
             return GsonUtils.INSTANCE.getGson().fromJson(reader,
                     TypeToken.getParameterized(List.class, String.class).getType());
         } catch (IOException exception) {
@@ -102,7 +114,7 @@ public class MindSporeService {
     public static Boolean createStructure(String baseDir) {
         List<String> dirs;
         try (InputStream input = MindSporeService.class.getResourceAsStream(TEMP_PATH_STRUCTURE);
-             InputStreamReader reader = new InputStreamReader(input, StandardCharsets.UTF_8)) {
+            InputStreamReader reader = new InputStreamReader(input, StandardCharsets.UTF_8)) {
             dirs = GsonUtils.INSTANCE.getGson().fromJson(reader,
                     TypeToken.getParameterized(List.class, String.class).getType());
         } catch (IOException exception) {
@@ -127,8 +139,7 @@ public class MindSporeService {
      * @throws MsToolKitException when error
      */
     public static DialogInfo installMindSporeIntoConda(String hardwarePlatform, Sdk sdk) throws MsToolKitException {
-        List<String> cmdList;
-        //conda这里需要完善获取命令的方法
+        List<String> cmdList;   // conda这里需要完善获取命令的方法
         if (hardwarePlatform.contains(EnumHardWarePlatform.CPU.getCode())) {
             cmdList = Arrays.asList("install", String.format("mindspore-%s=1.5.0",
                             EnumHardWarePlatform.CPU.getCode().toLowerCase(Locale.ROOT)),

@@ -24,6 +24,7 @@ import com.intellij.openapi.ui.VerticalFlowLayout;
 import com.intellij.platform.DirectoryProjectGenerator;
 import com.intellij.ui.DocumentAdapter;
 import com.jetbrains.python.newProject.steps.ProjectSpecificSettingsStep;
+import com.mindspore.ide.toolkit.common.utils.RegularUtils;
 import com.mindspore.ide.toolkit.ui.wizard.WizardMsSettingProjectPeer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -46,8 +47,8 @@ public class CustomMSProjectStep extends ProjectSpecificSettingsStep {
      * @param projectPeer      peer
      */
     public CustomMSProjectStep(@NotNull DirectoryProjectGenerator projectGenerator,
-                               AbstractNewProjectStep.@NotNull AbstractCallback callback,
-                               WizardMsSettingProjectPeer projectPeer) {
+        AbstractNewProjectStep.@NotNull AbstractCallback callback,
+        WizardMsSettingProjectPeer projectPeer) {
         super(projectGenerator, callback);
         this.projectPeer = projectPeer;
     }
@@ -110,6 +111,7 @@ public class CustomMSProjectStep extends ProjectSpecificSettingsStep {
         myLocationField.getTextField().getDocument().addDocumentListener(new DocumentAdapter() {
             @Override
             protected void textChanged(@NotNull DocumentEvent event) {
+                myLocationField.setText(RegularUtils.normalizeFilePath(myLocationField.getText()));
                 projectPeer.setCondaEnvPath(getProjectNameByOs(myLocationField.getText()));
             }
         });
@@ -117,6 +119,6 @@ public class CustomMSProjectStep extends ProjectSpecificSettingsStep {
     }
 
     private static String getProjectNameByOs(String projectPath) {
-        return Path.of(projectPath).getFileName().toString();
+        return Path.of(RegularUtils.normalizeFilePath(projectPath)).getFileName().toString();
     }
 }

@@ -38,6 +38,7 @@ public interface SearchEveryWhereDataHub<T> {
      * assemble well-prepared map for search everywhere
      *
      * @param rawList raw search result from index
+     * @param search search info
      * @return result map to show
      */
     Map<String, String> assemble(List<T> rawList, String search);
