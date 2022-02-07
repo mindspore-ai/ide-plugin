@@ -22,6 +22,8 @@ public class GlobalConfig {
 
     private String toolWindowSearchContent;
 
+    private String msEnvValidatorFile;
+
     private CompleteModelInfo completeModelInfo;
 
     private static class ConfigBuilder{

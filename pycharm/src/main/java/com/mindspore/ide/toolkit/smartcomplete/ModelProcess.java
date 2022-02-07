@@ -10,11 +10,9 @@ import com.mindspore.ide.toolkit.smartcomplete.grpc.SmartCompletionClient;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 /**
@@ -31,10 +29,6 @@ public class ModelProcess {
 
     private static final Integer DEFAULT_PORT = 50053;
 
-    private BufferedReader procReader;
-
-    private final Object communicateLock = new Object();
-
     private volatile boolean isInited = false;
 
     /**
@@ -46,7 +40,7 @@ public class ModelProcess {
     public void initModel(CompleteConfig completeConfig, CompleteConfig.Model model) {
         isInited = false;
         try {
-            initProcess(completeConfig, model);
+            initProcessAndPort(completeConfig, model);
         } catch (IOException ioException) {
             NotificationUtils.notify(NotificationUtils.NotifyGroup.SMART_COMPLETE,
                     NotificationType.ERROR,
@@ -63,34 +57,11 @@ public class ModelProcess {
      */
     public void shutDownModel() {
         isInited = false;
-        try {
-            communicateWithModel("smartcoder shutdown");
-        } catch (IOException ioException) {
-            log.info("Shut down smart complete model failed.", ioException);
+        if (proc == null) {
+            return;
         }
         proc.destroy();
         proc = null;
-    }
-
-    /**
-     * 同模型交互
-     *
-     * @param cmd 待模型执行的命令
-     * @return String
-     * @throws IOException io exception
-     */
-    public String communicateWithModel(String cmd) throws IOException {
-        synchronized (communicateLock) {
-            String backMsg = "";
-            if (!isInited || !isAlive()) {
-                return backMsg;
-            }
-            byte[] cmdByteArr = cmd.getBytes(StandardCharsets.UTF_8);
-            proc.getOutputStream().write(cmdByteArr);
-            proc.getOutputStream().flush();
-            backMsg = procReader.readLine();
-            return backMsg == null ? "" : backMsg;
-        }
     }
 
     /**
@@ -103,15 +74,12 @@ public class ModelProcess {
      */
     public Optional<CompleteReply> retrieveCompletions(String before, String options) throws CompletionException {
         ManagedChannel channel = getChannel();
-        Optional<CompleteReply> reply;
         try {
             SmartCompletionClient client = new SmartCompletionClient(channel);
-            Optional<CompleteReply> completions = client.retrieveCompletions(before, options);
-            reply = completions;
+            return client.retrieveCompletions(before, options);
         } finally {
             channel.shutdownNow();
         }
-        return reply;
     }
 
     /**
@@ -135,7 +103,7 @@ public class ModelProcess {
         return isInited;
     }
 
-    private void initProcess(CompleteConfig completeConfig, CompleteConfig.Model model) throws IOException {
+    private void initProcessAndPort(CompleteConfig completeConfig, CompleteConfig.Model model) throws IOException {
         this.port = PortUtil.findAnIdlePort(DEFAULT_PORT);
         if (this.port == 0) {
             log.info("Cannot find available port, init complete model failed. Model version is {}.",
@@ -145,13 +113,16 @@ public class ModelProcess {
                 proc.destroy();
                 proc = null;
             }
-            ProcessBuilder builder = new ProcessBuilder(new String[]{completeConfig.getModelExeFullPath(model),
-                    "-p", String.valueOf(this.port)});
-            builder.directory(FileUtils.getFile(completeConfig.getModelUnzipFolderFullPath(model)));
-            proc = builder.start();
-            procReader = new BufferedReader(new InputStreamReader(proc.getInputStream(), StandardCharsets.UTF_8));
+            initProcess(completeConfig, model);
             isInited = true;
         }
+    }
+
+    private void initProcess(@NotNull CompleteConfig completeConfig, CompleteConfig.Model model) throws IOException {
+        ProcessBuilder builder = new ProcessBuilder(new String[]{completeConfig.getModelExeFullPath(model),
+                "-p", String.valueOf(this.port)});
+        builder.directory(FileUtils.getFile(completeConfig.getModelUnzipFolderFullPath(model)));
+        proc = builder.start();
     }
 
     private ManagedChannel getChannel() throws CompletionException {

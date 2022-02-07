@@ -3,6 +3,7 @@ downloadBaseUrl: ""
 toolWindowName: "MindSpore"
 toolWindowSearchContent: "SearchDoc"
 toolWindowUrl: "https://www.mindspore.cn/search"
+msEnvValidatorFile: "MindSporeEnvValidator.py"
 completeModelInfo:
   oldConfig: "oldConfig.yaml"
   newConfig: "newConfig.yaml"

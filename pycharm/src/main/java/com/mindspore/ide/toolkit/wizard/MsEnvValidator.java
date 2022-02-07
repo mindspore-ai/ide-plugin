@@ -18,9 +18,10 @@ package com.mindspore.ide.toolkit.wizard;
 
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.process.ProcessOutput;
-import com.intellij.openapi.application.PathManager;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.jetbrains.python.sdk.flavors.PyCondaRunKt;
+import com.mindspore.ide.toolkit.common.config.GlobalConfig;
+import com.mindspore.ide.toolkit.common.utils.PathUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
@@ -46,21 +47,26 @@ public class MsEnvValidator {
      * @return MsEnvStatus
      */
     public static MsEnvStatus validateMindSpore(Sdk sdk) {
-        String fileName = "MindSpore" + System.currentTimeMillis() + ".py";
-        String filePathStr = PathManager.getPluginsPath() + File.separator + fileName;
-        Path filePath = Path.of(filePathStr);
-        try {
-            Files.write(filePath, ("import mindspore"
+        String validatorFileFullPathStr = String.join(File.separator,
+                PathUtils.getDefaultResourcePath(),
+                GlobalConfig.get().getMsEnvValidatorFile());
+        Path validatorFileFullPath = Path.of(validatorFileFullPathStr);
+        if (!Files.exists(validatorFileFullPath)) {
+            final byte[] fileContent = ("import mindspore"
                     + System.lineSeparator() + "mindspore.run_check()")
-                    .getBytes(StandardCharsets.UTF_8));
-        } catch (IOException ioException) {
-            log.error("MsEnvValidator.validateMindSpore-Write python file failed.", ioException);
-            return MsEnvStatus.UNKNOWN;
+                    .getBytes(StandardCharsets.UTF_8);
+            try {
+                Files.write(validatorFileFullPath, fileContent);
+            } catch (IOException ioException) {
+                log.error("MsEnvValidator.validateMindSpore-Write python file failed.", ioException);
+                return MsEnvStatus.UNKNOWN;
+            }
         }
 
         MsEnvStatus msEnvStatus = MsEnvStatus.UNAVAILABLE;
         try {
-            ProcessOutput output = PyCondaRunKt.runCondaPython(sdk.getHomePath(), Arrays.asList(filePathStr));
+            ProcessOutput output = PyCondaRunKt.runCondaPython(sdk.getHomePath(),
+                    Arrays.asList(validatorFileFullPathStr));
 
             String stdout = output.getStdout();
             log.info("MsEnvValidator.validateMindSpore-Execute validator file succeed, stdout is {}", stdout);
@@ -70,12 +76,6 @@ public class MsEnvValidator {
         } catch (ExecutionException executionException) {
             log.error("MsEnvValidator.validateMindSpore-Execute validator file failed.", executionException);
             msEnvStatus = MsEnvStatus.UNKNOWN;
-        } finally {
-            try {
-                Files.deleteIfExists(filePath);
-            } catch (IOException ioException) {
-                log.error("MsEnvValidator.validateMindSpore-Remove python file failed.", ioException);
-            }
         }
 
         return msEnvStatus;

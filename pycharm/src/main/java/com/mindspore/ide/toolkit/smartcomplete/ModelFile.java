@@ -27,15 +27,7 @@ import java.util.concurrent.TimeUnit;
 public class ModelFile {
     private final CompleteConfig completeConfig = CompleteConfig.get();
 
-    private final String modelDownloadUrl = completeConfig.getModelDownloadUrl();
-
-    private final String modelZipFullPath = completeConfig.getModelZipFullPath(completeConfig.getModel());
-
-    private final String modelZipParentPath = completeConfig.getModelZipParentPath(completeConfig.getModel());
-
-    private final String modelExeFullPath = completeConfig.getModelExeFullPath(completeConfig.getModel());
-
-    private final String accessToken = completeConfig.getAccessToken();
+    private final CompleteConfig.Model currentModel = completeConfig.getCurrentModel();
 
     private final int queueCapacity = 100;
 
@@ -53,6 +45,7 @@ public class ModelFile {
      * @return boolean
      */
     public boolean modelExeExists() {
+        String modelExeFullPath = completeConfig.getModelExeFullPath(currentModel);
         return FileUtils.getFile(modelExeFullPath).exists();
     }
 
@@ -62,6 +55,10 @@ public class ModelFile {
      * @return boolean
      */
     public boolean fetchModelFile() {
+        final String modelDownloadUrl = currentModel.getModelDownloadUrl();
+        final String modelZipFullPath = completeConfig.getModelZipFullPath(currentModel);
+        final String accessToken = currentModel.getAccessToken();
+
         int maxDownloadTimes = 3;
         EventCenter.INSTANCE.publish(new SmartCompleteEvents.DownloadCompleteModelStart());
         boolean isDownloadSucceed = false;
@@ -73,6 +70,7 @@ public class ModelFile {
             }
         }
         if (isDownloadSucceed) {
+            final String modelZipParentPath = completeConfig.getModelZipParentPath(currentModel);
             EventCenter.INSTANCE.publish(new SmartCompleteEvents.DownloadCompleteModelEnd());
             ResourceManager.unzipResource(modelZipFullPath, modelZipParentPath);
         } else {
@@ -113,7 +111,7 @@ public class ModelFile {
     private void deleteInvalidModel(CompleteConfig completeConfig,
                                     String directoryName,
                                     String modelFolderPath) {
-        if (!Objects.equals(completeConfig.getModel().getModelVersion(), directoryName)) {
+        if (!Objects.equals(completeConfig.getVersionFolder(currentModel), directoryName)) {
             FileUtils.deleteFile(new File(String.join(File.separator, modelFolderPath, directoryName)));
         }
     }
