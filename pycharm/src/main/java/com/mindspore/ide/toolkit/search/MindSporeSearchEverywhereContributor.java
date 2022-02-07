@@ -7,7 +7,6 @@ import com.mindspore.ide.toolkit.common.events.EventCenter;
 import com.mindspore.ide.toolkit.search.entity.DocumentSearch;
 import com.mindspore.ide.toolkit.search.entity.DocumentValue;
 import com.intellij.ide.actions.searcheverywhere.SearchEverywhereContributorFactory;
-import com.intellij.ide.actions.GotoActionAction;
 import com.intellij.ide.actions.searcheverywhere.SearchEverywhereContributor;
 import com.intellij.openapi.actionSystem.ActionManager;
 
@@ -110,19 +109,19 @@ public class MindSporeSearchEverywhereContributor implements SearchEverywhereCon
     @Override
     public boolean processSelectedItem(@NotNull DocumentSearch selected, int modifiers, @NotNull String searchText) {
         if (selected.getValue() instanceof AnAction) {
-            GotoActionAction.openOptionOrPerformAction(selected.getValue(), searchText, mindSporeProject,
-                    mindSporeContextComponent.get());
+            SearchGotoAction.openOptionOrPerformAction(selected.getValue(), searchText, mindSporeProject,
+                    mindSporeContextComponent.get(), 1);
             BrowserWindowManager.getBrowserWindow(mindSporeProject).loadUrl(GlobalConfig.get().getToolWindowUrl());
         } else if (selected.getValue() instanceof Map.Entry) {
             AnAction anAction = ActionManager.getInstance().getAction("ActivateMindSporeToolWindow");
-            GotoActionAction.openOptionOrPerformAction(anAction, searchText, mindSporeProject,
-                    mindSporeContextComponent.get());
+            SearchGotoAction.openOptionOrPerformAction(anAction, searchText, mindSporeProject,
+                    mindSporeContextComponent.get(), 1);
             Map.Entry<String, String> map = (Map.Entry<String, String>) selected.getValue();
             BrowserWindowManager.getBrowserWindow(mindSporeProject).loadUrl(map.getValue());
         } else if (selected.getValue() instanceof DocumentValue) {
             AnAction anAction = ActionManager.getInstance().getAction("ActivateMindSporeToolWindow");
-            GotoActionAction.openOptionOrPerformAction(anAction, searchText, mindSporeProject,
-                    mindSporeContextComponent.get());
+            SearchGotoAction.openOptionOrPerformAction(anAction, searchText, mindSporeProject,
+                    mindSporeContextComponent.get(), 1);
             DocumentValue documentValue = (DocumentValue) selected.getValue();
             EventCenter.INSTANCE.publish(new OpenMindSporeActionModel(mindSporeProject, documentValue));
         } else {
