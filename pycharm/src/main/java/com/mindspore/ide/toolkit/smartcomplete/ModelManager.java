@@ -35,6 +35,11 @@ public enum ModelManager {
 
     private final int queueCapacity = 100;
 
+    /**
+     * 删除旧模型的超时时间
+     */
+    private final Long deleteOverTime = 3000L;
+
     private final ThreadPoolExecutor modelExecutor = new ThreadPoolExecutor(
             2 * Runtime.getRuntime().availableProcessors(),
             4 * Runtime.getRuntime().availableProcessors(),
@@ -55,9 +60,12 @@ public enum ModelManager {
         }
         if (isCurrentModelUseful()) {
             startCompleteModelWhileHasCurrentModel();
-        } else {
-            startCompleteModelWhileNoCurrentModel();
+            return;
         }
+        if (oldModel == null) {
+            return;
+        }
+        startCompleteModelWhileNoCurrentModel();
     }
 
     /**
@@ -91,9 +99,11 @@ public enum ModelManager {
         }
         if (isCurrentModelUseful()) {
             return communicateWithModelWhileHasCurrentModel(before, options);
-        } else {
-            return communicateWithModelWhileNoCurrentModel(before, options);
         }
+        if (oldModel == null) {
+            return Optional.empty();
+        }
+        return communicateWithModelWhileNoCurrentModel(before, options);
     }
 
     private void startCompleteModelWhileHasCurrentModel() {
@@ -110,7 +120,7 @@ public enum ModelManager {
                     // 当前模型和旧模型都不存在，获取并启动当前模型
                     modelFile.fetchModelFile();
                     startCurrentModel();
-                } else if (oldModelProcess == null) {
+                } else {
                     // 当前模型不存在，旧模型存在。启动旧模型，同时获取并启动当前模型
                     startOldModel();
                     log.info("Start old model process done, current time is {}.", System.currentTimeMillis());
@@ -139,12 +149,14 @@ public enum ModelManager {
                 // 如果旧模型is not alive，返回空
                 return Optional.empty();
             }
+        } else if (modelProcess == null) {
+            return Optional.empty();
         } else if (modelProcess.isInited() && !modelProcess.isAlive()) {
             // 模型进程初始化过，但是非alive，需要重启
             // 该情况表示，模型曾经启动过，但是模型exe文件因某些原因被停掉了，因此要重启
             restartCurrentCompleteModel();
             return Optional.empty();
-        } else if (modelProcess != null && modelProcess.isAlive()) {
+        } else if (modelProcess.isAlive()) {
             // 如果新模型is alive，调用新模型
             return modelProcess.retrieveCompletions(before, options);
         } else {
@@ -154,7 +166,9 @@ public enum ModelManager {
 
     private Optional<CompleteReply> communicateWithModelWhileNoCurrentModel(String before,
         String options) throws CompletionException {
-        if (oldModelProcess != null && oldModelProcess.isAlive()) {
+        if (oldModelProcess == null) {
+            return Optional.empty();
+        } else if (oldModelProcess != null && oldModelProcess.isAlive()) {
             // 如果旧模型is alive，调用旧模型
             return oldModelProcess.retrieveCompletions(before, options);
         } else if (oldModelProcess.isInited() && !oldModelProcess.isAlive()) {
@@ -189,7 +203,6 @@ public enum ModelManager {
             oldModelProcess = null;
         }
         log.info("Stop old model process done, current time is {}.", System.currentTimeMillis());
-        Long deleteOverTime = 3000L;
         // 删除旧模型文件
         Long startTime = System.currentTimeMillis();
         while (FileUtils.fileExist(completeConfig.getModelZipParentPath(oldModel))) {
@@ -224,7 +237,7 @@ public enum ModelManager {
     }
 
     private void startCurrentModel() {
-        if (!modelFile.modelExeExists()) {
+        if (modelProcess != null || !modelFile.modelExeExists()) {
             return;
         }
         modelFile.deleteInvalidModelAsync(completeConfig);
@@ -233,6 +246,9 @@ public enum ModelManager {
     }
 
     private void startOldModel() {
+        if (oldModelProcess != null) {
+            return;
+        }
         oldModelProcess = new ModelProcess();
         oldModelProcess.initModel(completeConfig, oldModel);
     }
