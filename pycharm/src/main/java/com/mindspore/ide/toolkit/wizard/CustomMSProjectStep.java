@@ -73,21 +73,28 @@ public class CustomMSProjectStep extends ProjectSpecificSettingsStep {
 
     @Override
     public boolean checkValid() {
-        if (projectPeer.isUsingNewCondaEnv()
-                && Files.exists(Path.of(projectPeer.getCondaEnvPath()))) {
-            setWarningText("Env location exists!");
+        if (RegularUtils.isEmpty(projectPeer.getCondaPath())
+                || !Files.exists(Path.of(projectPeer.getCondaPath()))
+                || !(projectPeer.getCondaPath().endsWith("conda.exe")
+                || projectPeer.getCondaPath().endsWith("conda"))) {
+            setWarningText("Conda executable not exist or wrong");
             return false;
         }
+
+        if (projectPeer.isUsingNewCondaEnv()) {
+            if (RegularUtils.isEmpty(projectPeer.getCondaEnvPath())) {
+                setWarningText("Env location is empty");
+                return false;
+            }
+            if (Files.exists(Path.of(projectPeer.getCondaEnvPath()))) {
+                setWarningText("Env location exists!");
+                return false;
+            }
+        }
+
         if (!projectPeer.isUsingNewCondaEnv()
                 && projectPeer.getExistSdkString() == null) {
             setWarningText("Please choose a conda env!");
-            return false;
-        }
-        if (!Files.exists(Path.of(projectPeer.getCondaPath()))
-                && !projectPeer.getCondaPath().endsWith("conda.exe")
-                && !projectPeer.getCondaPath().endsWith("conda")) {
-            setWarningText("Conda executable not exist or wrong");
-            projectPeer.setCondExePath("");
             return false;
         }
         return true;

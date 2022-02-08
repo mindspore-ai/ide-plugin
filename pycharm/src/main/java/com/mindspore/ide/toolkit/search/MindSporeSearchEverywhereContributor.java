@@ -1,5 +1,6 @@
 package com.mindspore.ide.toolkit.search;
 
+import com.mindspore.ide.toolkit.common.utils.IdeUtils;
 import com.mindspore.ide.toolkit.search.entity.OpenMindSporeActionModel;
 import com.mindspore.ide.toolkit.ui.search.BrowserWindowManager;
 import com.mindspore.ide.toolkit.common.config.GlobalConfig;
@@ -109,19 +110,14 @@ public class MindSporeSearchEverywhereContributor implements SearchEverywhereCon
     @Override
     public boolean processSelectedItem(@NotNull DocumentSearch selected, int modifiers, @NotNull String searchText) {
         if (selected.getValue() instanceof AnAction) {
-            SearchGotoAction.openOptionOrPerformAction(selected.getValue(), searchText, mindSporeProject,
-                    mindSporeContextComponent.get(), 1);
+            IdeUtils.showToolWindowById(mindSporeProject, "MindSpore");
             BrowserWindowManager.getBrowserWindow(mindSporeProject).loadUrl(GlobalConfig.get().getToolWindowUrl());
         } else if (selected.getValue() instanceof Map.Entry) {
-            AnAction anAction = ActionManager.getInstance().getAction("ActivateMindSporeToolWindow");
-            SearchGotoAction.openOptionOrPerformAction(anAction, searchText, mindSporeProject,
-                    mindSporeContextComponent.get(), 1);
+            IdeUtils.showToolWindowById(mindSporeProject, "MindSpore");
             Map.Entry<String, String> map = (Map.Entry<String, String>) selected.getValue();
             BrowserWindowManager.getBrowserWindow(mindSporeProject).loadUrl(map.getValue());
         } else if (selected.getValue() instanceof DocumentValue) {
-            AnAction anAction = ActionManager.getInstance().getAction("ActivateMindSporeToolWindow");
-            SearchGotoAction.openOptionOrPerformAction(anAction, searchText, mindSporeProject,
-                    mindSporeContextComponent.get(), 1);
+            IdeUtils.showToolWindowById(mindSporeProject, "MindSpore");
             DocumentValue documentValue = (DocumentValue) selected.getValue();
             EventCenter.INSTANCE.publish(new OpenMindSporeActionModel(mindSporeProject, documentValue));
         } else {
