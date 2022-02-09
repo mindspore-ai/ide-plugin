@@ -19,6 +19,7 @@ package com.mindspore.ide.toolkit.smartcomplete;
 import com.intellij.ide.plugins.IdeaPluginDescriptorImpl;
 import com.intellij.ide.plugins.PluginManagerCore;
 import com.intellij.notification.NotificationType;
+import com.intellij.openapi.application.ApplicationNamesInfo;
 import com.mindspore.ide.toolkit.common.utils.FileUtils;
 import com.mindspore.ide.toolkit.common.utils.NotificationUtils;
 import com.mindspore.ide.toolkit.smartcomplete.grpc.PortUtil;
@@ -47,7 +48,8 @@ import java.lang.reflect.Method;
         FileUtils.class,
         ModelProcess.class,
         NotificationUtils.class,
-        PluginManagerCore.class})
+        PluginManagerCore.class,
+        ApplicationNamesInfo.class})
 public class ModelProcessTest {
     @Before
     public void setUp() {
@@ -55,6 +57,11 @@ public class ModelProcessTest {
         PowerMockito.when(descriptor.getVersion()).thenReturn("test");
         PowerMockito.mockStatic(PluginManagerCore.class);
         PowerMockito.when(PluginManagerCore.getPlugin(Mockito.any())).thenReturn(descriptor);
+
+        ApplicationNamesInfo applicationNamesInfo = PowerMockito.mock(ApplicationNamesInfo.class);
+        PowerMockito.when(applicationNamesInfo.getFullProductNameWithEdition()).thenReturn("test");
+        PowerMockito.mockStatic(ApplicationNamesInfo.class);
+        PowerMockito.when(ApplicationNamesInfo.getInstance()).thenReturn(applicationNamesInfo);
     }
 
     @Test
