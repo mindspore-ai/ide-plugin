@@ -59,6 +59,6 @@ public enum OperatorSearchService {
             return new HashMap<>();
         }
         List<String> topSearch = root.search(inputString, count);
-        return mdFile2Map.assemble(topSearch, inputString);
+        return mdFile2Map.assemble(topSearch, inputString, count);
     }
 }
