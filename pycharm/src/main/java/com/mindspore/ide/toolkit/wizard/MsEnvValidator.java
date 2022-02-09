@@ -29,7 +29,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * MindSpore开发环境校验
@@ -66,7 +66,7 @@ public class MsEnvValidator {
         MsEnvStatus msEnvStatus = MsEnvStatus.UNAVAILABLE;
         try {
             ProcessOutput output = PyCondaRunKt.runCondaPython(sdk.getHomePath(),
-                    Arrays.asList(validatorFileFullPathStr));
+                    Collections.singletonList(validatorFileFullPathStr));
 
             String stdout = output.getStdout();
             log.info("MsEnvValidator.validateMindSpore-Execute validator file succeed, stdout is {}", stdout);
