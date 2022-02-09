@@ -39,12 +39,12 @@ public class CompleteConfig {
 
     private static final String PLUGIN_VERSION = getPluginVersion();
 
+    private static final String PRODUCT_NAME_WITH_EDITION = ApplicationNamesInfo
+            .getInstance().getFullProductNameWithEdition();
+
     private final String defaultPluginVersion = "default_plugin_version";
 
     private final String lowLine = "_";
-
-    private final String ideProductNameWithEdition = ApplicationNamesInfo
-            .getInstance().getFullProductNameWithEdition();
 
     private String localDir;
 
@@ -64,10 +64,12 @@ public class CompleteConfig {
             OLD_FILE = String.join(File.separator,
                     DEFAULT_RESOURCE_PATH,
                     MODEL_INFO.getParentDir(),
+                    PRODUCT_NAME_WITH_EDITION,
                     MODEL_INFO.getOldConfig());
             NEW_FILE = String.join(File.separator,
                     DEFAULT_RESOURCE_PATH,
                     MODEL_INFO.getParentDir(),
+                    PRODUCT_NAME_WITH_EDITION,
                     MODEL_INFO.getNewConfig());
 
             if (SystemInfo.isWindows) {
@@ -139,7 +141,7 @@ public class CompleteConfig {
         return String.join(File.separator,
                 PathUtils.getDefaultResourcePath(),
                 localDir,
-                ideProductNameWithEdition,
+                PRODUCT_NAME_WITH_EDITION,
                 modelFolder,
                 getVersionFolder(model),
                 model.modelZipName);
@@ -155,7 +157,7 @@ public class CompleteConfig {
         return String.join(File.separator,
                 PathUtils.getDefaultResourcePath(),
                 localDir,
-                ideProductNameWithEdition,
+                PRODUCT_NAME_WITH_EDITION,
                 modelFolder,
                 PLUGIN_VERSION + lowLine + model.getModelVersion());
     }
@@ -170,7 +172,7 @@ public class CompleteConfig {
         return String.join(File.separator,
                 PathUtils.getDefaultResourcePath(),
                 localDir,
-                ideProductNameWithEdition,
+                PRODUCT_NAME_WITH_EDITION,
                 modelFolder,
                 getVersionFolder(model),
                 model.modelUnzipFolderName);
@@ -186,7 +188,7 @@ public class CompleteConfig {
         return String.join(File.separator,
                 PathUtils.getDefaultResourcePath(),
                 localDir,
-                ideProductNameWithEdition,
+                PRODUCT_NAME_WITH_EDITION,
                 modelFolder,
                 getVersionFolder(model),
                 model.modelUnzipFolderName,
@@ -202,7 +204,7 @@ public class CompleteConfig {
         return String.join(File.separator,
                 PathUtils.getDefaultResourcePath(),
                 localDir,
-                ideProductNameWithEdition,
+                PRODUCT_NAME_WITH_EDITION,
                 modelFolder);
     }
 

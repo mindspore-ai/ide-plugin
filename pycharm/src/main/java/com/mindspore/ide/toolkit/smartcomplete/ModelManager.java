@@ -168,7 +168,7 @@ public enum ModelManager {
         String options) throws CompletionException {
         if (oldModelProcess == null) {
             return Optional.empty();
-        } else if (oldModelProcess != null && oldModelProcess.isAlive()) {
+        } else if (oldModelProcess.isAlive()) {
             // 如果旧模型is alive，调用旧模型
             return oldModelProcess.retrieveCompletions(before, options);
         } else if (oldModelProcess.isInited() && !oldModelProcess.isAlive()) {
@@ -205,7 +205,7 @@ public enum ModelManager {
         log.info("Stop old model process done, current time is {}.", System.currentTimeMillis());
         // 删除旧模型文件
         Long startTime = System.currentTimeMillis();
-        while (FileUtils.fileExist(completeConfig.getModelZipParentPath(oldModel))) {
+        while (FileUtils.fileExist(completeConfig.getModelFolderPath())) {
             modelFile.deleteInvalidModelAsync(completeConfig);
             if (System.currentTimeMillis() - startTime > deleteOverTime) {
                 break;
