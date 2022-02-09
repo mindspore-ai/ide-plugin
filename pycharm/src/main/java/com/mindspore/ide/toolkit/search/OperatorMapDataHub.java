@@ -16,6 +16,7 @@
 
 package com.mindspore.ide.toolkit.search;
 
+import com.mindspore.ide.toolkit.search.entity.MsOperatorInfo;
 import com.vladsch.flexmark.ast.Link;
 import com.vladsch.flexmark.ast.Paragraph;
 import com.vladsch.flexmark.ast.SoftLineBreak;
@@ -23,12 +24,15 @@ import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.data.MutableDataSet;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * md file to map
@@ -38,30 +42,36 @@ import java.util.Set;
 public enum OperatorMapDataHub implements SearchEveryWhereDataHub<String> {
     INSTANCE;
 
+    private static final boolean IS_SHOW_MINDSPORE_OPERATOR = false;
+
     private Map<String, String> linkMap = new HashMap<>();
-    private Map<String, String> operatorMap = new HashMap<>();
-    private Map<String, String> nodeMap = new HashMap<>();
+    private Map<String, List<MsOperatorInfo>> operatorMap = new HashMap<>();
+    private Map<String, List<String>> nodeMap = new HashMap<>();
 
     OperatorMapDataHub() {
         mdStringList(MdPathString.PYTORCH_MD_STR);
         mdStringList(MdPathString.TENSORFLOW_MD_STR);
-        operatorMap.entrySet().forEach(entry -> suffixStringSplit(entry.getKey(), true));
-        linkMap.entrySet().forEach(entry -> suffixStringSplit(entry.getKey(), false));
+        operatorMap.entrySet().forEach(entry -> suffixStringSplit(entry.getKey()));
+        if (IS_SHOW_MINDSPORE_OPERATOR) {
+            linkMap.entrySet().forEach(entry -> suffixStringSplit(entry.getKey()));
+        }
     }
 
     @Override
-    public Map<String, String> assemble(List<String> topOperators, String input) {
+    public Map<String, String> assemble(List<String> topResults, String input, int count) {
         Map<String, String> result = new LinkedHashMap<>();
-        for (String operatorAlias : topOperators) {
-            String operator = nodeMap.get(operatorAlias);
-            if (!operator.toLowerCase(Locale.ENGLISH).contains(input.toLowerCase(Locale.ENGLISH))) {
-                continue;
-            }
-            if (operatorMap.containsKey(operator)) {
-                String target = operatorMap.get(operator);
-                result.put(operator + " -> " + target, linkMap.get(target));
-            } else {
-                result.put(operator, linkMap.get(operator));
+        for (String topResult : topResults) {
+            for (String operator : nodeMap.get(topResult).stream().sorted().collect(Collectors.toList())) {
+                if (result.size() >= count) {
+                    return result;
+                }
+                if (!operatorMap.containsKey(operator)) {
+                    result.put(operator, linkMap.get(operator));
+                    continue;
+                }
+                for (MsOperatorInfo value : operatorMap.get(operator)) {
+                    result.put(operator + " -> " + value.getMindSporeOperator(), value.getLink());
+                }
             }
         }
         return result;
@@ -120,24 +130,24 @@ public enum OperatorMapDataHub implements SearchEveryWhereDataHub<String> {
             Map.Entry<String, String> entry = entries[1];
             // 去除第二条为diff的情况
             if (!entry.getKey().equals("diff")) {
+                List msOperatorInfos = operatorMap.getOrDefault(otherString, new LinkedList());
+                msOperatorInfos.add(new MsOperatorInfo(entry.getKey(), entry.getValue()));
                 linkMap.put(entry.getKey(), entry.getValue());
-                operatorMap.put(otherString, entry.getKey());
+                operatorMap.put(otherString, msOperatorInfos);
             }
         }
         // 清除缓存数据
         mapList.clear();
     }
 
-    private void suffixStringSplit(String key, boolean isAllowDuplicate) {
+    private void suffixStringSplit(String key) {
         String[] keyNode = key.toLowerCase(Locale.ENGLISH).split("\\.");
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i = keyNode.length - 1; i >= 0; i--) {
             sb.insert(0, keyNode[i]);
-            if (isAllowDuplicate && nodeMap.containsKey(sb.toString())) {
-                nodeMap.putIfAbsent(sb + "." + keyNode[0], key);
-            } else {
-                nodeMap.putIfAbsent(sb.toString(), key);
-            }
+            List<String> operators = nodeMap.getOrDefault(sb.toString(), new ArrayList<>());
+            operators.add(key);
+            nodeMap.put(sb.toString(), operators);
             sb.insert(0, ".");
         }
     }

@@ -39,9 +39,10 @@ public interface SearchEveryWhereDataHub<T> {
      *
      * @param rawList raw search result from index
      * @param search search info
+     * @param count expected result set length
      * @return result map to show
      */
-    Map<String, String> assemble(List<T> rawList, String search);
+    Map<String, String> assemble(List<T> rawList, String search, int count);
 
     /**
      * get operator data hub by this interface
