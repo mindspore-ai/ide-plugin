@@ -47,7 +47,8 @@ import java.util.Set;
 @PrepareForTest({NotificationUtils.class,
         FileUtils.class, ResourceManager.class,
         PluginManagerCore.class,
-        ApplicationNamesInfo.class})
+        ApplicationNamesInfo.class,
+        CompleteConfig.class})
 public class ModelFileTest {
     @Before
     public void setUp() {
@@ -64,6 +65,12 @@ public class ModelFileTest {
         PowerMockito.when(applicationNamesInfo.getFullProductNameWithEdition()).thenReturn("test");
         PowerMockito.mockStatic(ApplicationNamesInfo.class);
         PowerMockito.when(ApplicationNamesInfo.getInstance()).thenReturn(applicationNamesInfo);
+
+        CompleteConfig completeConfig = PowerMockito.mock(CompleteConfig.class);
+        CompleteConfig.Model model = new CompleteConfig.Model();
+        PowerMockito.when(completeConfig.getCurrentModel()).thenReturn(model);
+        PowerMockito.mockStatic(CompleteConfig.class);
+        PowerMockito.when(CompleteConfig.get()).thenReturn(completeConfig);
     }
 
     @Test
@@ -76,7 +83,7 @@ public class ModelFileTest {
         Assertions.assertDoesNotThrow(() -> {
             Whitebox.invokeMethod(modelFile,
                     "deleteInvalidModel",
-                    completeConfig, directoryName, modelFolderPath);
+                    directoryName, modelFolderPath);
         });
 
         modelFile.shutdownExecutor();
@@ -84,7 +91,6 @@ public class ModelFileTest {
 
     @Test
     public void deleteInvalidModelAsyncTest() throws IOException {
-        CompleteConfig completeConfig = CompleteConfig.get();
         ModelFile modelFile = new ModelFile();
 
         Set<String> directoryNameSet = new HashSet<>();
@@ -93,7 +99,7 @@ public class ModelFileTest {
         PowerMockito.when(FileUtils.listAllDirectory(Mockito.any()))
                 .thenReturn(directoryNameSet);
         Assertions.assertDoesNotThrow(() -> {
-            modelFile.deleteInvalidModelAsync(completeConfig);
+            modelFile.deleteInvalidModelAsync();
         });
         modelFile.shutdownExecutor();
     }
@@ -102,23 +108,13 @@ public class ModelFileTest {
     public void fetchModelFileTest() {
         ModelFile modelFile = new ModelFile();
         Assertions.assertFalse(modelFile.fetchModelFile());
-
-        PowerMockito.mockStatic(ResourceManager.class);
-        PowerMockito.when(ResourceManager
-                .downloadResource(Mockito.any(),
-                        Mockito.any(),
-                        Mockito.any())).thenReturn(true);
-
-        Method unzipResourceMethod = PowerMockito.method(ResourceManager.class,
-                "unzipResource",
-                String.class, String.class);
-        PowerMockito.suppress(unzipResourceMethod);
-        Assertions.assertTrue(modelFile.fetchModelFile());
     }
 
     @Test
     public void modelExeExistsTest() {
         ModelFile modelFile = new ModelFile();
-        Assertions.assertFalse(modelFile.modelExeExists());
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            modelFile.modelExeExists();
+        });
     }
 }

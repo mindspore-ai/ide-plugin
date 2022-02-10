@@ -1,16 +1,18 @@
 package com.mindspore.ide.toolkit.smartcomplete;
 
 import com.intellij.notification.NotificationType;
+
 import com.mindspore.ide.toolkit.common.utils.FileUtils;
 import com.mindspore.ide.toolkit.common.utils.NotificationUtils;
 import com.mindspore.ide.toolkit.protomessage.CompleteReply;
 import com.mindspore.ide.toolkit.smartcomplete.grpc.CompletionException;
 import com.mindspore.ide.toolkit.smartcomplete.grpc.PortUtil;
 import com.mindspore.ide.toolkit.smartcomplete.grpc.SmartCompletionClient;
+
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -23,6 +25,8 @@ import java.util.Optional;
  */
 @Slf4j
 public class ModelProcess {
+    private final CompleteConfig completeConfig = CompleteConfig.get();
+
     private Process proc;
 
     private int port;
@@ -34,22 +38,28 @@ public class ModelProcess {
     /**
      * 初始化指定模型
      *
-     * @param completeConfig 模型配置
      * @param model 待初始化的模型
      */
-    public void initModel(CompleteConfig completeConfig, CompleteConfig.Model model) {
+    public void initModel(CompleteConfig.Model model) {
         isInited = false;
+        String notifyContent = "Init smart complete model %s."
+                + " Plugin version is " + model.getPluginVersion()
+                + ". Model version is " + model.getModelVersion() + ".";
         try {
-            initProcessAndPort(completeConfig, model);
+            initProcessAndPort(model);
         } catch (IOException ioException) {
+            log.error("Init smart complete model failed. Plugin version is {}. Model version is {}.",
+                    model.getPluginVersion(), model.getModelVersion(), ioException);
+        }
+        if (isInited) {
+            NotificationUtils.notify(NotificationUtils.NotifyGroup.SMART_COMPLETE,
+                    NotificationType.INFORMATION,
+                    String.format(notifyContent, "succeed"));
+        } else {
             NotificationUtils.notify(NotificationUtils.NotifyGroup.SMART_COMPLETE,
                     NotificationType.ERROR,
-                    "Init smart complete model failed. Model version is " + model.getModelVersion());
-            log.error("Init smart complete model failed. Model version is {}.", model.getModelVersion(), ioException);
+                    String.format(notifyContent, "failed"));
         }
-        NotificationUtils.notify(NotificationUtils.NotifyGroup.SMART_COMPLETE,
-                NotificationType.INFORMATION,
-                "Init smart complete model succeed. Model version is " + model.getModelVersion());
     }
 
     /**
@@ -103,7 +113,7 @@ public class ModelProcess {
         return isInited;
     }
 
-    private void initProcessAndPort(CompleteConfig completeConfig, CompleteConfig.Model model) throws IOException {
+    private void initProcessAndPort(CompleteConfig.Model model) throws IOException {
         this.port = PortUtil.findAnIdlePort(DEFAULT_PORT);
         if (this.port == 0) {
             log.info("Cannot find available port, init complete model failed. Model version is {}.",
@@ -113,12 +123,12 @@ public class ModelProcess {
                 proc.destroy();
                 proc = null;
             }
-            initProcess(completeConfig, model);
+            initProcess(model);
             isInited = true;
         }
     }
 
-    private void initProcess(@NotNull CompleteConfig completeConfig, CompleteConfig.Model model) throws IOException {
+    private void initProcess(CompleteConfig.Model model) throws IOException {
         ProcessBuilder builder = new ProcessBuilder(new String[]{completeConfig.getModelExeFullPath(model),
                 "-p", String.valueOf(this.port)});
         builder.directory(FileUtils.getFile(completeConfig.getModelUnzipFolderFullPath(model)));

@@ -50,19 +50,17 @@ public class MsEnvValidator {
         String validatorFileFullPathStr = String.join(File.separator,
                 PathUtils.getDefaultResourcePath(),
                 GlobalConfig.get().getMsEnvValidatorFile());
-        Path validatorFileFullPath = Path.of(validatorFileFullPathStr);
-        if (!Files.exists(validatorFileFullPath)) {
-            final byte[] fileContent = ("import mindspore"
-                    + System.lineSeparator() + "mindspore.run_check()")
-                    .getBytes(StandardCharsets.UTF_8);
-            try {
-                Files.write(validatorFileFullPath, fileContent);
-            } catch (IOException ioException) {
-                log.error("MsEnvValidator.validateMindSpore-Write python file failed.", ioException);
-                return MsEnvStatus.UNKNOWN;
-            }
+        try {
+            writeValidatorPyFile(validatorFileFullPathStr);
+        } catch (IOException ioException) {
+            log.warn("MsEnvValidator.validateMindSpore-Write python file failed.", ioException);
+            return MsEnvStatus.UNKNOWN;
         }
 
+        return validateMindSporeEnv(sdk, validatorFileFullPathStr);
+    }
+
+    private static MsEnvStatus validateMindSporeEnv(Sdk sdk, String validatorFileFullPathStr) {
         MsEnvStatus msEnvStatus = MsEnvStatus.UNAVAILABLE;
         try {
             ProcessOutput output = PyCondaRunKt.runCondaPython(sdk.getHomePath(),
@@ -74,11 +72,21 @@ public class MsEnvValidator {
                 msEnvStatus = MsEnvStatus.AVAILABLE;
             }
         } catch (ExecutionException executionException) {
-            log.error("MsEnvValidator.validateMindSpore-Execute validator file failed.", executionException);
+            log.warn("MsEnvValidator.validateMindSpore-Execute validator file failed.", executionException);
             msEnvStatus = MsEnvStatus.UNKNOWN;
         }
 
         return msEnvStatus;
+    }
+
+    private static void writeValidatorPyFile(String validatorFileFullPathStr) throws IOException {
+        Path validatorFileFullPath = Path.of(validatorFileFullPathStr);
+        if (!Files.exists(validatorFileFullPath)) {
+            final byte[] fileContent = ("import mindspore"
+                    + System.lineSeparator() + "mindspore.run_check()")
+                    .getBytes(StandardCharsets.UTF_8);
+            Files.write(validatorFileFullPath, fileContent);
+        }
     }
 
     /**

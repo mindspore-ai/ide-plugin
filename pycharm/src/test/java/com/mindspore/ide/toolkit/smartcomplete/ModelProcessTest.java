@@ -49,7 +49,8 @@ import java.lang.reflect.Method;
         ModelProcess.class,
         NotificationUtils.class,
         PluginManagerCore.class,
-        ApplicationNamesInfo.class})
+        ApplicationNamesInfo.class,
+        CompleteConfig.class})
 public class ModelProcessTest {
     @Before
     public void setUp() {
@@ -62,6 +63,12 @@ public class ModelProcessTest {
         PowerMockito.when(applicationNamesInfo.getFullProductNameWithEdition()).thenReturn("test");
         PowerMockito.mockStatic(ApplicationNamesInfo.class);
         PowerMockito.when(ApplicationNamesInfo.getInstance()).thenReturn(applicationNamesInfo);
+
+        CompleteConfig completeConfig = PowerMockito.mock(CompleteConfig.class);
+        CompleteConfig.Model model = new CompleteConfig.Model();
+        PowerMockito.when(completeConfig.getCurrentModel()).thenReturn(model);
+        PowerMockito.mockStatic(CompleteConfig.class);
+        PowerMockito.when(CompleteConfig.get()).thenReturn(completeConfig);
     }
 
     @Test
@@ -86,7 +93,7 @@ public class ModelProcessTest {
         PowerMockito.suppress(getFileMethod);
 
         Assertions.assertThrows(NullPointerException.class, () -> {
-            Whitebox.invokeMethod(modelProcess, "initProcess", completeConfig, model);
+            Whitebox.invokeMethod(modelProcess, "initProcess", model);
         });
     }
 
@@ -106,7 +113,7 @@ public class ModelProcessTest {
         PowerMockito.when(completeConfig.getModelUnzipFolderFullPath(model)).thenReturn(null);
 
         Assertions.assertDoesNotThrow(() -> {
-            Whitebox.invokeMethod(modelProcess, "initProcessAndPort", completeConfig, model);
+            Whitebox.invokeMethod(modelProcess, "initProcessAndPort", model);
         });
 
         // 当port不为0的时候
@@ -115,7 +122,7 @@ public class ModelProcessTest {
         // ModelProcess的proc为null的情况
         Method initProcessMethod = PowerMockito.method(ModelProcess.class, "initProcess");
         PowerMockito.suppress(initProcessMethod);
-        Whitebox.invokeMethod(modelProcess, "initProcessAndPort", completeConfig, model);
+        Whitebox.invokeMethod(modelProcess, "initProcessAndPort", model);
 
         // ModelProcess的proc不为null的情况
         MyProcess myProcess = new MyProcess();
@@ -124,7 +131,7 @@ public class ModelProcessTest {
 
         Assertions.assertTrue(modelProcess.isAlive());
 
-        Whitebox.invokeMethod(modelProcess, "initProcessAndPort", completeConfig, model);
+        Whitebox.invokeMethod(modelProcess, "initProcessAndPort", model);
 
         Assertions.assertTrue(modelProcess.isInited());
         Assertions.assertFalse(modelProcess.isAlive());
@@ -153,7 +160,7 @@ public class ModelProcessTest {
     }
 
     @Test
-    public void initModelTest() throws Exception {
+    public void initModelTest() {
         ModelProcess modelProcess = new ModelProcess();
 
         CompleteConfig.Model model = PowerMockito.mock(CompleteConfig.Model.class);
@@ -162,16 +169,16 @@ public class ModelProcessTest {
                 NotificationUtils.NotifyGroup.class, NotificationType.class, String.class);
         PowerMockito.suppress(notifyMethod);
 
-        Assertions.assertDoesNotThrow(() -> {
-            modelProcess.initModel(Whitebox.newInstance(CompleteConfig.class), model);
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            modelProcess.initModel(model);
         });
 
         Method initProcessAndPortMethod = PowerMockito.method(ModelProcess.class,
                 "initProcessAndPort",
-                CompleteConfig.class, CompleteConfig.Model.class);
+                CompleteConfig.Model.class);
         PowerMockito.suppress(initProcessAndPortMethod);
         Assertions.assertDoesNotThrow(() -> {
-            modelProcess.initModel(Whitebox.newInstance(CompleteConfig.class), model);
+            modelProcess.initModel(model);
         });
     }
 

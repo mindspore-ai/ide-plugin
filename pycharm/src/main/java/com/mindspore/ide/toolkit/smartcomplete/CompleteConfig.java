@@ -1,21 +1,26 @@
 package com.mindspore.ide.toolkit.smartcomplete;
 
 import com.google.gson.Gson;
+
 import com.intellij.ide.plugins.PluginManagerCore;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.ApplicationNamesInfo;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.util.SystemInfo;
+
 import com.mindspore.ide.toolkit.common.ResourceManager;
 import com.mindspore.ide.toolkit.common.config.GlobalConfig;
 import com.mindspore.ide.toolkit.common.utils.FileUtils;
 import com.mindspore.ide.toolkit.common.utils.NotificationUtils;
 import com.mindspore.ide.toolkit.common.utils.PathUtils;
 import com.mindspore.ide.toolkit.common.utils.YamlUtils;
+
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,7 +55,7 @@ public class CompleteConfig {
 
     private String modelFolder;
 
-    private Map<String, Model> modelMap;
+    private Map<String, ModelOfSpecificOs> modelMap;
 
     private static class ConfigBuilder {
         private static final CompleteConfig CONFIG;
@@ -72,7 +77,7 @@ public class CompleteConfig {
                     PRODUCT_NAME_WITH_EDITION,
                     MODEL_INFO.getNewConfig());
 
-            if (SystemInfo.isWindows) {
+            if (SystemInfo.isWindows || SystemInfo.isLinux) {
                 int maxDownloadTimes = 3;
                 boolean downloadSucceed = false;
                 for (int i = 0; i < maxDownloadTimes; i++) {
@@ -143,7 +148,8 @@ public class CompleteConfig {
                 localDir,
                 PRODUCT_NAME_WITH_EDITION,
                 modelFolder,
-                getVersionFolder(model),
+                model.pluginVersion,
+                model.modelVersion,
                 model.modelZipName);
     }
 
@@ -159,7 +165,8 @@ public class CompleteConfig {
                 localDir,
                 PRODUCT_NAME_WITH_EDITION,
                 modelFolder,
-                PLUGIN_VERSION + lowLine + model.getModelVersion());
+                model.pluginVersion,
+                model.modelVersion);
     }
 
     /**
@@ -174,7 +181,8 @@ public class CompleteConfig {
                 localDir,
                 PRODUCT_NAME_WITH_EDITION,
                 modelFolder,
-                getVersionFolder(model),
+                model.pluginVersion,
+                model.modelVersion,
                 model.modelUnzipFolderName);
     }
 
@@ -190,7 +198,8 @@ public class CompleteConfig {
                 localDir,
                 PRODUCT_NAME_WITH_EDITION,
                 modelFolder,
-                getVersionFolder(model),
+                model.pluginVersion,
+                model.modelVersion,
                 model.modelUnzipFolderName,
                 model.modelExePath);
     }
@@ -209,14 +218,29 @@ public class CompleteConfig {
     }
 
     /**
+     * get plugin version folder path
+     *
+     * @param pluginVersion plugin version
+     * @return String
+     */
+    public String getPluginVersionFolderPath(@NotNull String pluginVersion) {
+        return String.join(File.separator,
+                PathUtils.getDefaultResourcePath(),
+                localDir,
+                PRODUCT_NAME_WITH_EDITION,
+                modelFolder,
+                pluginVersion);
+    }
+
+    /**
      * get current model
      *
      * @return current model
      */
     public Model getCurrentModel() {
-        Model model = modelMap.get(PLUGIN_VERSION);
+        Model model = modelMap.get(PLUGIN_VERSION).getModelOfCurrentOs();
         if (model == null) {
-            model = modelMap.get(defaultPluginVersion);
+            model = modelMap.get(defaultPluginVersion).getModelOfCurrentOs();
             model.setPluginVersion(defaultPluginVersion);
         } else {
             model.setPluginVersion(PLUGIN_VERSION);
@@ -230,48 +254,35 @@ public class CompleteConfig {
      * @return Optional<Model>
      */
     public Optional<Model> getOldModelInDisk() {
-        Set<String> directoryNameSet = Collections.emptySet();
+        Set<String> pluginVersionSet = Collections.emptySet();
         try {
-            directoryNameSet = FileUtils.listAllDirectory(Paths.get(getModelFolderPath()));
+            pluginVersionSet = FileUtils.listAllDirectory(Paths.get(getModelFolderPath()));
         } catch (IOException ioException) {
-            log.error("List model file failed.", ioException);
+            log.error("List model file failed, cannot list plugin version.", ioException);
         }
 
-        Model model = getCurrentModel();
-        String versionFolder = getVersionFolder(model);
-        for (String directoryName : directoryNameSet) {
-            if (!Objects.equals(versionFolder, directoryName)) {
-                // 这里获得old Model
-                Model oldModel = cloneModel(model);
-                String pluginVersion = null;
-                String modelVersion = directoryName;
-                if (directoryName.split(lowLine).length == 2) {
-                    pluginVersion = directoryName.split(lowLine)[0];
-                    modelVersion = directoryName.split(lowLine)[1];
+        for (String pluginVersion : pluginVersionSet) {
+            Set<String> modelVersionSet = Collections.emptySet();
+            try {
+                modelVersionSet = FileUtils.listAllDirectory(Paths.get(getPluginVersionFolderPath(pluginVersion)));
+            } catch (IOException ioException) {
+                log.error("List model file failed, cannot list model version.", ioException);
+            }
+
+            Model currentModel = getCurrentModel();
+            for (String modelVersion : modelVersionSet) {
+                if (!Objects.equals(pluginVersion, currentModel.pluginVersion)
+                    || !Objects.equals(modelVersion, currentModel.modelVersion)) {
+                    // 这里获得old Model
+                    Model oldModel = cloneModel(currentModel);
+                    oldModel.setModelVersion(modelVersion);
+                    oldModel.setPluginVersion(pluginVersion);
+                    return Optional.of(oldModel);
                 }
-                oldModel.setModelVersion(modelVersion);
-                oldModel.setPluginVersion(pluginVersion);
-                return Optional.of(oldModel);
             }
         }
 
         return Optional.empty();
-    }
-
-    /**
-     * 获取版本号文件夹名称
-     *
-     * @param model 模型
-     * @return String
-     */
-    public String getVersionFolder(Model model) {
-        String versionFolder;
-        if (model.pluginVersion == null) {
-            versionFolder = model.modelVersion;
-        } else {
-            versionFolder = model.pluginVersion + lowLine + model.modelVersion;
-        }
-        return versionFolder;
     }
 
     private Model cloneModel(Model model) {
@@ -283,6 +294,29 @@ public class CompleteConfig {
         // pluginIdStr为build.gradle里面的group（'com.mindspore'）
         String pluginIdStr = "com.mindspore";
         return PluginManagerCore.getPlugin(PluginId.getId(pluginIdStr)).getVersion();
+    }
+
+    /**
+     * ModelOfSpecificOs
+     *
+     * @since 2022-2-11
+     */
+    public static class ModelOfSpecificOs {
+        private Model windows;
+        private Model linux;
+
+        /**
+         * 获取当前操作系统对应的最新的模型
+         *
+         * @return 模型实例
+         */
+        public Model getModelOfCurrentOs() {
+            if (SystemInfo.isWindows) {
+                return windows;
+            } else {
+                return linux;
+            }
+        }
     }
 
     /**
