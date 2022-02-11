@@ -79,6 +79,12 @@ public class CustomMSProjectStep extends ProjectSpecificSettingsStep {
 
     @Override
     public boolean checkValid() {
+        if (OSInfoUtils.isLinux() && !projectPeer.getCondaEnvPath().contains(projectPeer.getCondaEnvPathAll())) {
+            setWarningText("This environment path is invalid."
+                    + " Please choose new environment location in Conda install path.");
+            return false;
+        }
+
         if (projectPeer.getNewEnvironmentUsingRadioButton().isSelected()
                 && Files.exists(Path.of(projectPeer.getCondaEnvPath()))) {
             setWarningText("Env dir is exist!");
