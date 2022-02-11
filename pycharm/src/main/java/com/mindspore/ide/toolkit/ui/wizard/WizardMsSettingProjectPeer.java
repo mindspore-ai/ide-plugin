@@ -30,6 +30,7 @@ import com.intellij.openapi.ui.ValidationInfo;
 import com.intellij.openapi.util.NlsSafe;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.platform.ProjectGeneratorPeer;
 import com.intellij.util.containers.ContainerUtil;
 import com.jetbrains.python.newProject.PyNewProjectSettings;
@@ -134,6 +135,15 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
         initCondaMap();
         initTemplate();
         pyVersionWarnLabel.setText("Python version must equal to 3.7.5 or 3.9.0");
+    }
+
+    /**
+     * get conda env path
+     *
+     * @return conda env path
+     */
+    public String getCondaEnvPathAll() {
+        return condaEnvPathAll;
     }
 
     /**
@@ -343,8 +353,13 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer imp
                 .getButton().getActionListeners().length > 0) {
             return;
         }
-        condaEnvBrowserButton.addBrowseFolderListener(new TextBrowseFolderListener(new FileChooserDescriptor(false,
-                true, false, false, false, false)) {
+        FileChooserDescriptor condaEnvBrowserChooser = new FileChooserDescriptor(false,
+                true, false, false, false, false);
+        if (OSInfoUtils.isLinux()) {
+            condaEnvBrowserChooser.setRoots(VirtualFileManager.getInstance()
+                    .findFileByNioPath(Path.of(condaEnvPathAll)));
+        }
+        condaEnvBrowserButton.addBrowseFolderListener(new TextBrowseFolderListener(condaEnvBrowserChooser) {
             @Override
             @NotNull
             @NlsSafe
