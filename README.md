@@ -47,55 +47,13 @@ MindSpore Dev Toolkit提供如下功能：
 * 快速搜索MindSpore算子，在侧边栏直接展示算子详情。
 * 为方便其他机器学习框架用户，通过搜索其他主流框架算子，联想匹配对应MindSpore算子。
 
+## 安装及快速入门
+
+参考[快速入门](https://gitee.com/mindspore/ide-plugin/blob/master/MindSpore%20Dev%20Toolkit.md)。
 
 ## 构建
 
-### 依赖与编译
-
-基本要求：
-
-* Gradle（>=7.2)
-
-* JDK(>=11)
-
-运行 git clone命令下载代码，通过IDE打开项目，在IDE Terminal中运行以下命令进行编译：
-
-  ```
-$ gradle buildPlugin
-  ```
-
-构建完成后，切换至build/distributions文件夹获取.zip格式压缩包。
-
-### 安装
-
-获取插件Zip包。
-
-启动Pycharm单击左上菜单栏，选择File->Settings->Plugins->Install Plugin from Disk。
-
-![image-20211223175637989](./images/image-20211223175637989.png)
-
-选中构建产生的ZIP压缩包。
-
-
-### 运行和调试
-
-1. 运行git clone命令下载代码
-
-```
-git clone https://gitee.com/mindspore/ide-plugin.git
-```
-
-2. 在位于gradle的toolwindow，点击图标"Reload all Gradle Projects"
-
-   * reload 成功后，可以单击ide-plugin->Tasks->build->build,等待工程编译成功。
-
-   * 单击ide-plugin->Tasks->intellij->runIde,可以启动沙盒。
-
-3. 现在您可以点击运行，方式为点击Run>Run(build/runIde) 或者run>Debug(安全模式)。
-
-## 快速入门
-
-参考[快速入门](https://gitee.com/mindspore/ide-plugin/blob/master/MindSpore%20Dev%20Toolkit.md)。
+参考[编译指导](https://gitee.com/mindspore/ide-plugin/blob/master/编译指导.md)。
 
 ## 社区
 
