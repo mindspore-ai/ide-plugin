@@ -173,8 +173,15 @@ public class MindSporeService {
                 try {
                     DialogInfo dialogInfo = MindSporeService.installMindSporeIntoConda(hardware, sdk);
                     dialogInfo.showDialog("Install MindSpore into conda");
-                    return dialogInfo.isSuccessful()
-                            && MsEnvValidator.validateMindSpore(sdk) == MsEnvValidator.MsEnvStatus.AVAILABLE;
+                    boolean isMsEnvValidate =
+                        MsEnvValidator.validateMindSpore(sdk) == MsEnvValidator.MsEnvStatus.AVAILABLE;
+                    if (!isMsEnvValidate && dialogInfo.isSuccessful()) {
+                        new ExceptionDialogInfo.Builder()
+                                .isSuccessful(false)
+                                .description("The dependency package related to \"MindSpore\" cannot be found.")
+                                .build().showDialog("Install MindSpore into conda");
+                    }
+                    return isMsEnvValidate && dialogInfo.isSuccessful();
                 } catch (MsToolKitException msToolKitException) {
                     ExceptionDialogInfo.parseException(msToolKitException).showDialog("Install MindSpore into conda");
                     return false;

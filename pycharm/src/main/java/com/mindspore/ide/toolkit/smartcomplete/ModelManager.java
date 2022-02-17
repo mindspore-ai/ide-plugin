@@ -1,9 +1,9 @@
 package com.mindspore.ide.toolkit.smartcomplete;
 
-import com.intellij.openapi.util.SystemInfo;
 import com.mindspore.ide.toolkit.common.utils.FileUtils;
 import com.mindspore.ide.toolkit.protomessage.CompleteReply;
 import com.mindspore.ide.toolkit.smartcomplete.grpc.CompletionException;
+
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;
@@ -55,26 +55,36 @@ public enum ModelManager {
      * start model
      */
     public void startCompleteModel() {
-        if (!SystemInfo.isWindows) {
-            return;
-        }
-        if (isCurrentModelUseful()) {
-            startCompleteModelWhileHasCurrentModel();
-            return;
-        }
-        if (oldModel == null) {
-            return;
-        }
-        startCompleteModelWhileNoCurrentModel();
+        modelExecutor.execute(() -> {
+            synchronized (modelLock) {
+                if (modelProcess != null) {
+                    return;
+                }
+
+                if (modelFile.modelExeExists()) {
+                    // 当前模型存在
+                    log.info("Start current model.");
+                    startCurrentModel();
+                } else if (oldModel == null) {
+                    // 当前模型和旧模型都不存在，获取并启动当前模型
+                    log.info("Download and start current model.");
+                    modelFile.fetchModelFile();
+                    startCurrentModel();
+                } else {
+                    // 当前模型不存在，旧模型存在。启动旧模型，同时获取并启动当前模型
+                    log.info("Start old model and download current model.");
+                    startOldModel();
+                    log.info("Start old model process done, current time is {}.", System.currentTimeMillis());
+                    startCurrentModelAndStopOldModel();
+                }
+            }
+        });
     }
 
     /**
      * shut down
      */
     public void shutDownSmartCompleteModel() {
-        if (!SystemInfo.isWindows) {
-            return;
-        }
         if (modelProcess != null) {
             modelProcess.shutDownModel();
         }
@@ -94,52 +104,6 @@ public enum ModelManager {
      * @throws CompletionException completion exception
      */
     public Optional<CompleteReply> communicateWithModel(String before, String options) throws CompletionException {
-        if (!SystemInfo.isWindows) {
-            return Optional.empty();
-        }
-        if (isCurrentModelUseful()) {
-            return communicateWithModelWhileHasCurrentModel(before, options);
-        }
-        if (oldModel == null) {
-            return Optional.empty();
-        }
-        return communicateWithModelWhileNoCurrentModel(before, options);
-    }
-
-    private void startCompleteModelWhileHasCurrentModel() {
-        modelExecutor.execute(() -> {
-            synchronized (modelLock) {
-                if (modelProcess != null) {
-                    return;
-                }
-
-                if (modelFile.modelExeExists()) {
-                    // 当前模型存在
-                    startCurrentModel();
-                } else if (oldModel == null) {
-                    // 当前模型和旧模型都不存在，获取并启动当前模型
-                    modelFile.fetchModelFile();
-                    startCurrentModel();
-                } else {
-                    // 当前模型不存在，旧模型存在。启动旧模型，同时获取并启动当前模型
-                    startOldModel();
-                    log.info("Start old model process done, current time is {}.", System.currentTimeMillis());
-                    startCurrentModelAndStopOldModel();
-                }
-            }
-        });
-    }
-
-    private void startCompleteModelWhileNoCurrentModel() {
-        modelExecutor.execute(() -> {
-            synchronized (modelLock) {
-                startOldModel();
-            }
-        });
-    }
-
-    private Optional<CompleteReply> communicateWithModelWhileHasCurrentModel(String before,
-        String options) throws CompletionException {
         if (modelProcess == null && oldModelProcess != null) {
             // 新模型进程未启动，旧模型进程已启动
             if (oldModelProcess.isAlive()) {
@@ -164,23 +128,6 @@ public enum ModelManager {
         }
     }
 
-    private Optional<CompleteReply> communicateWithModelWhileNoCurrentModel(String before,
-        String options) throws CompletionException {
-        if (oldModelProcess == null) {
-            return Optional.empty();
-        } else if (oldModelProcess.isAlive()) {
-            // 如果旧模型is alive，调用旧模型
-            return oldModelProcess.retrieveCompletions(before, options);
-        } else if (oldModelProcess.isInited() && !oldModelProcess.isAlive()) {
-            // 模型进程初始化过，但是非alive，需要重启
-            // 该情况表示，模型曾经启动过，但是模型exe文件因某些原因被停掉了，因此要重启
-            restartOldCompleteModel();
-            return Optional.empty();
-        } else {
-            return Optional.empty();
-        }
-    }
-
     private void startCurrentModelAndStopOldModel() {
         modelExecutor.execute(() -> {
             synchronized (modelLock) {
@@ -189,7 +136,7 @@ public enum ModelManager {
                     return;
                 }
                 modelProcess = new ModelProcess();
-                modelProcess.initModel(completeConfig, currentModel);
+                modelProcess.initModel(currentModel);
                 log.info("Start current model process done, current time is {}.", System.currentTimeMillis());
                 // 启动当前模型之后，关闭并删除旧的模型
                 shutdownAndDeleteOldModel();
@@ -206,7 +153,7 @@ public enum ModelManager {
         // 删除旧模型文件
         Long startTime = System.currentTimeMillis();
         while (FileUtils.fileExist(completeConfig.getModelFolderPath())) {
-            modelFile.deleteInvalidModelAsync(completeConfig);
+            modelFile.deleteInvalidModelAsync();
             if (System.currentTimeMillis() - startTime > deleteOverTime) {
                 break;
             }
@@ -220,17 +167,7 @@ public enum ModelManager {
                     if (!modelFile.modelExeExists()) {
                         modelFile.fetchModelFile();
                     }
-                    modelProcess.initModel(completeConfig, currentModel);
-                }
-            }
-        });
-    }
-
-    private void restartOldCompleteModel() {
-        modelExecutor.execute(() -> {
-            synchronized (modelLock) {
-                if (oldModelProcess.isInited() && !oldModelProcess.isAlive()) {
-                    oldModelProcess.initModel(completeConfig, oldModel);
+                    modelProcess.initModel(currentModel);
                 }
             }
         });
@@ -240,9 +177,9 @@ public enum ModelManager {
         if (modelProcess != null || !modelFile.modelExeExists()) {
             return;
         }
-        modelFile.deleteInvalidModelAsync(completeConfig);
+        modelFile.deleteInvalidModelAsync();
         modelProcess = new ModelProcess();
-        modelProcess.initModel(completeConfig, currentModel);
+        modelProcess.initModel(currentModel);
     }
 
     private void startOldModel() {
@@ -250,13 +187,6 @@ public enum ModelManager {
             return;
         }
         oldModelProcess = new ModelProcess();
-        oldModelProcess.initModel(completeConfig, oldModel);
-    }
-
-    private boolean isCurrentModelUseful() {
-        if (CompleteConfig.DEFAULT_MODEL_VERSION.equals(currentModel.getModelVersion())) {
-            return false;
-        }
-        return true;
+        oldModelProcess.initModel(oldModel);
     }
 }
