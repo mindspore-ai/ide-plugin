@@ -29,10 +29,12 @@ import com.intellij.openapi.ui.TextBrowseFolderListener;
 import com.intellij.openapi.util.NlsSafe;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.util.containers.ContainerUtil;
 import com.jetbrains.python.sdk.PythonSdkUtil;
 import com.mindspore.ide.toolkit.common.utils.FileUtils;
 import com.mindspore.ide.toolkit.common.utils.NotificationUtils;
+import com.mindspore.ide.toolkit.common.utils.OSInfoUtils;
 import com.mindspore.ide.toolkit.common.utils.RegularUtils;
 import com.mindspore.ide.toolkit.wizard.MSVersionInfo;
 import com.mindspore.ide.toolkit.wizard.MindSporeService;
@@ -196,8 +198,13 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer {
                 .getButton().getActionListeners().length > 0) {
             return;
         }
+        FileChooserDescriptor condaEnvBrowserChooser = FileChooserDescriptorFactory.createSingleFolderDescriptor();
+        if (OSInfoUtils.INSTANCE.isLinux()) {
+            condaEnvBrowserChooser.setRoots(VirtualFileManager.getInstance()
+                    .findFileByNioPath(Path.of(MiniCondaService.getCondaEnvsPath(getCondaPath()))));
+        }
         condaEnvTextField.addBrowseFolderListener(new TextBrowseFolderListener(
-                FileChooserDescriptorFactory.createSingleFolderDescriptor()) {
+                condaEnvBrowserChooser) {
             @Override
             @NotNull
             @NlsSafe

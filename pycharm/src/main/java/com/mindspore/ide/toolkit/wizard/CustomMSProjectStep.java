@@ -24,6 +24,7 @@ import com.intellij.openapi.ui.VerticalFlowLayout;
 import com.intellij.platform.DirectoryProjectGenerator;
 import com.intellij.ui.DocumentAdapter;
 import com.jetbrains.python.newProject.steps.ProjectSpecificSettingsStep;
+import com.mindspore.ide.toolkit.common.utils.OSInfoUtils;
 import com.mindspore.ide.toolkit.common.utils.RegularUtils;
 import com.mindspore.ide.toolkit.ui.wizard.WizardMsSettingProjectPeer;
 import org.jetbrains.annotations.NotNull;
@@ -73,6 +74,13 @@ public class CustomMSProjectStep extends ProjectSpecificSettingsStep {
 
     @Override
     public boolean checkValid() {
+        if (OSInfoUtils.INSTANCE.isLinux() && !projectPeer.getCondaEnvPath()
+                .startsWith(MiniCondaService.getCondaEnvsPath(projectPeer.getCondaPath()))) {
+            setWarningText("This environment path is invalid."
+                    + " Please choose new environment location in Conda install path.");
+            return false;
+        }
+
         if (RegularUtils.isEmpty(projectPeer.getCondaPath())
                 || !Files.exists(Path.of(projectPeer.getCondaPath()))
                 || !(projectPeer.getCondaPath().endsWith("conda.exe")
