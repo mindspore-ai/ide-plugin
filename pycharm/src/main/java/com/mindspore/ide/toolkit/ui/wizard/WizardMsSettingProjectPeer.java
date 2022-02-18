@@ -202,6 +202,7 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer {
         if (OSInfoUtils.INSTANCE.isLinux()) {
             condaEnvBrowserChooser.setRoots(VirtualFileManager.getInstance()
                     .findFileByNioPath(Path.of(MiniCondaService.getCondaEnvsPath(getCondaPath()))));
+            condaEnvBrowserChooser.withTreeRootVisible(true);
         }
         condaEnvTextField.addBrowseFolderListener(new TextBrowseFolderListener(
                 condaEnvBrowserChooser) {
