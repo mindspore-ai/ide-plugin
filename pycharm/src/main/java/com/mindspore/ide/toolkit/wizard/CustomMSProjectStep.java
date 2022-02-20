@@ -74,6 +74,10 @@ public class CustomMSProjectStep extends ProjectSpecificSettingsStep {
 
     @Override
     public boolean checkValid() {
+        if (!(OSInfoUtils.INSTANCE.isLinux() || OSInfoUtils.INSTANCE.isWindows())) {
+            setWarningText("os not support");
+            return false;
+        }
         if (OSInfoUtils.INSTANCE.isLinux() && !projectPeer.getCondaEnvPath()
                 .startsWith(MiniCondaService.getCondaEnvsPath(projectPeer.getCondaPath()))) {
             setWarningText("This environment path is invalid."
