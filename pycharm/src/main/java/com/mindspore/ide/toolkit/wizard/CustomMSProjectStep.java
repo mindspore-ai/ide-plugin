@@ -74,10 +74,18 @@ public class CustomMSProjectStep extends ProjectSpecificSettingsStep {
 
     @Override
     public boolean checkValid() {
+        if (myLocationField.getText().endsWith(" ")) {
+            setWarningText("Project Location end with space!");
+            return false;
+        } else {
+            setWarningText("Project Location has been fixed!");
+        }
+
         if (!(OSInfoUtils.INSTANCE.isLinux() || OSInfoUtils.INSTANCE.isWindows())) {
             setWarningText("os not support");
             return false;
         }
+
         if (OSInfoUtils.INSTANCE.isLinux() && !projectPeer.getCondaEnvPath()
                 .startsWith(MiniCondaService.getCondaEnvsPath(projectPeer.getCondaPath()))) {
             setWarningText("This environment path is invalid."
@@ -113,6 +121,7 @@ public class CustomMSProjectStep extends ProjectSpecificSettingsStep {
                 return false;
             }
         }
+
         return true;
     }
 
@@ -134,7 +143,6 @@ public class CustomMSProjectStep extends ProjectSpecificSettingsStep {
         myLocationField.getTextField().getDocument().addDocumentListener(new DocumentAdapter() {
             @Override
             protected void textChanged(@NotNull DocumentEvent event) {
-                myLocationField.setText(RegularUtils.normalizeFilePath(myLocationField.getText()));
                 projectPeer.setCondaEnvPath(getProjectNameByOs(myLocationField.getText()));
             }
         });
