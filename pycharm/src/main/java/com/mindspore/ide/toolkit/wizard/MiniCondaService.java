@@ -10,6 +10,7 @@ import com.mindspore.ide.toolkit.common.utils.NotificationUtils;
 import com.mindspore.ide.toolkit.common.utils.OSInfoUtils;
 import com.mindspore.ide.toolkit.common.utils.RunExecUtils;
 import com.mindspore.ide.toolkit.common.utils.RegularUtils;
+import com.mindspore.ide.toolkit.common.utils.VersionUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
@@ -61,13 +62,13 @@ public class MiniCondaService {
             if (OSInfoUtils.INSTANCE.isWindows()) {
                 String condaExePath = path + File.separator + "Miniconda3" + File.separator
                         + WINDOWS_CONDA_PARENT_PATH_NAME + File.separator + WINDOWS_CONDA_NAME;
-                PyCondaPackageService.onCondaEnvCreated(condaExePath);
+                setOnCondaEnvCreatedByVersion(condaExePath);
                 condaPath = condaExePath;
                 log.info("windows condaExePath:{}", condaExePath);
             } else {
                 String condaExePath = path + File.separator + "Miniconda3" + File.separator
                         + LINUX_CONDA_PARENT_PATH_NAME + File.separator + LINUX_CONDA_NAME;
-                PyCondaPackageService.onCondaEnvCreated(condaExePath);
+                setOnCondaEnvCreatedByVersion(condaExePath);
                 condaPath = condaExePath;
                 log.info("other condaExePath:{}", condaExePath);
             }
@@ -168,5 +169,11 @@ public class MiniCondaService {
         log.info("installPath:{}", installPath);
         log.info("shPath:{}", shPath);
         return RunExecUtils.runExec(Arrays.asList("bash", shPath, "-b", "-p", installPath));
+    }
+
+    private static void setOnCondaEnvCreatedByVersion(String condaExePath) {
+        if (VersionUtils.getIdeBaselineVersion() >= 203) {
+            PyCondaPackageService.onCondaEnvCreated(condaExePath);
+        }
     }
 }

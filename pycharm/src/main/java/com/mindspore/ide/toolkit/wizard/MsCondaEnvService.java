@@ -37,6 +37,7 @@ import com.jetbrains.python.sdk.flavors.CondaEnvSdkFlavor;
 import com.mindspore.ide.toolkit.common.dialoginfo.DialogInfo;
 import com.mindspore.ide.toolkit.common.dialoginfo.ExceptionDialogInfo;
 import com.mindspore.ide.toolkit.common.exceptions.MsToolKitException;
+import com.mindspore.ide.toolkit.common.utils.VersionUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
@@ -125,7 +126,9 @@ public class MsCondaEnvService {
      * @return sdk
      */
     public static Long setSdk(Project project, Module module, Sdk sdk, boolean isNewSdk) {
-        PythonSdkUpdater.updateVersionAndPathsSynchronouslyAndScheduleRemaining(sdk, project);
+        if (VersionUtils.getIdeBaselineVersion() >= 203) {
+            PythonSdkUpdater.updateVersionAndPathsSynchronouslyAndScheduleRemaining(sdk, project);
+        }
         return VirtualFileManager.getInstance().asyncRefresh(() -> {
             PySdkUtil.activateVirtualEnv(sdk);
             if (isNewSdk) {

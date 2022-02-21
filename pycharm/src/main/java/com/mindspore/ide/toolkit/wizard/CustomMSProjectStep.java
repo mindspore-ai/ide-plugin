@@ -102,12 +102,16 @@ public class CustomMSProjectStep extends ProjectSpecificSettingsStep {
                 setWarningText("Env location exists!");
                 return false;
             }
-        }
-
-        if (!projectPeer.isUsingNewCondaEnv()
-                && projectPeer.getExistSdkString() == null) {
-            setWarningText("Please choose a conda env!");
-            return false;
+        } else {
+            if (projectPeer.getExistSdkString().isEmpty()) {
+                setWarningText("Please choose a conda env!");
+                return false;
+            }
+            if (!Files.exists(Path.of(projectPeer.getExistSdk().getHomePath()))) {
+                setWarningText("Selected interpreter is broken."
+                        + " Please choose another one or create a new environment!");
+                return false;
+            }
         }
         return true;
     }

@@ -54,6 +54,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * ms wizard project peer
@@ -135,8 +136,9 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer {
      *
      * @return exist string
      */
-    public String getExistSdkString() {
-        return existEnvSelector.getSelectedItem().toString();
+    public Optional<String> getExistSdkString() {
+        return existEnvSelector.getSelectedItem() == null ? Optional.empty()
+                : Optional.of(existEnvSelector.getSelectedItem().toString());
     }
 
     /**
