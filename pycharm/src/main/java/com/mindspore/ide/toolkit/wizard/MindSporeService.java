@@ -141,19 +141,21 @@ public class MindSporeService {
     public static DialogInfo installMindSporeIntoConda(String hardwarePlatform, Sdk sdk) throws MsToolKitException {
         List<String> cmdList;   // conda这里需要完善获取命令的方法
         if (hardwarePlatform.contains(EnumHardWarePlatform.CPU.getCode())) {
-            cmdList = Arrays.asList("install", String.format("mindspore-%s=1.5.0",
+            cmdList = Arrays.asList("install", String.format("mindspore-%s",
                             EnumHardWarePlatform.CPU.getCode().toLowerCase(Locale.ROOT)),
                     "-c", "mindspore", "-c", "conda-forge", "-y");
         } else if (hardwarePlatform.contains(EnumHardWarePlatform.GPU.getCode())) {
             String version = hardwarePlatform.split(" ")[2];
-            cmdList = Arrays.asList("install", String.format("mindspore-%s=1.5.0",
+            cmdList = Arrays.asList("install", String.format("mindspore-%s",
                             EnumHardWarePlatform.GPU.getCode().toLowerCase(Locale.ROOT)),
                     String.format("cudatoolkit=%s", version), "cudnn", "-c", "mindspore",
                     "-c", "conda-forge", "-y");
-        } else {
-            cmdList = Arrays.asList("install", String.format("mindspore-%s=1.5.0",
+        } else if (hardwarePlatform.contains(EnumHardWarePlatform.ASCEND.getCode())) {
+            cmdList = Arrays.asList("install", String.format("mindspore-%s",
                             EnumHardWarePlatform.ASCEND.getCode().toLowerCase(Locale.ROOT)),
                     "-c", "mindspore", "-c", "conda-forge", "-y");
+        } else {
+            throw new MsToolKitException("install MindSpore: hardware platform not supported");
         }
         return CondaCmdProcessor.executeCondaCmd(sdk, null, cmdList);
     }
