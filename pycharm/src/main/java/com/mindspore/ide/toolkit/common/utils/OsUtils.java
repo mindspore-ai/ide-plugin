@@ -4,7 +4,7 @@ import java.util.Locale;
 
 public class OsUtils {
     public enum OsType {
-        WINDOWS("win"), LINUX("nux"), OTHER("");
+        WINDOWS("win"), LINUX("nux"), OTHER("other");
         private String desc;
 
         OsType(String desc) {

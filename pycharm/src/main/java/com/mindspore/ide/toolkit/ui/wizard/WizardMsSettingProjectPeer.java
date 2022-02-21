@@ -162,7 +162,10 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer {
             }
             return panel;
         });
-        hardwareSelector.setSelectedIndex(0);
+        hardwareSelector.setSelectedIndex(-1);
+        if (hardwareSelector.getItemCount() > 0) {
+            hardwareSelector.setSelectedIndex(0);
+        }
     }
 
     /**
