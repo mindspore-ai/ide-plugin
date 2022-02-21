@@ -19,6 +19,7 @@ package com.mindspore.ide.toolkit.wizard;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.process.ProcessOutput;
 import com.intellij.openapi.projectRoots.Sdk;
+import com.jetbrains.python.packaging.PyCondaPackageService;
 import com.jetbrains.python.sdk.flavors.PyCondaRunKt;
 import com.mindspore.ide.toolkit.common.dialoginfo.DialogInfo;
 import com.mindspore.ide.toolkit.common.dialoginfo.ExceptionDialogInfo;
@@ -47,6 +48,9 @@ public class CondaCmdProcessor {
         }
         try {
             String command = String.join(" ", cmdList);
+            if (sdk != null) {
+                log.info("conda sdk:{}, exec:{}", sdk, PyCondaPackageService.getCondaExecutable(sdk.getHomePath()));
+            }
             final ProcessOutput result = sdk == null ? PyCondaRunKt.runConda(condaPath, cmdList)
                     : PyCondaRunKt.runConda(sdk, cmdList);
             if (log.isInfoEnabled()) {

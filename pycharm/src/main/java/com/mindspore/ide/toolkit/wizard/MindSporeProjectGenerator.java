@@ -33,6 +33,7 @@ import com.jetbrains.python.remote.PyProjectSynchronizer;
 import com.jetbrains.python.sdk.PyLazySdk;
 import com.mindspore.ide.toolkit.common.beans.NormalInfoConstants;
 import com.mindspore.ide.toolkit.common.enums.EnumProperties;
+import com.mindspore.ide.toolkit.common.utils.VersionUtils;
 import com.mindspore.ide.toolkit.ui.wizard.WizardMsSettingProjectPeer;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nls;
@@ -103,7 +104,9 @@ public class MindSporeProjectGenerator extends PythonProjectGenerator<PyNewProje
         if (!MsCondaEnvService.isValid(sdk)) {
             return;
         } else {
-            PyCondaPackageService.onCondaEnvCreated(msSettingProjectPeer.getCondaPath());
+            if (VersionUtils.getIdeBaselineVersion() >= 203) {
+                PyCondaPackageService.onCondaEnvCreated(msSettingProjectPeer.getCondaPath());
+            }
         }
         Task.WithResult installMindSporeTask = MindSporeService.installMindSporeTask(
                 project,
