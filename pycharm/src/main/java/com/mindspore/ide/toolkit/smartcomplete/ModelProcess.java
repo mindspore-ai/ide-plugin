@@ -48,7 +48,7 @@ public class ModelProcess {
         try {
             initProcessAndPort(model);
         } catch (IOException ioException) {
-            log.error("Init smart complete model failed. Plugin version is {}. Model version is {}.",
+            log.info("Init smart complete model failed. Plugin version is {}. Model version is {}.",
                     model.getPluginVersion(), model.getModelVersion(), ioException);
         }
         if (isInited) {

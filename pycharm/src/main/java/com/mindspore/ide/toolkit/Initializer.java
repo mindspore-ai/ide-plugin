@@ -25,7 +25,7 @@ public class Initializer implements AppLifecycleListener {
     }
 
     private void initListener() {
-        EventCenter.INSTANCE.subscribe(new SmartCompleteListener());
+        //EventCenter.INSTANCE.subscribe(new SmartCompleteListener());
         EventCenter.INSTANCE.subscribe(new GlobalSearchListener());
         EventCenter.INSTANCE.subscribe(new GuideUserListener());
     }

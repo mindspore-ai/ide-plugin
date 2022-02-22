@@ -88,9 +88,9 @@ public class CompleteConfig {
                     }
                 }
                 if (!downloadSucceed) {
-                    NotificationUtils.notify(NotificationUtils.NotifyGroup.SMART_COMPLETE,
-                            NotificationType.ERROR,
-                            "Download complete model config failed.");
+//                    NotificationUtils.notify(NotificationUtils.NotifyGroup.SMART_COMPLETE,
+//                            NotificationType.ERROR,
+//                            "Download complete model config failed.");
                 }
                 CONFIG = getInstance().get();
             } else {
