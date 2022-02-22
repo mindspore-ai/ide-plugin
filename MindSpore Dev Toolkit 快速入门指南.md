@@ -27,7 +27,7 @@ MindSpore Dev Toolkit作为Pycharm插件工具，为用户提供一键安装cond
 
       ![img](./images/clip_image008.jpg)
 
-   * 点击Install按钮，等待下载。
+   * 点击Install按钮，等待下载安装。
 
       ![img](./images/clip_image010.jpg)
 
@@ -37,11 +37,11 @@ MindSpore Dev Toolkit作为Pycharm插件工具，为用户提供一键安装cond
 
       ![img](./images/clip_image014.jpg)
 
-   * 根据提示重新启动PyCharm或者稍后自行启动PyCharm。
+   * 根据提示重新启动PyCharm或者稍后自行重新启动PyCharm。
 
       ![img](./images/clip_image015.jpg)
 
-4. 如果Conda executable没有自动填充，选择已安装的conda路径。
+4. 如果Conda executable没有自动填充，选择已安装的conda的路径。
 
    ![img](./images/clip_image016.jpg)
 
@@ -50,7 +50,7 @@ MindSpore Dev Toolkit作为Pycharm插件工具，为用户提供一键安装cond
 
       ![img](./images/clip_image018.jpg)
 
-   * 选择已有的PyCharm中已有的conda环境。
+   * 选择PyCharm中已有的conda环境。
 
       ![img](./images/clip_image019.jpg)
 
@@ -85,7 +85,7 @@ MindSpore Dev Toolkit作为Pycharm插件工具，为用户提供一键安装cond
 
       ![img](./images/clip_image026.jpg)
 
-   * 如果选择了最佳实践模版，可以通过运行最佳实践，测试MindSpore环境可用。
+   * 如果选择了最佳实践模版，可以通过运行最佳实践，测试MindSpore环境。
 
       ![img](./images/clip_image027.jpg)
 

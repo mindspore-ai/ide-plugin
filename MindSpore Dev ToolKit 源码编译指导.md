@@ -11,7 +11,7 @@
 ## 依赖软件
 
 * 确认安装[IntelliJ IDEA](https://www.jetbrains.com/idea/download)。
-* 确认安装JDK 11版本。
+* 确认安装JDK 11版本。  
   注：2021.3版本的IntelliJ IDEA自带一个名为jbr-11 JetBrains Runtime version 11.0.10的JDK，可以直接使用。
 
    ![img](./images/clip_image031.jpg)
@@ -47,7 +47,7 @@
       ![img](./images/clip_image036.jpg)
 
 4. 如果提示没有JDK，请选择一个JDK。
-   * 没有JDK情况下页面显示。
+   * 没有JDK情况下，页面如下图显示。
 
       ![img](./images/clip_image037.jpg)
 
