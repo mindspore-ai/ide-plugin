@@ -13,42 +13,51 @@
 * 确认安装[IntelliJ IDEA](https://www.jetbrains.com/idea/download)。
 * 确认安装JDK 11版本。
   注：2021.3版本的IntelliJ IDEA自带一个名为jbr-11 JetBrains Runtime version 11.0.10的JDK，可以直接使用。
-  
+
    ![img](./images/clip_image031.jpg)
 
 ## 编译
 
 1. 保证依赖软件均已成功配置。
 
-2. 从代码仓下载[本项目](https://gitee.com/indspore/ide-plugin)源码。
-   * 直接下载代码的zip包
+2. 从代码仓下载[本项目](https://gitee.com/mindspore/ide-plugin)源码。
+   * 直接下载代码的zip包。
 
       ![img](./images/clip_image032.jpg)
 
-   * 使用git下载
+   * 使用git下载。
 
-   ```
-   git clone https://gitee.com/mindspore/ide-plugin.git
-   ```
+      ```
+      git clone https://gitee.com/mindspore/ide-plugin.git
+      ```
 
 3. 使用IntelliJ IDEA打开项目。
-   * File -> Open
+   * File -> Open。
 
       ![img](./images/clip_image033.jpg)
 
-   * 打开下载项目文件位置
+   * 打开下载项目文件位置。
+
+      ![img](./images/clip_image034.jpg)
+
+   * 点击右下角弹窗中的load或右键settings.gradle文件选中Link Gradle Project。
 
       ![img](./images/clip_image035.jpg)
 
-   * 点击右下角弹窗中的load
-
       ![img](./images/clip_image036.jpg)
 
-4. 如果提示没有JDK，请选择一个JDK
+4. 如果提示没有JDK，请选择一个JDK。
+   * 没有JDK情况下页面显示。
 
-   ![img](./images/clip_image037.jpg)
+      ![img](./images/clip_image037.jpg)
 
-   ![img](./images/clip_image038.jpg)
+   * File->Project Structure。
+
+      ![img](./images/clip_image038.jpg)
+
+   * 选择JDK11。
+
+      ![img](./images/clip_image039.jpg)
 
 6. 等待同步完成。
 
@@ -62,7 +71,7 @@
 
    ![img](./images/clip_image044.jpg)
 
-9. 构建完成后至项目目录下/build/distributions目录下获取插件安装包
+9. 构建完成后至项目目录下/build/distributions目录下获取插件安装包。
 
    ![img](./images/clip_image046.jpg)
 
