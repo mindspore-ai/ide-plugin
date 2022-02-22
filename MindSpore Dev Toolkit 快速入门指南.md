@@ -3,9 +3,13 @@
 MindSpore Dev Toolkit作为Pycharm插件工具，为用户提供一键安装conda，创建conda环境，并使用conda创建MindSpore项目等功能。本文旨在帮助用户快速了解使用本产品。
 
 ## 一、创建MindSpore项目
+
 ### 技术背景
+
 本功能的实现基于[Conda](https://conda.io)。Conda是一个包管理和环境管理系统，是MindSpore推荐的安装方式之一。
+
 ### 使用步骤
+
 1. 选择File -> New Project。
 
    ![img](./images/clip_image002.jpg)
@@ -20,10 +24,10 @@ MindSpore Dev Toolkit作为Pycharm插件工具，为用户提供一键安装cond
       ![img](./images/clip_image006.jpg)
 
    * 选择下载安装文件夹。**建议不修改路径，使用默认路径安装conda。**
-   
+
       ![img](./images/clip_image008.jpg)
 
-   * 点击Install按钮，等待下载。  
+   * 点击Install按钮，等待下载。
 
       ![img](./images/clip_image010.jpg)
 
@@ -46,7 +50,7 @@ MindSpore Dev Toolkit作为Pycharm插件工具，为用户提供一键安装cond
 
       ![img](./images/clip_image018.jpg)
 
-   * 选择已有的PyCharm中已有的conda环境。  
+   * 选择已有的PyCharm中已有的conda环境。
 
       ![img](./images/clip_image019.jpg)
 
@@ -76,7 +80,7 @@ MindSpore Dev Toolkit作为Pycharm插件工具，为用户提供一键安装cond
 
       ![img](./images/clip_image025.jpg)
 
-9. 验证MindSpore项目是否创建成功。  
+9. 验证MindSpore项目是否创建成功。
    * 点击下方Terminal，输入 python -c "import mindspore;mindspore.run_check()" ，查看输出。  如下图，显示了版本号等，表示MindSpore环境可用。
 
       ![img](./images/clip_image026.jpg)
