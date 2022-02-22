@@ -36,7 +36,7 @@ MindSpore Dev Toolkit提供如下功能：
 
 ### MindSpore运行管理
 
-* 创建Conda环境或选择已有Conda环境，并安装MindSpore二进制包至Conda环境。
+* 创建conda环境或选择已有conda环境，并安装MindSpore二进制包至conda环境。
 * 部署最佳实践模版。不仅可以测试环境是否安装成功，对新用户也提供了一个MindSpore的入门介绍。
 * 在网络状况良好时，10分钟之内即可完成环境安装，开始体验MindSpore。最大可节约新用户80%的环境配置时间。
 
