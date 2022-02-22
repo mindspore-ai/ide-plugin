@@ -6,7 +6,7 @@ MindSpore Dev Toolkit作为Pycharm插件工具，为用户提供一键安装cond
 
 ### 技术背景
 
-本功能的实现基于[Conda](https://conda.io)。Conda是一个包管理和环境管理系统，是MindSpore推荐的安装方式之一。
+本功能的实现基于[conda](https://conda.io)。Conda是一个包管理和环境管理系统，是MindSpore推荐的安装方式之一。
 
 ### 使用步骤
 
@@ -18,7 +18,7 @@ MindSpore Dev Toolkit作为Pycharm插件工具，为用户提供一键安装cond
 
    ![img](./images/clip_image004.jpg)
 
-3. Miniconda下载安装。***已经安装过Conda的可以跳过此步骤。***
+3. Miniconda下载安装。***已经安装过conda的可以跳过此步骤。***
    * 点击 Install Miniconda Automatically按钮。
 
       ![img](./images/clip_image006.jpg)
