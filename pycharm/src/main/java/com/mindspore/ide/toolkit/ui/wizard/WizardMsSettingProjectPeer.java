@@ -30,12 +30,14 @@ import com.intellij.openapi.util.NlsSafe;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
+import com.intellij.ui.DocumentAdapter;
 import com.intellij.util.containers.ContainerUtil;
 import com.jetbrains.python.sdk.PythonSdkUtil;
-import com.mindspore.ide.toolkit.common.utils.FileUtils;
-import com.mindspore.ide.toolkit.common.utils.NotificationUtils;
+import com.mindspore.ide.toolkit.common.utils.PathUtils;
 import com.mindspore.ide.toolkit.common.utils.OSInfoUtils;
 import com.mindspore.ide.toolkit.common.utils.RegularUtils;
+import com.mindspore.ide.toolkit.common.utils.FileUtils;
+import com.mindspore.ide.toolkit.common.utils.NotificationUtils;
 import com.mindspore.ide.toolkit.wizard.MSVersionInfo;
 import com.mindspore.ide.toolkit.wizard.MindSporeService;
 import com.mindspore.ide.toolkit.wizard.MiniCondaService;
@@ -46,6 +48,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.event.DocumentEvent;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.io.File;
@@ -199,16 +202,17 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer {
     private void buttonListener() {
         condaEnvTextField.getButton().setEnabled(true);
         condaExecutableTextField.getButton().setEnabled(true);
+        condaExecutableTextField.getTextField().getDocument().addDocumentListener(new DocumentAdapter() {
+            @Override
+            protected void textChanged(@NotNull DocumentEvent event) {
+                resetCondaEnvPath(getCondaPath());
+            }
+        });
         if (condaEnvTextField.getButton().getActionListeners().length > 0 || condaExecutableTextField
                 .getButton().getActionListeners().length > 0) {
             return;
         }
-        FileChooserDescriptor condaEnvBrowserChooser = FileChooserDescriptorFactory.createSingleFolderDescriptor();
-        if (OSInfoUtils.INSTANCE.isLinux()) {
-            condaEnvBrowserChooser.setRoots(VirtualFileManager.getInstance()
-                    .findFileByNioPath(Path.of(MiniCondaService.getCondaEnvsPath(getCondaPath()))));
-            condaEnvBrowserChooser.withTreeRootVisible(true);
-        }
+        FileChooserDescriptor condaEnvBrowserChooser = initFileChooser();
         condaEnvTextField.addBrowseFolderListener(new TextBrowseFolderListener(
                 condaEnvBrowserChooser) {
             @Override
@@ -233,6 +237,31 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer {
             }
         });
         addDownloadButtonListener();
+    }
+
+    private FileChooserDescriptor initFileChooser() {
+        FileChooserDescriptor condaEnvBrowserChooser;
+        if (OSInfoUtils.INSTANCE.isLinux()) {
+            condaEnvBrowserChooser = new FileChooserDescriptor(
+                    false, true, false, false, false, false) {
+                @Override
+                public boolean isFileVisible(VirtualFile file, boolean isShowHiddenFiles) {
+                    if (PathUtils.judgeIsChildPath(MiniCondaService
+                            .getCondaEnvsPath(getCondaPath()), file.getPath())) {
+                        return false;
+                    } else {
+                        return super.isFileVisible(file, isShowHiddenFiles);
+                    }
+                }
+            };
+            condaEnvBrowserChooser.setRoots(VirtualFileManager.getInstance()
+                    .findFileByNioPath(Path.of(MiniCondaService.getCondaEnvsPath(getCondaPath()))));
+            condaEnvBrowserChooser.withTreeRootVisible(true);
+            condaEnvBrowserChooser.setTitle("Select Path (Notice: on Linux, Only 'envs' Can Be Selected!)");
+        } else {
+            condaEnvBrowserChooser = FileChooserDescriptorFactory.createSingleFolderDescriptor();
+        }
+        return condaEnvBrowserChooser;
     }
 
     private void addDownloadButtonListener() {
@@ -295,6 +324,14 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer {
         } else {
             downloadMiniCondaButton.setVisible(true);
             downloadMiniCondaButton.setEnabled(true);
+        }
+    }
+
+    private void resetCondaEnvPath(String condaPath) {
+        boolean isFile = FileUtils.isFile(condaPath);
+        if (!StringUtil.isEmptyOrSpaces(condaPath) && isFile) {
+            condaExecutableTextField.getTextField().setText(condaPath);
+            setCondaEnvPath("mindspore");
         }
     }
 

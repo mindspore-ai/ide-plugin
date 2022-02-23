@@ -25,6 +25,7 @@ import com.intellij.platform.DirectoryProjectGenerator;
 import com.intellij.ui.DocumentAdapter;
 import com.jetbrains.python.newProject.steps.ProjectSpecificSettingsStep;
 import com.mindspore.ide.toolkit.common.utils.OSInfoUtils;
+import com.mindspore.ide.toolkit.common.utils.PathUtils;
 import com.mindspore.ide.toolkit.common.utils.RegularUtils;
 import com.mindspore.ide.toolkit.ui.wizard.WizardMsSettingProjectPeer;
 import org.jetbrains.annotations.NotNull;
@@ -74,22 +75,8 @@ public class CustomMSProjectStep extends ProjectSpecificSettingsStep {
 
     @Override
     public boolean checkValid() {
-        if (myLocationField.getText().endsWith(" ")) {
-            setWarningText("Project Location end with space!");
-            return false;
-        } else {
-            setWarningText("Project Location has been fixed!");
-        }
-
         if (!(OSInfoUtils.INSTANCE.isLinux() || OSInfoUtils.INSTANCE.isWindows())) {
             setWarningText("os not support");
-            return false;
-        }
-
-        if (OSInfoUtils.INSTANCE.isLinux() && !projectPeer.getCondaEnvPath()
-                .startsWith(MiniCondaService.getCondaEnvsPath(projectPeer.getCondaPath()))) {
-            setWarningText("This environment path is invalid."
-                    + " Please choose new environment location in Conda install path.");
             return false;
         }
 
@@ -98,6 +85,20 @@ public class CustomMSProjectStep extends ProjectSpecificSettingsStep {
                 || !(projectPeer.getCondaPath().endsWith("conda.exe")
                 || projectPeer.getCondaPath().endsWith("conda"))) {
             setWarningText("Conda executable not exist or wrong");
+            return false;
+        }
+
+        if (myLocationField.getText().endsWith(" ")) {
+            setWarningText("Project Location end with space!");
+            return false;
+        } else {
+            setWarningText("Project Location has been fixed!");
+        }
+
+        if (OSInfoUtils.INSTANCE.isLinux() && !PathUtils.judgeIsChildPath(MiniCondaService
+                .getCondaEnvsPath(projectPeer.getCondaPath()), projectPeer.getCondaEnvPath())) {
+            setWarningText("This environment path is invalid."
+                    + " Please choose new environment location in Conda install path.");
             return false;
         }
 
