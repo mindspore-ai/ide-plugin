@@ -27,15 +27,24 @@ public class ResourceManager {
         return false;
     }
 
-    public static boolean downloadResource(String uri, String resourceLocation, String token) {
+    /**
+     * Download resource from server.
+     *
+     * @param uri uri of resource
+     * @param resourceLocation local path of resource
+     * @param token token of resource
+     * @param timeout timeout of download
+     * @return true if download success, false otherwise
+     */
+    public static boolean downloadResource(String uri, String resourceLocation, String token, int timeout) {
         boolean downloadSucceed = false;
-        try (CloseableHttpResponse response = HttpUtils.doGet(uri, buildDownloadHeader(token))) {
-            if(response == null ){
+        try (CloseableHttpResponse response = HttpUtils.doGet(uri, buildDownloadHeader(token), timeout)) {
+            if (response == null) {
                 downloadSucceed = false;
-            }else if (response.getStatusLine().getStatusCode() == HttpURLConnection.HTTP_OK) {
+            } else if (response.getStatusLine().getStatusCode() == HttpURLConnection.HTTP_OK) {
                 FileUtils.writeFile(resourceLocation, response.getEntity().getContent());
                 downloadSucceed = true;
-            }else {
+            } else {
                 downloadSucceed = false;
             }
         } catch (IOException ioException) {
