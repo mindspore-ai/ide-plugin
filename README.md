@@ -12,12 +12,12 @@
 
 * [安装及快速入门](#安装及快速入门)
 
+    * [系统需求](#系统需求)
     * [安装](#安装)
     * [快速入门](#快速入门)
-    * [源码编译安装](#源码构建)
+    * [源码编译安装](#源码编译安装)
 
 * [源码构建](#源码构建)
-* [文档](#文档)
 * [社区](#社区)
 
     * [治理](#治理)
@@ -36,7 +36,7 @@ MindSpore Dev Toolkit提供如下功能：
 
 ### MindSpore运行管理
 
-* 创建Conda环境或选择已有Conda环境，并安装MindSpore二进制包至Conda环境。
+* 创建conda环境或选择已有conda环境，并安装MindSpore二进制包至conda环境。
 * 部署最佳实践模版。不仅可以测试环境是否安装成功，对新用户也提供了一个MindSpore的入门介绍。
 * 在网络状况良好时，10分钟之内即可完成环境安装，开始体验MindSpore。最大可节约新用户80%的环境配置时间。
 
@@ -57,12 +57,29 @@ MindSpore Dev Toolkit提供如下功能：
 
 ## 安装及快速入门
 
+### 系统需求
+
+MindSpore Dev ToolKit 是一款[PyCharm](https://www.jetbrains.com/pycharm/)插件。PyCharm是一款多平台Python IDE。
+
+* 插件支持的操作系统：
+
+    * Windows 10
+    * Linux
+
+* 插件支持的PyCharm版本:
+
+    * 2020.3
+    * 2021.1
+    * 2021.2
+    * 2021.3
+
 ### 安装
 
-获取插件Zip包。  
-启动Pycharm单击左上菜单栏，选择File->Settings->Plugins->Install Plugin from Disk。
-![image-20211223175637989](./images/clip_image050.jpg)
-选择插件zip包。
+1. 获取[插件Zip包](https://ms-release.obs.cn-north-4.myhuaweicloud.com/1.6.0/IdePlugin/any/MindSpore_Dev_ToolKit-1.6.0.zip)。
+2. 启动Pycharm单击左上菜单栏，选择File->Settings->Plugins->Install Plugin from Disk。
+   如图：
+   ![image-20211223175637989](./images/clip_image050.jpg)
+3. 选择插件zip包。
 
 ### 快速入门
 
