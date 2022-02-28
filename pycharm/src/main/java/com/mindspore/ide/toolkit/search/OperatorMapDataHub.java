@@ -129,7 +129,7 @@ public enum OperatorMapDataHub implements SearchEveryWhereDataHub<String> {
         if (entries.length >= 2) {
             Map.Entry<String, String> entry = entries[1];
             // 去除第二条为diff的情况
-            if (!entry.getKey().equals("diff")) {
+            if (!entry.getKey().equals("差异对比") && !entry.getKey().equals("diff")) {
                 List msOperatorInfos = operatorMap.getOrDefault(otherString, new LinkedList());
                 msOperatorInfos.add(new MsOperatorInfo(entry.getKey(), entry.getValue()));
                 linkMap.put(entry.getKey(), entry.getValue());
