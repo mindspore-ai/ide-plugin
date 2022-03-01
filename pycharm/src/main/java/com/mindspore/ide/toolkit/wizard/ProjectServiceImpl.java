@@ -2,7 +2,7 @@ package com.mindspore.ide.toolkit.wizard;
 
 import com.intellij.openapi.project.Project;
 import com.mindspore.ide.toolkit.common.enums.EnumError;
-import com.mindspore.ide.toolkit.common.exceptions.BizException;
+import com.mindspore.ide.toolkit.common.exceptions.MsToolKitException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +25,7 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public String createCacheMindSporeDir(String parentDirPath) throws BizException {
+    public String createCacheMindSporeDir(String parentDirPath) throws MsToolKitException {
         File cacheDir = new File(parentDirPath + File.separator + CACHE_MINDSPORE_DIR);
         try {
             boolean suc = cacheDir.mkdir();
@@ -35,13 +35,13 @@ public class ProjectServiceImpl implements ProjectService {
             return cacheDir.getCanonicalPath();
         } catch (IOException exception) {
             LOG.error(exception.getMessage(), exception);
-            throw new BizException(EnumError.CREATE_CACHE_DIR_FAIL.getErrCode(), EnumError.CREATE_CACHE_DIR_FAIL.getErrMsg());
+            throw new MsToolKitException(EnumError.CREATE_CACHE_DIR_FAIL);
         }
     }
 
-    public static ProjectService getInstance(Project project) throws BizException {
+    public static ProjectService getInstance(Project project) throws MsToolKitException {
         if (project == null) {
-            throw new BizException(EnumError.NULL_PROJECT.getErrMsg());
+            throw new MsToolKitException(EnumError.NULL_PROJECT);
         }
         Optional<ProjectServiceImpl> projectServiceOp = MindSporeManager.INSTANCE.get(PROJECT_SERVICE + project.getBasePath(), ProjectServiceImpl.class);
         if (projectServiceOp.isPresent()) {

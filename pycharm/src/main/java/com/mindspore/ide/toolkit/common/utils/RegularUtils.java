@@ -19,4 +19,15 @@ public class RegularUtils {
     public static boolean isEmpty(String str) {
         return str == null || str.trim().length() == 0 || "null".equals(str);
     }
+
+    /**
+     * remove space at end of project path
+     *
+     * @param path project path
+     * @return real file path
+     */
+    public static String normalizeFilePath(String path) {
+        return path.stripTrailing();
+    }
 }
+

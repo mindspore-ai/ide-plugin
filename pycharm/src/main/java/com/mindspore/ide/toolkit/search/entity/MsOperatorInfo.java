@@ -14,25 +14,29 @@
  * limitations under the License.
  */
 
-package com.mindspore.ide.toolkit.common.dialog;
-
-import lombok.Getter;
-import lombok.Setter;
+package com.mindspore.ide.toolkit.search.entity;
 
 /**
- * dialog info show some thing
+ * entity for operator search value
  *
- * @since 1.0
+ * @since 2022/01/30
  */
-@Getter
-@Setter
-public abstract class DialogInfo {
-    private boolean isSuccessful;
+public class MsOperatorInfo {
+    private String mindSporeOperator;
+    private String link;
 
-    private String title;
+    public MsOperatorInfo(String mindSporeOperator, String link) {
+        this.mindSporeOperator = mindSporeOperator;
+        this.link = link;
+    }
 
-    /**
-     * show dialog
-     */
-    public abstract void showDialog();
+    public String getMindSporeOperator() {
+        return mindSporeOperator;
+    }
+
+    public String getLink() {
+        return link;
+    }
 }
+
+

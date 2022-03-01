@@ -6,9 +6,9 @@ import java.net.DatagramSocket;
 import java.net.ServerSocket;
 
 public class PortUtil {
-    public static final int INVALID_PORT = 0;
-    public static final int MIN_VALID_PORT = 5001;
-    public static final int MAX_VALID_PORT = 65535;
+    private static final int INVALID_PORT = 0;
+    private static final int MIN_VALID_PORT = 5001;
+    private static final int MAX_VALID_PORT = 65535;
 
     public PortUtil() {
     }

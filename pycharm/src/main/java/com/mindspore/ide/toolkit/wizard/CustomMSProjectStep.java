@@ -18,43 +18,39 @@ package com.mindspore.ide.toolkit.wizard;
 
 import com.intellij.ide.util.projectWizard.AbstractNewProjectStep;
 import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.projectRoots.impl.ProjectJdkImpl;
 import com.intellij.openapi.ui.LabeledComponent;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.ui.VerticalFlowLayout;
 import com.intellij.platform.DirectoryProjectGenerator;
 import com.intellij.ui.DocumentAdapter;
 import com.jetbrains.python.newProject.steps.ProjectSpecificSettingsStep;
-import com.jetbrains.python.sdk.PythonSdkAdditionalData;
-import com.jetbrains.python.sdk.PythonSdkType;
-import com.jetbrains.python.sdk.PythonSdkUtil;
-import com.jetbrains.python.sdk.flavors.CondaEnvSdkFlavor;
+import com.mindspore.ide.toolkit.common.utils.OSInfoUtils;
+import com.mindspore.ide.toolkit.common.utils.PathUtils;
+import com.mindspore.ide.toolkit.common.utils.RegularUtils;
 import com.mindspore.ide.toolkit.ui.wizard.WizardMsSettingProjectPeer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.*;
+import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
-import java.awt.*;
+
+import java.awt.BorderLayout;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class CustomMSProjectStep extends ProjectSpecificSettingsStep {
-    public WizardMsSettingProjectPeer getProjectPeer() {
-        return projectPeer;
-    }
-
-    private WizardMsSettingProjectPeer projectPeer ;
+    private WizardMsSettingProjectPeer projectPeer;
 
     /**
      * constructor
      *
      * @param projectGenerator project generator
-     * @param callback call back
-     * @param projectPeer peer
+     * @param callback         call back
+     * @param projectPeer      peer
      */
-    public CustomMSProjectStep(@NotNull DirectoryProjectGenerator projectGenerator, AbstractNewProjectStep.@NotNull AbstractCallback callback, WizardMsSettingProjectPeer projectPeer) {
+    public CustomMSProjectStep(@NotNull DirectoryProjectGenerator projectGenerator,
+        AbstractNewProjectStep.@NotNull AbstractCallback callback,
+        WizardMsSettingProjectPeer projectPeer) {
         super(projectGenerator, callback);
         this.projectPeer = projectPeer;
     }
@@ -79,46 +75,69 @@ public class CustomMSProjectStep extends ProjectSpecificSettingsStep {
 
     @Override
     public boolean checkValid() {
-        if (projectPeer.getNewEnvironmentUsingRadioButton().isSelected()
-                && Files.exists(Path.of(projectPeer.getCondaEnvPath()))) {
-            setWarningText("Env dir is exist!");
+        if (!(OSInfoUtils.INSTANCE.isLinux() || OSInfoUtils.INSTANCE.isWindows())) {
+            setWarningText("os not support");
             return false;
         }
-        if (!projectPeer.getNewEnvironmentUsingRadioButton().isSelected()
-                && projectPeer.getExistEnv().getSelectedItem() == null) {
-            setWarningText("please choose a conda env!");
+
+        if (RegularUtils.isEmpty(projectPeer.getCondaPath())
+                || !Files.exists(Path.of(projectPeer.getCondaPath()))
+                || !(projectPeer.getCondaPath().endsWith("conda.exe")
+                || projectPeer.getCondaPath().endsWith("conda"))) {
+            setWarningText("Conda executable not exist or wrong");
             return false;
         }
-        return super.checkValid();
+
+        if (myLocationField.getText().endsWith(" ")) {
+            setWarningText("Project Location end with space!");
+            return false;
+        } else {
+            setWarningText("Project Location has been fixed!");
+        }
+
+        if (OSInfoUtils.INSTANCE.isLinux() && !PathUtils.judgeIsChildPath(MiniCondaService
+                .getCondaEnvsPath(projectPeer.getCondaPath()), projectPeer.getCondaEnvPath())) {
+            setWarningText("This environment path is invalid."
+                    + " Please choose new environment location in Conda install path.");
+            return false;
+        }
+
+        if (projectPeer.isUsingNewCondaEnv()) {
+            if (RegularUtils.isEmpty(projectPeer.getCondaEnvPath())) {
+                setWarningText("Env location is empty");
+                return false;
+            }
+            if (Files.exists(Path.of(projectPeer.getCondaEnvPath()))) {
+                setWarningText("Env location exists!");
+                return false;
+            }
+        } else {
+            if (projectPeer.getExistSdkString().isEmpty()) {
+                setWarningText("Please choose a conda env!");
+                return false;
+            }
+            if (!Files.exists(Path.of(projectPeer.getExistSdk().getHomePath()))) {
+                setWarningText("Selected interpreter is broken."
+                        + " Please choose another one or create a new environment!");
+                return false;
+            }
+        }
+
+        return true;
     }
 
     @Override
     public
     @Nullable
     Sdk getSdk() {
-        if (projectPeer.getNewEnvironmentUsingRadioButton().isSelected()) {
-            return newFlow(projectPeer.getCondaEnvPath(),
-                    projectPeer.getPythonVersionCombo().getSelectedItem().toString());
+        if (projectPeer.isUsingNewCondaEnv()) {
+            return MsCondaEnvService.newLazySdk(
+                    projectPeer.getCondaPath(),
+                    projectPeer.getCondaEnvPath(),
+                    projectPeer.getPythonVersion());
         } else {
-            return projectPeer.getCondaSdk(projectPeer.getExistEnv().getSelectedItem().toString());
+            return projectPeer.getExistSdk();
         }
-    }
-
-    /**
-     * new flow
-     *
-     * @param condaEnvPath conda path
-     * @param version python version
-     * @return sdk
-     */
-    public static Sdk newFlow(String condaEnvPath, String version) {
-        String name = Paths.get(condaEnvPath).getFileName().toString();
-        ProjectJdkImpl sdk = new ProjectJdkImpl(name, PythonSdkType.getInstance());
-        sdk.setHomePath(PythonSdkUtil.getPythonExecutable(condaEnvPath));
-        sdk.setVersionString(version);
-        PythonSdkAdditionalData additionalData = new PythonSdkAdditionalData(CondaEnvSdkFlavor.getInstance());
-        sdk.setSdkAdditionalData(additionalData);
-        return sdk;
     }
 
     private void setProjectPath() {
@@ -131,7 +150,7 @@ public class CustomMSProjectStep extends ProjectSpecificSettingsStep {
         projectPeer.setCondaEnvPath(getProjectNameByOs(myLocationField.getText()));
     }
 
-    private String getProjectNameByOs(String projectPath) {
-        return Path.of(projectPath).getFileName().toString();
+    private static String getProjectNameByOs(String projectPath) {
+        return Path.of(RegularUtils.normalizeFilePath(projectPath)).getFileName().toString();
     }
 }

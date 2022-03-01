@@ -15,8 +15,8 @@ public class NotificationUtils {
 
     @Getter
     public enum NotifyGroup {
-        SMART_COMPLETE("SmartComplete", "SmartComplete"),
-        NEW_PROJECT("NewProject", "NewProject");
+        SMART_COMPLETE("SmartComplete", "MindSpore smart complete"),
+        NEW_PROJECT("NewProject", "New MindSpore project");
 
         private String groupId;
 

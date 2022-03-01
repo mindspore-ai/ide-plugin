@@ -40,7 +40,7 @@ public enum MsVersionManager {
     INSTANCE;
 
     private final Logger LOG = LoggerFactory.getLogger(MsVersionManager.class);
-    private HashMap<String, MSVersionInfo> mindSporeMap = new HashMap();
+    private LinkedHashMap<String, MSVersionInfo> mindSporeMap = new LinkedHashMap();
     private String curOsDesc = OsUtils.getDescriptionOPfCurrentOperatingSystem();
 
     MsVersionManager() {

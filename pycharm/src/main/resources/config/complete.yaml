@@ -1,7 +1,33 @@
-modelDownloadUrl: ""
-accessToken: "0263c700-8063-4b1c-8322-7c1489685f88"
 localDir: "smartComplete"
 modelFolder: "model"
-modelZipName: "Model_mindspore_token.zip"
-modelUnzipFolderName: "Model_mindspore_token"
-modelExePath: "grpc_server/grpc_server.exe"
+modelMap:
+  default_plugin_version:
+    windows:
+      modelDownloadUrl: ""
+      accessToken: "0263c700-8063-4b1c-8322-7c1489685f88"
+      modelZipName: "Model_mindspore_token.zip"
+      modelUnzipFolderName: "Model_mindspore_token"
+      modelExePath: "grpc_server/grpc_server.exe"
+      modelVersion: "default"
+    linux:
+      modelDownloadUrl: ""
+      accessToken: "0263c700-8063-4b1c-8322-7c1489685f88"
+      modelZipName: "Model_mindspore_token.zip"
+      modelUnzipFolderName: "Model_mindspore_token"
+      modelExePath: "grpc_server/grpc_server"
+      modelVersion: "default"
+  1.0.0:
+    windows:
+      modelDownloadUrl: ""
+      accessToken: "0263c700-8063-4b1c-8322-7c1489685f88"
+      modelZipName: "Model_mindspore_token.zip"
+      modelUnzipFolderName: "Model_mindspore_token"
+      modelExePath: "grpc_server/grpc_server.exe"
+      modelVersion: "1.0"
+    linux:
+      modelDownloadUrl: ""
+      accessToken: "0263c700-8063-4b1c-8322-7c1489685f88"
+      modelZipName: "Model_mindspore_token.zip"
+      modelUnzipFolderName: "Model_mindspore_token"
+      modelExePath: "grpc_server/grpc_server"
+      modelVersion: "1.0"

@@ -19,7 +19,6 @@ package com.mindspore.ide.toolkit.wizard;
 import com.intellij.ide.util.projectWizard.AbstractNewProjectStep;
 import com.intellij.ide.util.projectWizard.CustomStepProjectGenerator;
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
@@ -29,13 +28,12 @@ import com.intellij.openapi.wm.impl.welcomeScreen.AbstractActionWithPanel;
 import com.intellij.platform.DirectoryProjectGenerator;
 import com.jetbrains.python.newProject.PyNewProjectSettings;
 import com.jetbrains.python.newProject.PythonProjectGenerator;
+import com.jetbrains.python.packaging.PyCondaPackageService;
 import com.jetbrains.python.remote.PyProjectSynchronizer;
+import com.jetbrains.python.sdk.PyLazySdk;
 import com.mindspore.ide.toolkit.common.beans.NormalInfoConstants;
-import com.mindspore.ide.toolkit.common.dialog.DialogInfo;
-import com.mindspore.ide.toolkit.common.dialog.DialogInfoListener;
-import com.mindspore.ide.toolkit.common.enums.EnumHardWarePlatform;
-import com.mindspore.ide.toolkit.common.events.EventCenter;
-import com.mindspore.ide.toolkit.common.utils.PropertiesUtil;
+import com.mindspore.ide.toolkit.common.enums.EnumProperties;
+import com.mindspore.ide.toolkit.common.utils.VersionUtils;
 import com.mindspore.ide.toolkit.ui.wizard.WizardMsSettingProjectPeer;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Nls;
@@ -43,40 +41,30 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * mindspore project generator
  *
- * @since 2022-1-3
  * @author hanguisen
+ * @since 2022-1-3
  */
 @Slf4j
 public class MindSporeProjectGenerator extends PythonProjectGenerator<PyNewProjectSettings>
         implements CustomStepProjectGenerator<PyNewProjectSettings> {
-    private static final String PROJECT_WIZARD_NAME = PropertiesUtil.getProperty("project.wizard.name");
+    private static final String PROJECT_WIZARD_NAME =
+            EnumProperties.MIND_SPORE_PROPERTIES.getProperty("project.wizard.name");
 
-    private static final String PROJECT_WIZARD_DESCRIPTION = PropertiesUtil.getProperty("project.wizard.description");
+    private static final String PROJECT_WIZARD_DESCRIPTION =
+            EnumProperties.MIND_SPORE_PROPERTIES.getProperty("project.wizard.description");
 
-    static {
-        EventCenter.INSTANCE.subscribe(new DialogInfoListener());
-    }
-
-    private WizardMsSettingProjectPeer msSettingProjectPeer;
-
-    private CustomMSProjectStep customMSProjectStep;
+    private WizardMsSettingProjectPeer msSettingProjectPeer = new WizardMsSettingProjectPeer();
 
     @Override
     public AbstractActionWithPanel createStep(DirectoryProjectGenerator projectGenerator,
-        AbstractNewProjectStep.AbstractCallback callback) {
-        if (msSettingProjectPeer == null) {
-            msSettingProjectPeer = new WizardMsSettingProjectPeer();
-            customMSProjectStep = new CustomMSProjectStep(this, callback, msSettingProjectPeer);
-        }
+                                              AbstractNewProjectStep.AbstractCallback callback) {
         msSettingProjectPeer.initCondaMap(); // refresh exist interpreter
-        return customMSProjectStep;
+        msSettingProjectPeer.resetBrowserButton();
+        return new CustomMSProjectStep(this, callback, msSettingProjectPeer);
     }
 
     @Override
@@ -104,66 +92,35 @@ public class MindSporeProjectGenerator extends PythonProjectGenerator<PyNewProje
                                     @NotNull Module module,
                                     @Nullable PyProjectSynchronizer synchronizer) {
         super.configureProject(project, baseDir, settings, module, synchronizer);
-        MindSporeServiceImpl.getInstance().createMindSporeTemplate(baseDir.getPresentableUrl(),
-                msSettingProjectPeer.getTemplateSelector().getSelectedItem().toString());
-        MindSporeServiceImpl.getInstance().createStructure(baseDir.getPresentableUrl());
-        Task.WithResult condaEnv = new Task.WithResult<Sdk, Exception>(project, "create conda env", true) {
-            @Override
-            protected Sdk compute(@NotNull ProgressIndicator indicator) {
-                if (msSettingProjectPeer.getNewEnvironmentUsingRadioButton().isSelected()) {
-                    return MsCondaEnvService.newEnvironmentLocation(project,
-                            module,
-                            msSettingProjectPeer.getCondaPath(),
-                            msSettingProjectPeer.getCondaEnvPath(),
-                            msSettingProjectPeer.getPythonVersionCombo().getSelectedItem().toString());
-                } else {
-                    return MsCondaEnvService.exitingCondaEnvironment(project,
-                            module,
-                            msSettingProjectPeer.getCondaSdk(msSettingProjectPeer.getExistEnv()
-                                    .getSelectedItem().toString()));
-                }
-            }
-        };
-        Sdk sdk = (Sdk) ProgressManager.getInstance().run(condaEnv);
-        if (sdk == null || sdk.getHomePath() == null) {
-            return;
+        MindSporeService.createMindSporeTemplate(baseDir.getPresentableUrl(),
+                msSettingProjectPeer.getTemplate());
+        MindSporeService.createStructure(baseDir.getPresentableUrl());
+        Sdk sdk = settings.getSdk();
+        if (sdk instanceof PyLazySdk) {
+            sdk = ((PyLazySdk) sdk).create();
         }
-        Task.WithResult task = new Task.WithResult<Integer, Exception>(project,
-                "Install MindSpore into conda", false) {
-            @Override
-            public Integer compute(@NotNull ProgressIndicator indicator) {
-                DialogInfo dialogInfo = installMindSporeIntoConda(sdk);
-                dialogInfo.setTitle("Install MindSpore into conda");
-                EventCenter.INSTANCE.publish(dialogInfo);
-                return dialogInfo.isSuccessful() ? 0 : -1;
-            }
-        };
-        int result = (int) ProgressManager.getInstance().run(task);
-        if (result != 0) {
+        log.info("generator configuration");
+        log.info("sdk home path : {}", sdk.getHomePath());
+        if (!MsCondaEnvService.isValid(sdk)) {
             return;
-        }
-    }
-
-    private DialogInfo installMindSporeIntoConda(Sdk sdk) {
-        String hardwarePlatform = msSettingProjectPeer.getHardwareValue();
-        List<String> cmdList;
-        //conda这里需要完善获取命令的方法
-        if (hardwarePlatform.contains(EnumHardWarePlatform.CPU.getCode())) {
-            cmdList = Arrays.asList("install", String.format("mindspore-%s=1.5.0",
-                    EnumHardWarePlatform.CPU.getCode().toLowerCase(Locale.ROOT)),
-                    "-c", "mindspore", "-c", "conda-forge", "-y");
-        } else if (hardwarePlatform.contains(EnumHardWarePlatform.GPU.getCode())) {
-            String version = hardwarePlatform.split(" ")[2];
-            cmdList = Arrays.asList("install", String.format("mindspore-%s=1.5.0",
-                    EnumHardWarePlatform.GPU.getCode().toLowerCase(Locale.ROOT)),
-                    String.format("cudatoolkit=%s", version), "cudnn", "-c", "mindspore",
-                    "-c", "conda-forge", "-y");
         } else {
-            cmdList = Arrays.asList("install", String.format("mindspore-%s=1.5.0",
-                    EnumHardWarePlatform.ASCEND.getCode().toLowerCase(Locale.ROOT)),
-                    "-c", "mindspore", "-c", "conda-forge", "-y");
+            if (VersionUtils.getIdeBaselineVersion() >= 203) {
+                PyCondaPackageService.onCondaEnvCreated(msSettingProjectPeer.getCondaPath());
+            }
         }
-        return CondaCmdProcessor.executeCondaCmd(sdk, null, cmdList);
+        Task.WithResult installMindSporeTask = MindSporeService.installMindSporeTask(
+                project,
+                msSettingProjectPeer.getHardwareValue(),
+                sdk);
+        boolean isMindSporeInstalled = (Boolean) ProgressManager.getInstance().run(installMindSporeTask);
+        if (!isMindSporeInstalled) {
+            log.info("MindSpore install failed, check by validate");
+            return;
+        }
+        boolean isNewSdk = msSettingProjectPeer.isUsingNewCondaEnv();
+        Task.WithResult setSdkTask = MsCondaEnvService.setSdkTask(project, module, sdk, isNewSdk);
+        Long sessionId = (Long) ProgressManager.getInstance().run(setSdkTask);
+        log.info("session ID {}", sessionId);
     }
 
     @Override

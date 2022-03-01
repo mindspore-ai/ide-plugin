@@ -14,29 +14,23 @@
  * limitations under the License.
  */
 
-package com.mindspore.ide.toolkit.common.dialog;
+package com.mindspore.ide.toolkit.common.utils;
 
-import net.engio.mbassy.listener.Handler;
-import net.engio.mbassy.listener.Listener;
-import net.engio.mbassy.listener.References;
+import com.intellij.openapi.application.ApplicationInfo;
 
 /**
- * dialog info listener
+ * IDE version info
  *
- * @since 1.0
+ * @since 2022-02-10
  */
-@Listener(references = References.Strong)
-public class DialogInfoListener {
+public class VersionUtils {
     /**
-     * show dialog
+     * get ide version
      *
-     * @param dialogInfo dialog info
+     * @return ide version
      */
-    @Handler
-    public void showDialog(DialogInfo dialogInfo) {
-        if (dialogInfo == null) {
-            return;
-        }
-        dialogInfo.showDialog();
+    public static int getIdeBaselineVersion() {
+        final ApplicationInfo applicationInfo = ApplicationInfo.getInstance();
+        return applicationInfo.getBuild().getBaselineVersion();
     }
 }

@@ -33,7 +33,7 @@ public class PathUtils {
     }
 
     public static void initResourceFolder() {
-        File file = FileUtils.getFile(getInstallRootPath());
+        File file = FileUtils.getFile(getDefaultResourcePath());
         if (!file.exists()) {
             if (file.mkdir()) {
                 FileUtils.hideFile(file);
@@ -55,5 +55,19 @@ public class PathUtils {
 
     public static Path getMindSporePath() {
         return Paths.get(getIdePluginsPath().toString(), MINDSPORE_PATH);
+    }
+
+    /**
+     * judge is child path
+     *
+     * @param parentPath parent path
+     * @param childPath child path
+     * @return true or false
+     */
+    public static boolean judgeIsChildPath(String parentPath, String childPath) {
+        if (Path.of(childPath).getParent().equals(Path.of(parentPath))) {
+            return true;
+        }
+        return false;
     }
 }

@@ -19,6 +19,9 @@ package com.mindspore.ide.toolkit.ui.errordialog;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.ui.components.JBLabel;
+
+import com.mindspore.ide.toolkit.common.dialoginfo.ExceptionDialogInfo;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,11 +31,14 @@ import javax.swing.JTextPane;
 import javax.swing.JComponent;
 
 /**
- * cmd execute error dialog
+ * 异常弹窗。
+ * 展示异常错误和对应的解决方案等信息。
+ * 通过{@link ExceptionDialogInfo#parseException(Exception, Object...)}的showDialog方法来调用，例如：
+ *     ExceptionDialogInfo.parseException(msToolKitException).showDialog("Install MindSpore into conda")
  *
  * @since 1.0
  */
-public class CmdExecuteErrorDialog extends DialogWrapper {
+public class ExceptionDialog extends DialogWrapper {
     private JPanel cmdMainPanel;
     private JTextArea outPutInfo;
     private JPanel outPutContainer;
@@ -46,25 +52,26 @@ public class CmdExecuteErrorDialog extends DialogWrapper {
     private JBLabel detailsTextInfo;
     private JTextPane messages;
     private JBLabel messageLabel;
+    private final String defaultTitle = "Something wrong";
 
     /**
      * constructor for dialog info
      *
      * @param dialogInfo dialog info
      */
-    public CmdExecuteErrorDialog(@NotNull CmdDialogInfo dialogInfo) {
+    public ExceptionDialog(@NotNull ExceptionDialogInfo dialogInfo) {
         super(false);
         init();
         setResizable(false);
-        setTitle(dialogInfo.getTitle());
+        setTitle(dialogInfo.getTitle() == null ? defaultTitle : dialogInfo.getTitle());
         final String message = dialogInfo.getDescription();
         final String solution = dialogInfo.getSolution();
         final String command = dialogInfo.getCommand();
         final String output = dialogInfo.getOutput();
         final boolean isExtendedInfo = command != null || output != null || solution != null;
-        commandContainer.setVisible(command != null);
-        outPutContainer.setVisible(output != null);
-        resultContainer.setVisible(solution != null);
+        commandContainer.setVisible(command != null && !"".equals(command));
+        outPutContainer.setVisible(output != null && !"".equals(output));
+        resultContainer.setVisible(solution != null && !"".equals(solution));
         detailContainer.setVisible(!isExtendedInfo);
         messageContainer.setVisible(isExtendedInfo);
         if (isExtendedInfo) {

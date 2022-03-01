@@ -51,4 +51,21 @@ public enum YamlUtils {
             return Optional.empty();
         }
     }
+
+    /**
+     * 读取本地的yaml文件，并转换为对应的类
+     *
+     * @param localFile 本地文件
+     * @param targetClass 目标类类型
+     * @param <T> 目标类
+     * @return 实例
+     */
+    public <T> Optional<T> readLocalFile(String localFile, Class<T> targetClass) {
+        try (InputStream configStream = Files.newInputStream(Paths.get(localFile))) {
+            return Optional.of(parse(configStream, targetClass));
+        } catch (IOException ioException) {
+            log.error("read local yaml file failed.", ioException);
+        }
+        return Optional.empty();
+    }
 }
