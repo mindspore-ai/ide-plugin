@@ -18,7 +18,8 @@ package com.mindspore.ide.toolkit.common.enums;
 
 public enum EnumPlatform {
     Linux("Linux"),
-    Mac_OS("Mac OS"),
+    MacOs_x86("MacOs_x86"),
+    MacOs_arm("MacOs_arm"),
     Windows("Windows"),
     Others("Others");
 

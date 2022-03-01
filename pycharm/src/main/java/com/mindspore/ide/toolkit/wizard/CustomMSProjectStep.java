@@ -75,7 +75,8 @@ public class CustomMSProjectStep extends ProjectSpecificSettingsStep {
 
     @Override
     public boolean checkValid() {
-        if (!(OSInfoUtils.INSTANCE.isLinux() || OSInfoUtils.INSTANCE.isWindows())) {
+        OSInfoUtils osInfoUtils = OSInfoUtils.INSTANCE;
+        if (!(osInfoUtils.isLinux() || osInfoUtils.isWindows() || osInfoUtils.isMacOsX86())) {
             setWarningText("os not support");
             return false;
         }
@@ -95,7 +96,7 @@ public class CustomMSProjectStep extends ProjectSpecificSettingsStep {
             setWarningText("Project Location has been fixed!");
         }
 
-        if (OSInfoUtils.INSTANCE.isLinux() && !PathUtils.judgeIsChildPath(MiniCondaService
+        if (osInfoUtils.isLinux() && !PathUtils.judgeIsChildPath(MiniCondaService
                 .getCondaEnvsPath(projectPeer.getCondaPath()), projectPeer.getCondaEnvPath())) {
             setWarningText("This environment path is invalid."
                     + " Please choose new environment location in Conda install path.");

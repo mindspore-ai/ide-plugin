@@ -35,7 +35,11 @@ public enum OSInfoUtils {
         if (OS.contains("linux")) {
             platform = EnumPlatform.Linux;
         } else if (OS.contains("mac") && OS.indexOf("os") > 0) {
-            platform = EnumPlatform.Mac_OS;
+            if (System.getProperty("os.arch").toLowerCase().contains("x86")) {
+                platform = EnumPlatform.MacOs_x86;
+            } else {
+                platform = EnumPlatform.MacOs_arm;
+            }
         } else if (OS.contains("windows")) {
             platform = EnumPlatform.Windows;
         } else {
@@ -47,8 +51,8 @@ public enum OSInfoUtils {
         return platform == EnumPlatform.Linux;
     }
 
-    public boolean isMacOS() {
-        return platform == EnumPlatform.Mac_OS;
+    public boolean isMacOsX86() {
+        return platform == EnumPlatform.MacOs_x86;
     }
 
     public boolean isWindows() {
