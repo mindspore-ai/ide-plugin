@@ -81,23 +81,4 @@ public enum MsVersionManager {
         );
         return resList;
     }
-
-    /**
-     * get operating system info
-     *
-     * @param hardware hardware info
-     * @return hashMap
-     */
-    public HashMap<String, String> operatingSystemInfo(@NotNull String hardware) {
-        HashMap<String, String> resMap = new HashMap<>();
-        mindSporeMap.get(hardware).getOsInfoList()
-                .forEach(
-                        value -> {
-                            if (value.toLowerCase(Locale.ENGLISH).contains(curOsDesc)) {
-                                resMap.put(value, "");
-                            }
-                        }
-                );
-        return resMap;
-    }
 }
