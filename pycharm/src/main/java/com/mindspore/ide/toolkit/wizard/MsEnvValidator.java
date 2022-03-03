@@ -38,6 +38,8 @@ import java.util.Collections;
  */
 @Slf4j
 public class MsEnvValidator {
+    private MsEnvValidator() {}
+
     /**
      * 校验mindspore是否安装成功
      *
