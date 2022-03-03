@@ -125,7 +125,7 @@ public class MiniCondaService {
                             NotificationType.INFORMATION, "Install MiniConda success");
                     break;
                 }
-                case Mac_OS: {
+                case MacOs_x86: {
                     String shPath = path + File.separator + "Miniconda3-latest-MacOSX-x86_64.sh";
                     HttpUtils.download("https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh",
                             shPath, 30000);

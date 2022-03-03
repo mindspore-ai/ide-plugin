@@ -20,7 +20,7 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonParseException;
 import com.google.gson.stream.JsonReader;
 import com.mindspore.ide.toolkit.common.utils.GsonUtils;
-import com.mindspore.ide.toolkit.common.utils.OsUtils;
+import com.mindspore.ide.toolkit.common.utils.OSInfoUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +41,7 @@ public enum MsVersionManager {
 
     private final Logger LOG = LoggerFactory.getLogger(MsVersionManager.class);
     private LinkedHashMap<String, MSVersionInfo> mindSporeMap = new LinkedHashMap();
-    private String curOsDesc = OsUtils.getDescriptionOPfCurrentOperatingSystem();
+    private String curOsDesc = OSInfoUtils.INSTANCE.getOsName().toLowerCase(Locale.ENGLISH);
 
     MsVersionManager() {
         parseJsonFile("/jsons/MSVersionInfo.json", mindSporeMap);
@@ -80,24 +80,5 @@ public enum MsVersionManager {
                         )
         );
         return resList;
-    }
-
-    /**
-     * get operating system info
-     *
-     * @param hardware hardware info
-     * @return hashMap
-     */
-    public HashMap<String, String> operatingSystemInfo(@NotNull String hardware) {
-        HashMap<String, String> resMap = new HashMap<>();
-        mindSporeMap.get(hardware).getOsInfoList()
-                .forEach(
-                        value -> {
-                            if (value.toLowerCase(Locale.ENGLISH).contains(curOsDesc)) {
-                                resMap.put(value, "");
-                            }
-                        }
-                );
-        return resMap;
     }
 }

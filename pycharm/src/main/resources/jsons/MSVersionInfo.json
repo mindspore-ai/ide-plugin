@@ -25,7 +25,8 @@
     "des": "For CPU-only machines or CUDA versions below 10.1",
     "osInfoList" : [
       "windows",
-      "linux"
+      "linux",
+      "macos_x86"
     ]
   }
 ]
