@@ -6,10 +6,10 @@ import com.mindspore.ide.toolkit.smartcomplete.grpc.CompletionException;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.Optional;
 
 /**
  * 模型管理组件，所有涉及到模型的动作，都直接和该类对接

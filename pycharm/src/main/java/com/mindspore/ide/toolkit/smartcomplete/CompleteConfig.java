@@ -3,7 +3,6 @@ package com.mindspore.ide.toolkit.smartcomplete;
 import com.google.gson.Gson;
 
 import com.intellij.ide.plugins.PluginManagerCore;
-import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.ApplicationNamesInfo;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.util.SystemInfo;
@@ -11,7 +10,6 @@ import com.intellij.openapi.util.SystemInfo;
 import com.mindspore.ide.toolkit.common.ResourceManager;
 import com.mindspore.ide.toolkit.common.config.GlobalConfig;
 import com.mindspore.ide.toolkit.common.utils.FileUtils;
-import com.mindspore.ide.toolkit.common.utils.NotificationUtils;
 import com.mindspore.ide.toolkit.common.utils.PathUtils;
 import com.mindspore.ide.toolkit.common.utils.YamlUtils;
 
@@ -36,9 +34,9 @@ import java.util.Set;
 @Data
 public class CompleteConfig {
     /**
-     * 默认模型版本号
+     * 下载超时时间（5分钟）
      */
-    public static final String DEFAULT_MODEL_VERSION = "default";
+    public static final int DOWNLOAD_TIMEOUT = 5 * 60 * 1000;
 
     private static final String DEFAULT_RESOURCE_PATH = PathUtils.getDefaultResourcePath();
 
@@ -50,6 +48,8 @@ public class CompleteConfig {
     private final String defaultPluginVersion = "default_plugin_version";
 
     private final String lowLine = "_";
+
+    private boolean extranet;
 
     private String localDir;
 
@@ -82,15 +82,13 @@ public class CompleteConfig {
                 boolean downloadSucceed = false;
                 for (int i = 0; i < maxDownloadTimes; i++) {
                     downloadSucceed = ResourceManager.downloadResource(MODEL_INFO.getDownloadUrl(),
-                            NEW_FILE, MODEL_INFO.getToken());
+                            NEW_FILE, MODEL_INFO.getToken(), DOWNLOAD_TIMEOUT);
                     if (downloadSucceed) {
                         break;
                     }
                 }
                 if (!downloadSucceed) {
-//                    NotificationUtils.notify(NotificationUtils.NotifyGroup.SMART_COMPLETE,
-//                            NotificationType.ERROR,
-//                            "Download complete model config failed.");
+                    log.warn("Download complete model config failed.");
                 }
                 CONFIG = getInstance().get();
             } else {
@@ -137,10 +135,10 @@ public class CompleteConfig {
     }
 
     /**
-     * get model zip full path
+     * 模型zip文件全路径
      *
-     * @param model Model
-     * @return String
+     * @param model 当前模型
+     * @return 例如：D:/.mindspore/smartComplete/PyCharm Community Edition/model/1.6.1/1.0/onnx_windows.zip
      */
     public String getModelZipFullPath(Model model) {
         return String.join(File.separator,
@@ -154,10 +152,10 @@ public class CompleteConfig {
     }
 
     /**
-     * get model zip parent path
+     * 模型zip文件父路径
      *
-     * @param model Model
-     * @return String
+     * @param model 当前模型
+     * @return 例如：D:/.mindspore/smartComplete/PyCharm Community Edition/model/1.6.1/1.0
      */
     public String getModelZipParentPath(Model model) {
         return String.join(File.separator,
@@ -170,10 +168,10 @@ public class CompleteConfig {
     }
 
     /**
-     * get model unzip folder full path
+     * 模型压缩包解压后的文件夹的全路径
      *
-     * @param model Model
-     * @return String
+     * @param model 当前模型
+     * @return 例如：D:/.mindspore/smartComplete/PyCharm Community Edition/model/1.6.1/1.0/onnx_windows
      */
     public String getModelUnzipFolderFullPath(Model model) {
         return String.join(File.separator,
@@ -187,10 +185,10 @@ public class CompleteConfig {
     }
 
     /**
-     * get model exe full path
+     * 模型exe全路径
      *
-     * @param model Model
-     * @return String
+     * @param model 当前模型
+     * @return 例如：D:/.mindspore/smartComplete/PyCharm Community Edition/model/1.6.1/1.0/onnx_windows/grpc_server.exe
      */
     public String getModelExeFullPath(Model model) {
         return String.join(File.separator,
@@ -205,9 +203,9 @@ public class CompleteConfig {
     }
 
     /**
-     * get model folder path
+     * model文件夹全路径
      *
-     * @return String
+     * @return 例如：D:/.mindspore/smartComplete/PyCharm Community Edition/model
      */
     public String getModelFolderPath() {
         return String.join(File.separator,
@@ -218,10 +216,10 @@ public class CompleteConfig {
     }
 
     /**
-     * get plugin version folder path
+     * 根据传入的pluginVersion获取该插件版本号对应的全路径
      *
      * @param pluginVersion plugin version
-     * @return String
+     * @return 例如：D:/.mindspore/smartComplete/PyCharm Community Edition/model/[传入的pluginVersion]
      */
     public String getPluginVersionFolderPath(@NotNull String pluginVersion) {
         return String.join(File.separator,
@@ -238,7 +236,11 @@ public class CompleteConfig {
      * @return current model
      */
     public Model getCurrentModel() {
-        Model model = modelMap.get(PLUGIN_VERSION).getModelOfCurrentOs();
+        ModelOfSpecificOs modelOfSpecificOs = modelMap.get(PLUGIN_VERSION);
+        Model model = null;
+        if (modelOfSpecificOs != null) {
+            model = modelOfSpecificOs.getModelOfCurrentOs();
+        }
         if (model == null) {
             model = modelMap.get(defaultPluginVersion).getModelOfCurrentOs();
             model.setPluginVersion(defaultPluginVersion);
@@ -301,6 +303,8 @@ public class CompleteConfig {
      *
      * @since 2022-2-11
      */
+    @Getter
+    @Setter
     public static class ModelOfSpecificOs {
         private Model windows;
         private Model linux;

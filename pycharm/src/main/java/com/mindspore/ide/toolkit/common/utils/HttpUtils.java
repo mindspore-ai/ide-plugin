@@ -30,15 +30,22 @@ public class HttpUtils {
     private static final String CHARSET_UTF_8 = "UTF-8";
 
     public static CloseableHttpResponse doGet(String url, Map<String, String> headerMap) throws IOException {
-        if (url == null || url.isEmpty()) {
-            return null;
-        }
-        HttpGet request = new HttpGet();
-        request.setURI(URI.create(url));
-        if (!headerMap.isEmpty()) {
-            headerMap.forEach(request::setHeader);
-        }
-        return HttpClients.createDefault().execute(request);
+        return HttpClients.createDefault().execute(initHttpGet(url, headerMap, -1));
+    }
+
+    /**
+     * get data from some url
+     *
+     * @param url file url
+     * @param headerMap request header
+     * @param timeout timeout(ms)
+     * @return CloseableHttpResponse
+     * @throws IOException io exception
+     */
+    public static CloseableHttpResponse doGet(String url,
+        Map<String, String> headerMap,
+        int timeout) throws IOException {
+        return HttpClients.createDefault().execute(initHttpGet(url, headerMap, timeout));
     }
 
     public static HttpResponse doPost(String url, Map<String, String> headerMap, Map<String, String> bodymap)
@@ -91,5 +98,21 @@ public class HttpUtils {
                 index = fileChannel.size();
             }
         }
+    }
+
+    private static HttpGet initHttpGet(String url, Map<String, String> headerMap, int timeout) {
+        HttpGet httpGet = new HttpGet();
+        httpGet.setURI(URI.create(url));
+        if (!headerMap.isEmpty()) {
+            headerMap.forEach(httpGet::setHeader);
+        }
+        if (timeout != -1) {
+            RequestConfig requestConfig = RequestConfig.custom()
+                    .setConnectionRequestTimeout(timeout)
+                    .setConnectTimeout(timeout)
+                    .setSocketTimeout(timeout).build();
+            httpGet.setConfig(requestConfig);
+        }
+        return httpGet;
     }
 }

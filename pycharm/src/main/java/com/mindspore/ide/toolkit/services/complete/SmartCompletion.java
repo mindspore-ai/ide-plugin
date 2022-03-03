@@ -1,6 +1,10 @@
 package com.mindspore.ide.toolkit.services.complete;
 
-import com.intellij.codeInsight.completion.*;
+import com.intellij.codeInsight.completion.CompletionContributor;
+import com.intellij.codeInsight.completion.CompletionParameters;
+import com.intellij.codeInsight.completion.CompletionResultSet;
+import com.intellij.codeInsight.completion.CompletionSorter;
+import com.intellij.codeInsight.completion.PrefixMatcher;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementWeigher;
 import com.intellij.codeInsight.lookup.LookupEx;
@@ -31,11 +35,12 @@ public class SmartCompletion extends CompletionContributor {
     public void fillCompletionVariants(@NotNull CompletionParameters parameters, @NotNull CompletionResultSet result) {
         super.fillCompletionVariants(parameters, result);
         result.restartCompletionOnAnyPrefixChange();
+        String prefix = result.getPrefixMatcher().getPrefix();
         registerLookupListener(parameters);
         SmartCompleteEvents.CodeRecommendStart codeCompleteStart = new SmartCompleteEvents.CodeRecommendStart();
         codeCompleteStart.setDoc(parameters.getEditor().getDocument());
         codeCompleteStart.setMyOffset(parameters.getOffset());
-        codeCompleteStart.setPrefix(result.getPrefixMatcher().getPrefix());
+        codeCompleteStart.setPrefix(prefix);
         EventCenter.INSTANCE.publish(codeCompleteStart);
         List<LookupElement> smartCompleteResult;
         Long startTime = System.currentTimeMillis();
@@ -55,6 +60,7 @@ public class SmartCompletion extends CompletionContributor {
             EventCenter.INSTANCE.publish(new SmartCompleteEvents.CodeRecommendEnd());
             resultSort.addAllElements(smartCompleteResult);
             smartCompletionLookupListener.setMindspore(true);
+            smartCompletionLookupListener.setPrefix(prefix);
         }
     }
 
@@ -62,6 +68,7 @@ public class SmartCompletion extends CompletionContributor {
         PrefixMatcher originalMatcher = result.getPrefixMatcher();
         LookupElementWeigher lookupElementWeigher = new LookupElementWeigher("SmartComplete", false, false) {
             @Override
+            @NotNull
             public Integer weigh(@NotNull LookupElement element) {
                 if (smartCompleteResult.contains(element)) {
                     return smartCompleteResult.indexOf(element);
@@ -69,8 +76,9 @@ public class SmartCompletion extends CompletionContributor {
                 return Integer.MAX_VALUE;
             }
         };
-        CompletionResultSet resultSort = result.withRelevanceSorter(CompletionSorter.defaultSorter(parameters, originalMatcher)
-                .weighBefore("liftShorterClasses", lookupElementWeigher));
+        CompletionResultSet resultSort = result.withRelevanceSorter(CompletionSorter
+            .defaultSorter(parameters, originalMatcher)
+            .weighBefore("liftShorterClasses", lookupElementWeigher));
         resultSort.restartCompletionOnAnyPrefixChange();
         return result;
     }
