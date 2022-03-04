@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
-package com.mindspore.ide.toolkit.common.enums;
+package com.mindspore.ide.toolkit.search.entity;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * EnumNotifyGroup Test
+ * OpenMindSporeActionModel Test
  *
- * @since 2022-1-27
+ * @since 2022-3-4
  */
-public class EnumNotifyGroupTest {
+public class OpenMindSporeActionModelTest {
     @Test
     public void initTest() {
-        EnumNotifyGroup enumNotifyGroup = EnumNotifyGroup.MIND_SPORE;
-        Assert.assertNotNull(enumNotifyGroup);
-        Assert.assertNull(enumNotifyGroup.getDescription());
-        Assert.assertNull(enumNotifyGroup.getDisplayId());
-        Assert.assertNull(enumNotifyGroup.getTitle());
+        OpenMindSporeActionModel openMindSporeActionModel = new OpenMindSporeActionModel(null, null);
+        Assert.assertNotNull(openMindSporeActionModel);
+        openMindSporeActionModel.setDocValue(null);
+        openMindSporeActionModel.setMyProject(null);
+        Assert.assertNull(openMindSporeActionModel.getDocValue());
+        Assert.assertNull(openMindSporeActionModel.getMyProject());
+        Assert.assertNotNull(openMindSporeActionModel.toString());
     }
 }

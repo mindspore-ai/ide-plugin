@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-package com.mindspore.ide.toolkit.common.enums;
+package com.mindspore.ide.toolkit.search.entity;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * EnumNotifyGroup Test
+ * MsOperatorInfo Test
  *
- * @since 2022-1-27
+ * @since 2022-3-4
  */
-public class EnumNotifyGroupTest {
+public class MsOperatorInfoTest {
     @Test
     public void initTest() {
-        EnumNotifyGroup enumNotifyGroup = EnumNotifyGroup.MIND_SPORE;
-        Assert.assertNotNull(enumNotifyGroup);
-        Assert.assertNull(enumNotifyGroup.getDescription());
-        Assert.assertNull(enumNotifyGroup.getDisplayId());
-        Assert.assertNull(enumNotifyGroup.getTitle());
+        MsOperatorInfo msOperatorInfo = new MsOperatorInfo("mindSporeOperator", "link");
+        Assert.assertNotNull(msOperatorInfo);
+        Assert.assertEquals(msOperatorInfo.getMindSporeOperator(), "mindSporeOperator");
+        Assert.assertEquals(msOperatorInfo.getLink(), "link");
     }
 }
