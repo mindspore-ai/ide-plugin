@@ -20,7 +20,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * PythonCommand Test
+ * SearchResource Test
  *
  * @since 2022-1-27
  */

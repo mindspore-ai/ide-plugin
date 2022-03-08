@@ -14,23 +14,20 @@
  * limitations under the License.
  */
 
-package com.mindspore.ide.toolkit.common.enums;
+package com.mindspore.ide.toolkit.search.constant;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * EnumNotifyGroup Test
+ * Constants Test
  *
- * @since 2022-1-27
+ * @since 2022-3-4
  */
-public class EnumNotifyGroupTest {
+public class ConstantsTest {
     @Test
     public void initTest() {
-        EnumNotifyGroup enumNotifyGroup = EnumNotifyGroup.MIND_SPORE;
-        Assert.assertNotNull(enumNotifyGroup);
-        Assert.assertNull(enumNotifyGroup.getDescription());
-        Assert.assertNull(enumNotifyGroup.getDisplayId());
-        Assert.assertNull(enumNotifyGroup.getTitle());
+        Assert.assertEquals(Constants.HTTP_REQUEST_SEARCHTEXT, "word");
+        Assert.assertEquals(Constants.CHARSET_UTF_8, "UTF-8");
     }
 }

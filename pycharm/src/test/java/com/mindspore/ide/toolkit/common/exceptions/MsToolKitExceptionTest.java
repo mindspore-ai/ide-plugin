@@ -21,7 +21,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * PythonCommand Test
+ * MsToolKitException Test
  *
  * @since 2022-1-27
  */

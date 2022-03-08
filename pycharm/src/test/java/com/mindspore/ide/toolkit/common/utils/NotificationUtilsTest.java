@@ -14,23 +14,27 @@
  * limitations under the License.
  */
 
-package com.mindspore.ide.toolkit.common.enums;
+package com.mindspore.ide.toolkit.common.utils;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * EnumNotifyGroup Test
+ * NotificationUtils Test
  *
- * @since 2022-1-27
+ * @since 2022-3-4
  */
-public class EnumNotifyGroupTest {
+public class NotificationUtilsTest {
     @Test
     public void initTest() {
-        EnumNotifyGroup enumNotifyGroup = EnumNotifyGroup.MIND_SPORE;
-        Assert.assertNotNull(enumNotifyGroup);
-        Assert.assertNull(enumNotifyGroup.getDescription());
-        Assert.assertNull(enumNotifyGroup.getDisplayId());
-        Assert.assertNull(enumNotifyGroup.getTitle());
+        NotificationUtils.NotifyGroup notifyGroup = NotificationUtils.NotifyGroup.SMART_COMPLETE;
+        Assert.assertNotNull(notifyGroup);
+        Assert.assertEquals(notifyGroup.getGroupId(), "SmartComplete");
+        Assert.assertEquals(notifyGroup.getTitle(), "MindSpore smart complete");
+
+        NotificationUtils.NotifyGroup notifyGroup1 = NotificationUtils.NotifyGroup.NEW_PROJECT;
+        Assert.assertNotNull(notifyGroup1);
+        Assert.assertEquals(notifyGroup1.getGroupId(), "NewProject");
+        Assert.assertEquals(notifyGroup1.getTitle(), "New MindSpore project");
     }
 }

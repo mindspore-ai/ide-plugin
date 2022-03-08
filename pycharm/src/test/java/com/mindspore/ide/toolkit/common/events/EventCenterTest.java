@@ -14,23 +14,20 @@
  * limitations under the License.
  */
 
-package com.mindspore.ide.toolkit.common.enums;
+package com.mindspore.ide.toolkit.common.events;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * EnumNotifyGroup Test
+ * EventCenter Test
  *
- * @since 2022-1-27
+ * @since 2022-3-4
  */
-public class EnumNotifyGroupTest {
+public class EventCenterTest {
     @Test
     public void initTest() {
-        EnumNotifyGroup enumNotifyGroup = EnumNotifyGroup.MIND_SPORE;
-        Assert.assertNotNull(enumNotifyGroup);
-        Assert.assertNull(enumNotifyGroup.getDescription());
-        Assert.assertNull(enumNotifyGroup.getDisplayId());
-        Assert.assertNull(enumNotifyGroup.getTitle());
+        EventCenter eventCenter = EventCenter.INSTANCE;
+        eventCenter.publish(1);
+        eventCenter.subscribe(1);
     }
 }
