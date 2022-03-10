@@ -50,8 +50,5 @@ public class GuideConfigTest {
         Assert.assertEquals(guideConfig1.getGuideConfigFile(), "guideConfigFile");
         Assert.assertEquals(guideConfig1.getPluginVersion(), "pluginVersion");
         Assert.assertEquals(guideConfig1.getGuideSettingUrl(), "guideSettingUrl");
-
-        Assert.assertEquals(guideConfig1.hashCode(), -832216364);
-        Assert.assertNotNull(guideConfig1.toString());
     }
 }

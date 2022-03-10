@@ -33,6 +33,5 @@ public class OpenMindSporeActionModelTest {
         openMindSporeActionModel.setMyProject(null);
         Assert.assertNull(openMindSporeActionModel.getDocValue());
         Assert.assertNull(openMindSporeActionModel.getMyProject());
-        Assert.assertNotNull(openMindSporeActionModel.toString());
     }
 }

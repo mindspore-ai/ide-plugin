@@ -38,5 +38,3 @@ public class MsOperatorInfo {
         return link;
     }
 }
-
-
