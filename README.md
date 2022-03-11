@@ -75,7 +75,7 @@ MindSpore Dev ToolKit 是一款[PyCharm](https://www.jetbrains.com/pycharm/)插�
 
 ### 安装
 
-1. 获取[插件Zip包](https://ms-release.obs.cn-north-4.myhuaweicloud.com/1.6.0/IdePlugin/any/MindSpore_Dev_ToolKit-1.6.0.zip)。
+1. 获取[插件Zip包](https://ms-release.obs.cn-north-4.myhuaweicloud.com/1.6.1/IdePlugin/any/MindSpore_Dev_ToolKit-1.6.1.zip)。
 2. 启动Pycharm单击左上菜单栏，选择File->Settings->Plugins->Install Plugin from Disk。
    如图：
    ![image-20211223175637989](./images/clip_image050.jpg)
