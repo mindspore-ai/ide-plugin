@@ -20,20 +20,22 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * MindSporeConfig Test
+ * GuideConfig Test
  *
- * @since 2022-1-27
+ * @since 2022-3-10
  */
-public class MindSporeConfigTest {
+public class GuideUserEntityTest {
     @Test
     public void initTest() {
-        MindSporeConfig mindSporeConfig = new MindSporeConfig();
-        Assert.assertNotNull(mindSporeConfig);
-        SearchConfig searchConfig = new SearchConfig();
-        mindSporeConfig.setSearch(searchConfig);
-        RomaConfig romaConfig = new RomaConfig();
-        mindSporeConfig.setRoma(romaConfig);
-        Assert.assertNotNull(mindSporeConfig.getSearch());
-        Assert.assertNotNull(mindSporeConfig.getRoma());
+        GuideUserEntity guideUserEntity = new GuideUserEntity();
+        Assert.assertNotNull(guideUserEntity);
+        guideUserEntity.setAskAgain(true);
+        guideUserEntity.setVersion("version");
+        guideUserEntity.setTitle("notificationTitle");
+        guideUserEntity.setContent("notificationContent");
+        Assert.assertTrue(guideUserEntity.isAskAgain());
+        Assert.assertEquals(guideUserEntity.getVersion(), "version");
+        Assert.assertEquals(guideUserEntity.getTitle(), "notificationTitle");
+        Assert.assertEquals(guideUserEntity.getContent(), "notificationContent");
     }
 }

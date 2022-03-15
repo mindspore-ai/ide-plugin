@@ -39,8 +39,5 @@ public class DocSearchConfigTest {
         docSearchConfig1.setSearchApi("searchApi");
         Assert.assertEquals(docSearchConfig1.getSearchJs(), "searchJs");
         Assert.assertEquals(docSearchConfig1.getSearchApi(), "searchApi");
-
-        Assert.assertEquals(docSearchConfig1.hashCode(), -1626344490);
-        Assert.assertNotNull(docSearchConfig1.toString());
     }
 }

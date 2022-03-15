@@ -32,7 +32,6 @@ public class DocumentSearchTest {
         Assert.assertNotNull(documentSearch.getValue());
         Assert.assertEquals(documentSearch.getPattern(), "pattern");
         Assert.assertEquals(documentSearch.getValueText(), "");
-        Assert.assertNotNull(documentSearch.toString());
 
         DocumentSearch documentSearch1 = new DocumentSearch(this, "pattern", 10);
         Assert.assertNotNull(documentSearch1);
@@ -44,9 +43,11 @@ public class DocumentSearchTest {
         documentValue.setTitle("title");
         documentValue.setPath("path");
         documentValue.setUrl("url");
-        documentValue.setFile_type("file_type");
+        documentValue.setFileType("file_type");
         documentValue.setContent("content");
         DocumentSearch documentSearch2 = new DocumentSearch(documentValue, "pattern", 10);
         Assert.assertEquals(documentSearch2.getValueText(), "title");
+
+        Assert.assertNotNull(documentSearch2.toString());
     }
 }

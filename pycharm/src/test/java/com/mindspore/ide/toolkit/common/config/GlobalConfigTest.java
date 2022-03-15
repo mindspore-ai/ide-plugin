@@ -56,8 +56,6 @@ public class GlobalConfigTest {
         Assert.assertEquals(globalConfig1.getMsEnvValidatorFile(), "msEnvValidatorFile");
         Assert.assertNotNull(globalConfig1.getCompleteModelInfo());
 
-        Assert.assertNotNull(globalConfig1.toString());
-
         GlobalConfig.CompleteModelInfo completeModelInfo1 = new GlobalConfig.CompleteModelInfo();
         completeModelInfo1.setOldConfig("oldConfig");
         completeModelInfo1.setNewConfig("newConfig");

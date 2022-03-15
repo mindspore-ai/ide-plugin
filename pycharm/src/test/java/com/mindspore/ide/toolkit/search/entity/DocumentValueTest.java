@@ -33,14 +33,13 @@ public class DocumentValueTest {
         documentValue.setTitle("title");
         documentValue.setPath("path");
         documentValue.setUrl("url");
-        documentValue.setFile_type("file_type");
+        documentValue.setFileType("file_type");
         documentValue.setContent("content");
         Assert.assertEquals(documentValue.getId(), 1);
         Assert.assertEquals(documentValue.getTitle(), "title");
         Assert.assertEquals(documentValue.getPath(), "path");
         Assert.assertEquals(documentValue.getUrl(), "url");
-        Assert.assertEquals(documentValue.getFile_type(), "file_type");
+        Assert.assertEquals(documentValue.getFileType(), "file_type");
         Assert.assertEquals(documentValue.getContent(), "content");
-        Assert.assertEquals(documentValue.toString(), "title");
     }
 }

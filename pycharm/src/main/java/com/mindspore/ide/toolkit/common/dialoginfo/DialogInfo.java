@@ -16,9 +16,6 @@
 
 package com.mindspore.ide.toolkit.common.dialoginfo;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * 弹窗中需要展示的信息。
  * 该类作为所有类型弹窗展示信息的父类，充当策略模式的对外超类。
@@ -26,12 +23,26 @@ import lombok.Setter;
  *
  * @since 1.0
  */
-@Getter
-@Setter
 public abstract class DialogInfo {
     private boolean isSuccessful;
 
     private String title;
+
+    public boolean isSuccessful() {
+        return isSuccessful;
+    }
+
+    public void setSuccessful(boolean isSuccessful) {
+        this.isSuccessful = isSuccessful;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     /**
      * show dialog
