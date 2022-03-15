@@ -6,6 +6,7 @@ import com.mindspore.ide.toolkit.common.config.GlobalConfig;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 
 public class PathUtils {
     private static final String MINDSPORE_PATH = "mindspore";
@@ -65,7 +66,7 @@ public class PathUtils {
      * @return true or false
      */
     public static boolean judgeIsChildPath(String parentPath, String childPath) {
-        if (Path.of(childPath).getParent().equals(Path.of(parentPath))) {
+        if (Objects.equals(Path.of(childPath).getParent(), Path.of(parentPath))) {
             return true;
         }
         return false;
