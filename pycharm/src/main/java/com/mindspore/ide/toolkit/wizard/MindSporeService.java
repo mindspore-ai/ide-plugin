@@ -180,7 +180,8 @@ public class MindSporeService {
                     if (!isMsEnvValidate && dialogInfo.isSuccessful()) {
                         new ExceptionDialogInfo.Builder()
                                 .isSuccessful(false)
-                                .description("The dependency package related to \"MindSpore\" cannot be found.")
+                                .description("Failed to run the verification script. There maybe something wrong."
+                                        + " If MindSpore is abnormal, you can reinstall it.")
                                 .build().showDialog("Install MindSpore into conda");
                     }
                     return isMsEnvValidate && dialogInfo.isSuccessful();
