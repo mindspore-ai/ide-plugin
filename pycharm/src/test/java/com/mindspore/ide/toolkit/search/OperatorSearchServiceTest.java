@@ -34,10 +34,14 @@ public class OperatorSearchServiceTest {
         Assert.assertEquals(0, OperatorSearchService.INSTANCE.search("mindspore.ops").size());
         Assert.assertEquals(380, OperatorSearchService.INSTANCE.search("torch").size());
         Assert.assertEquals(380, OperatorSearchService.INSTANCE.search("TORCH").size());
+        Assert.assertEquals(380, OperatorSearchService.INSTANCE.search("torch", Integer.MAX_VALUE).size());
+        Assert.assertEquals(380, OperatorSearchService.INSTANCE.search("TORCH", Integer.MAX_VALUE).size());
+        Assert.assertEquals(380, OperatorSearchService.INSTANCE.search("torch", 380).size());
+        Assert.assertEquals(380, OperatorSearchService.INSTANCE.search("TORCH", 380).size());
         Assert.assertEquals(10, OperatorSearchService.INSTANCE.search("torch", 10).size());
         Assert.assertEquals(10, OperatorSearchService.INSTANCE.search("TORCH", 10).size());
-        Assert.assertEquals(103, OperatorSearchService.INSTANCE.search("tf").size());
-        Assert.assertEquals(103, OperatorSearchService.INSTANCE.search("TF").size());
+        Assert.assertEquals(108, OperatorSearchService.INSTANCE.search("tf").size());
+        Assert.assertEquals(108, OperatorSearchService.INSTANCE.search("TF").size());
         Assert.assertEquals(10, OperatorSearchService.INSTANCE.search("tf", 10).size());
         Assert.assertEquals(10, OperatorSearchService.INSTANCE.search("TF", 10).size());
 
@@ -102,5 +106,53 @@ public class OperatorSearchServiceTest {
         Assert.assertEquals(0, OperatorSearchService.INSTANCE.search("mindspore", -1).size());
         Assert.assertEquals(0, OperatorSearchService.INSTANCE.search("spore").size());
         Assert.assertEquals(0, OperatorSearchService.INSTANCE.search("spore", 10).size());
+
+        Assert.assertEquals(0, OperatorSearchService.INSTANCE.search("你好").size());
+        Assert.assertEquals(0, OperatorSearchService.INSTANCE.search("你好", 10).size());
+        Assert.assertEquals(0, OperatorSearchService.INSTANCE.search("测试").size());
+        Assert.assertEquals(0, OperatorSearchService.INSTANCE.search("测试", 10).size());
+
+        Assert.assertEquals(0, OperatorSearchService.INSTANCE.search("。").size());
+        Assert.assertEquals(0, OperatorSearchService.INSTANCE.search("。", 10).size());
+        Assert.assertEquals(0, OperatorSearchService.INSTANCE.search(".").size());
+        Assert.assertEquals(0, OperatorSearchService.INSTANCE.search(".", 10).size());
+    }
+
+    @Test
+    public void testSpecialData() {
+        // 多条数据在一行
+        Map<String, String> map1 = new LinkedHashMap<>();
+        map1.put("tf.keras.Model.fit -> mindspore.Model.train",
+        "https://mindspore.cn/docs/api/zh-CN/r1.6/api_python/mindspore/mindspore.Model.html#mindspore.Model.train");
+        map1.put("tf.keras.Model.fit_generator -> mindspore.Model.train",
+        "https://mindspore.cn/docs/api/zh-CN/r1.6/api_python/mindspore/mindspore.Model.html#mindspore.Model.train");
+        Assert.assertEquals(map1, OperatorSearchService.INSTANCE.search("fit"));
+
+        Map<String, String> map2 = new LinkedHashMap<>();
+        map2.put("tf.keras.Model.predict -> mindspore.Model.eval",
+        "https://mindspore.cn/docs/api/zh-CN/r1.6/api_python/mindspore/mindspore.Model.html#mindspore.Model.eval");
+        map2.put("tf.keras.Model.predict_generator -> mindspore.Model.eval",
+        "https://mindspore.cn/docs/api/zh-CN/r1.6/api_python/mindspore/mindspore.Model.html#mindspore.Model.eval");
+        Assert.assertEquals(map2, OperatorSearchService.INSTANCE.search("predict"));
+
+        Map<String, String> map3 = new LinkedHashMap<>();
+        map3.put("tf.keras.metrics.Accuracy -> mindspore.nn.Accuracy",
+        "https://mindspore.cn/docs/api/zh-CN/r1.6/api_python/nn/mindspore.nn.Accuracy.html#mindspore.nn.Accuracy");
+        Assert.assertEquals(map3, OperatorSearchService.INSTANCE.search("tf.keras.metrics.Accuracy"));
+
+        Map<String, String> map4 = new LinkedHashMap<>();
+        map4.put("tf.keras.metrics.BinaryAccuracy -> mindspore.nn.Accuracy",
+        "https://mindspore.cn/docs/api/zh-CN/r1.6/api_python/nn/mindspore.nn.Accuracy.html#mindspore.nn.Accuracy");
+        Assert.assertEquals(map4, OperatorSearchService.INSTANCE.search("tf.keras.metrics.BinaryAccuracy"));
+
+        Map<String, String> map5 = new LinkedHashMap<>();
+        map5.put("tf.keras.metrics.CategoricalAccuracy -> mindspore.nn.Accuracy",
+        "https://mindspore.cn/docs/api/zh-CN/r1.6/api_python/nn/mindspore.nn.Accuracy.html#mindspore.nn.Accuracy");
+        Assert.assertEquals(map5, OperatorSearchService.INSTANCE.search("tf.keras.metrics.CategoricalAccuracy"));
+
+        Map<String, String> map6 = new LinkedHashMap<>();
+        map6.put("tf.keras.metrics.SparseCategoricalAccuracy -> mindspore.nn.Accuracy",
+        "https://mindspore.cn/docs/api/zh-CN/r1.6/api_python/nn/mindspore.nn.Accuracy.html#mindspore.nn.Accuracy");
+        Assert.assertEquals(map6, OperatorSearchService.INSTANCE.search("tf.keras.metrics.SparseCategoricalAccuracy"));
     }
 }
