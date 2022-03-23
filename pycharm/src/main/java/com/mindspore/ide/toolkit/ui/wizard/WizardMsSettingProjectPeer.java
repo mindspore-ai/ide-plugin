@@ -33,15 +33,18 @@ import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.ui.DocumentAdapter;
 import com.intellij.util.containers.ContainerUtil;
 import com.jetbrains.python.sdk.PythonSdkUtil;
-import com.mindspore.ide.toolkit.common.utils.PathUtils;
-import com.mindspore.ide.toolkit.common.utils.OSInfoUtils;
-import com.mindspore.ide.toolkit.common.utils.RegularUtils;
+
 import com.mindspore.ide.toolkit.common.utils.FileUtils;
 import com.mindspore.ide.toolkit.common.utils.NotificationUtils;
+import com.mindspore.ide.toolkit.common.utils.OSInfoUtils;
+import com.mindspore.ide.toolkit.common.utils.PathUtils;
+import com.mindspore.ide.toolkit.common.utils.RegularUtils;
+import com.mindspore.ide.toolkit.common.utils.VersionUtils;
 import com.mindspore.ide.toolkit.wizard.MSVersionInfo;
 import com.mindspore.ide.toolkit.wizard.MindSporeService;
 import com.mindspore.ide.toolkit.wizard.MiniCondaService;
 import com.mindspore.ide.toolkit.wizard.MsVersionManager;
+
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
@@ -283,19 +286,30 @@ public class WizardMsSettingProjectPeer extends AbstractMsSettingProjectPeer {
 
     private void downloadAction(String path) {
         if (MiniCondaService.downloadMiniCondaTask(path)) {
-            int result = Messages.showYesNoDialog("Install MiniConda success，Please restart Ide!",
-                    "restart ide", "Restart", "Cancel", Messages.getInformationIcon());
-            setCondExePath(path);
-            if (result == Messages.YES) {
-                Application app = ApplicationManager.getApplication();
-                if (app instanceof ApplicationEx) {
-                    log.info("Restart IDE conda path : {}", path);
-                    ((ApplicationEx) app).restart(true);
-                }
+            if (VersionUtils.getIdeBaselineVersion() <= 203 && OSInfoUtils.INSTANCE.isMacOsX86()) {
+                // Mac 电脑pycharm2020.3 版本不支持restart
+                Messages.showMessageDialog("Miniconda3 setup completed. Please restart PyCharm.",
+                        "restart", Messages.getInformationIcon());
+                setCondExePath(path);
+            } else {
+                restartIde(path);
             }
         } else {
             Messages.showErrorDialog("Miniconda download installation failed. Please check network.",
                     "Miniconda installation failed");
+        }
+    }
+
+    private void restartIde(String path) {
+        int result = Messages.showYesNoDialog("Install MiniConda success，Please restart Ide!",
+                "restart ide", "Restart", "Cancel", Messages.getInformationIcon());
+        setCondExePath(path);
+        if (result == Messages.YES) {
+            Application app = ApplicationManager.getApplication();
+            if (app instanceof ApplicationEx) {
+                log.info("Restart IDE conda path : {}", path);
+                ((ApplicationEx) app).restart(true);
+            }
         }
     }
 
