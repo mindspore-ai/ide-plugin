@@ -79,13 +79,13 @@ public class MindSporeService {
             NotificationUtils.notify(NotificationUtils.NotifyGroup.NEW_PROJECT,
                     NotificationType.ERROR,
                     "Unable to create MindSpore template.");
-            log.error("zip file not find, unable to create MindSpore template", exception);
+            log.warn("zip file not find, unable to create MindSpore template", exception);
             return false;
         } catch (IOException exception) {
             NotificationUtils.notify(NotificationUtils.NotifyGroup.NEW_PROJECT,
                     NotificationType.ERROR,
                     "Unable to create MindSpore template.");
-            log.error("Unable to create MindSpore template.", exception);
+            log.warn("Unable to create MindSpore template.", exception);
             return false;
         }
     }

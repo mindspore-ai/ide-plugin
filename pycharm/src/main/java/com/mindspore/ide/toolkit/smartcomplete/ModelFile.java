@@ -105,7 +105,7 @@ public class ModelFile {
                     deleteInvalidModel(pluginVersion, modelFolderPath);
                 }
             } catch (IOException ioException) {
-                log.error("Delete invalid model failed.", ioException);
+                log.warn("Delete invalid model failed.", ioException);
             }
         });
     }
@@ -142,7 +142,7 @@ public class ModelFile {
             try {
                 builder.start().waitFor();
             } catch (IOException | InterruptedException exception) {
-                log.error("Change folder \"{}\" permission failed.", modelZipParentPath, exception);
+                log.warn("Change folder \"{}\" permission failed.", modelZipParentPath, exception);
             }
         }
     }
@@ -152,7 +152,7 @@ public class ModelFile {
         try {
             fileNameSet = FileUtils.listAllFile(Paths.get(folderPath));
         } catch (IOException ioException) {
-            log.error("List model zip file failed.", ioException);
+            log.warn("List model zip file failed.", ioException);
         }
         for (String fileName : fileNameSet) {
             if (fileName.endsWith(".zip")) {

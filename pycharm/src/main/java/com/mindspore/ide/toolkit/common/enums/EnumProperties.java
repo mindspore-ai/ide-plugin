@@ -51,7 +51,7 @@ public enum EnumProperties {
         try (InputStream in = EnumProperties.class.getClassLoader().getResourceAsStream(resourceFilePath)) {
             prop.load(in);
         } catch (IOException ioException) {
-            log.error("Register properties failed.", ioException);
+            log.warn("Register properties failed.", ioException);
         }
     }
 

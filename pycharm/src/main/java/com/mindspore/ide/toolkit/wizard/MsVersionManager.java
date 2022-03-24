@@ -58,7 +58,7 @@ public enum MsVersionManager {
                 map.put(msVersionInfo.getName(), msVersionInfo);
             }
         } catch (IOException | JsonParseException exception) {
-            LOG.error("Error of reading from file : path is {}", jsonFile);
+            LOG.warn("Error of reading from file : path is {}", jsonFile);
         }
     }
 

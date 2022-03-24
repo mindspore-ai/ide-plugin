@@ -121,7 +121,7 @@ public class FileUtils {
             createFile(path);
             return true;
         } catch (IOException exception) {
-            log.error("create file failed with error{}", exception.getMessage());
+            log.warn("create file failed with error{}", exception.getMessage());
             return false;
         }
     }
@@ -132,7 +132,7 @@ public class FileUtils {
             try {
                 Files.createDirectories(path);
             } catch (IOException exception) {
-                log.error("create directory failed with error{}", exception.getMessage());
+                log.warn("create directory failed with error{}", exception.getMessage());
                 return false;
             }
         }
@@ -230,7 +230,7 @@ public class FileUtils {
             List<String> newList = Files.readAllLines(newPath);
             return Objects.equals(oldList, newList);
         } catch (IOException ioException) {
-            log.error("Read file failed.", ioException);
+            log.warn("Read file failed.", ioException);
             return false;
         }
     }
