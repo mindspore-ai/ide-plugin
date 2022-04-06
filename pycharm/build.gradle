@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'com.mindspore'
-version '1.7.0Beta1'
+version '1.7.0'
 
 intellij {
     type = 'PC'
