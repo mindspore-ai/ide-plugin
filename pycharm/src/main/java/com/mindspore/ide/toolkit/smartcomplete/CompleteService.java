@@ -72,7 +72,7 @@ public enum CompleteService {
                 log.info("No data from model.");
             }
         } catch (CompletionException completionException) {
-            log.error("Get message from completion model failed.", completionException);
+            log.warn("Get message from completion model failed.", completionException);
         }
         return predictList;
     }

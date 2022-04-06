@@ -260,7 +260,7 @@ public class CompleteConfig {
         try {
             pluginVersionSet = FileUtils.listAllDirectory(Paths.get(getModelFolderPath()));
         } catch (IOException ioException) {
-            log.error("List model file failed, cannot list plugin version.", ioException);
+            log.warn("List model file failed, cannot list plugin version.", ioException);
         }
 
         for (String pluginVersion : pluginVersionSet) {
@@ -268,7 +268,7 @@ public class CompleteConfig {
             try {
                 modelVersionSet = FileUtils.listAllDirectory(Paths.get(getPluginVersionFolderPath(pluginVersion)));
             } catch (IOException ioException) {
-                log.error("List model file failed, cannot list model version.", ioException);
+                log.warn("List model file failed, cannot list model version.", ioException);
             }
 
             Model currentModel = getCurrentModel();
