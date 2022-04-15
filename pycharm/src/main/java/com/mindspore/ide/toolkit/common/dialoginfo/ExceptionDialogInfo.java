@@ -16,6 +16,10 @@
 
 package com.mindspore.ide.toolkit.common.dialoginfo;
 
+import com.mindspore.ide.toolkit.common.enums.EnumProperties;
+import com.mindspore.ide.toolkit.common.exceptions.MsToolKitException;
+import com.mindspore.ide.toolkit.ui.errordialog.ExceptionDialog;
+
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.ui.Messages;
@@ -23,11 +27,6 @@ import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.util.text.StringUtil;
 import com.jetbrains.python.packaging.PyExecutionException;
 import com.jetbrains.python.sdk.PythonSdkType;
-import com.mindspore.ide.toolkit.common.enums.EnumProperties;
-import com.mindspore.ide.toolkit.common.exceptions.MsToolKitException;
-import com.mindspore.ide.toolkit.ui.errordialog.ExceptionDialog;
-import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,8 +39,6 @@ import java.util.regex.Pattern;
  *
  * @since 1.0
  */
-@Getter
-@Setter
 public class ExceptionDialogInfo extends DialogInfo {
     private static final Pattern ERROR_PATTERN = Pattern.compile(".*error:.*", Pattern.CASE_INSENSITIVE);
 
@@ -74,6 +71,38 @@ public class ExceptionDialogInfo extends DialogInfo {
         this.solution = builder.solution;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getCommand() {
+        return command;
+    }
+
+    public void setCommand(String command) {
+        this.command = command;
+    }
+
+    public String getOutput() {
+        return output;
+    }
+
+    public void setOutput(String output) {
+        this.output = output;
+    }
+
+    public String getSolution() {
+        return solution;
+    }
+
+    public void setSolution(String solution) {
+        this.solution = solution;
+    }
+
     @Override
     public void showDialog() {
         if (isSuccessful()) {
@@ -89,10 +118,15 @@ public class ExceptionDialogInfo extends DialogInfo {
      */
     public static class Builder {
         private boolean isSuccessful;
+
         private String title;
+
         private String description;
+
         private String command;
+
         private String output;
+
         private String solution;
 
         /**
@@ -322,4 +356,3 @@ public class ExceptionDialogInfo extends DialogInfo {
         }
     }
 }
-

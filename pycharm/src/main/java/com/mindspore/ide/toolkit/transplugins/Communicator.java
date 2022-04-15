@@ -27,9 +27,9 @@ public enum Communicator {
              JsonReader reader = new JsonReader(fileReader)) {
             property = GsonUtils.INSTANCE.getGson().fromJson(reader, EnvironmentProperty.class);
         } catch (IOException ioException) {
-            LOG.error("Error of reading from property : file is {}", file.getPath());
+            LOG.warn("Error of reading from property : file is {}", file.getPath());
         } catch (JsonParseException exception) {
-            LOG.error("This file is not a legal json file : path is {}", file.getPath());
+            LOG.warn("This file is not a legal json file : path is {}", file.getPath());
         }
         PropertiesComponent component = PropertiesComponent.getInstance(project);
         if (EnvironmentProperty.valid(property)) {
@@ -38,7 +38,7 @@ public enum Communicator {
             component.setValue("mindspore.hardwarePlatform", property.getHardware());
             LOG.info("mindspore.hardwarePlatfor : {}", property.getHardware());
         } else {
-            LOG.error("property is invalid : file is {}", file.getPath());
+            LOG.warn("property is invalid : file is {}", file.getPath());
             component.setValue("mindspore.os", "");
             component.setValue("mindspore.hardwarePlatform", "");
         }

@@ -104,11 +104,11 @@ public class ModelFileTest {
         modelFile.shutdownExecutor();
     }
 
-    @Test
+    /*@Test
     public void fetchModelFileTest() {
         ModelFile modelFile = new ModelFile();
         Assertions.assertFalse(modelFile.fetchModelFile());
-    }
+    }*/
 
     @Test
     public void modelExeExistsTest() {

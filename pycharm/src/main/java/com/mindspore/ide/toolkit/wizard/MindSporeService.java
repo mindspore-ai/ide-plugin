@@ -79,13 +79,13 @@ public class MindSporeService {
             NotificationUtils.notify(NotificationUtils.NotifyGroup.NEW_PROJECT,
                     NotificationType.ERROR,
                     "Unable to create MindSpore template.");
-            log.error("zip file not find, unable to create MindSpore template", exception);
+            log.warn("zip file not find, unable to create MindSpore template", exception);
             return false;
         } catch (IOException exception) {
             NotificationUtils.notify(NotificationUtils.NotifyGroup.NEW_PROJECT,
                     NotificationType.ERROR,
                     "Unable to create MindSpore template.");
-            log.error("Unable to create MindSpore template.", exception);
+            log.warn("Unable to create MindSpore template.", exception);
             return false;
         }
     }
@@ -180,7 +180,8 @@ public class MindSporeService {
                     if (!isMsEnvValidate && dialogInfo.isSuccessful()) {
                         new ExceptionDialogInfo.Builder()
                                 .isSuccessful(false)
-                                .description("The dependency package related to \"MindSpore\" cannot be found.")
+                                .description("Failed to run the verification script. There maybe something wrong."
+                                        + " If MindSpore is abnormal, you can reinstall it.")
                                 .build().showDialog("Install MindSpore into conda");
                     }
                     return isMsEnvValidate && dialogInfo.isSuccessful();

@@ -120,24 +120,63 @@ public enum OperatorMapDataHub implements SearchEveryWhereDataHub<String> {
      * @param mapList 缓存数据
      */
     private void setMapData(LinkedHashMap<String, String> mapList) {
-        if (mapList.size() <= 0) {
+        if (mapList.size() <= 1) {
             return;
         }
         Map.Entry<String, String>[] entries = mapList.entrySet().toArray(new Map.Entry[]{});
-        String otherString = entries[0].getKey();
-        // 去除无效数据
-        if (entries.length >= 2) {
-            Map.Entry<String, String> entry = entries[1];
-            // 去除第二条为diff的情况
-            if (!entry.getKey().equals("差异对比") && !entry.getKey().equals("diff")) {
-                List msOperatorInfos = operatorMap.getOrDefault(otherString, new LinkedList());
-                msOperatorInfos.add(new MsOperatorInfo(entry.getKey(), entry.getValue()));
-                linkMap.put(entry.getKey(), entry.getValue());
-                operatorMap.put(otherString, msOperatorInfos);
-            }
+        // 获取map最后一条数据
+        Map.Entry<String, String> entry = entries[entries.length - 1];
+        // map最后一条数据是diff或者差异对比
+        if (entry.getKey().equals("差异对比") || entry.getKey().equals("diff")) {
+            // 如果最后一条是差异对比或者diff，有用数据长度减一
+            processSpecialData(entries, entries.length - 1);
+        } else {
+            processSpecialData(entries, entries.length);
         }
         // 清除缓存数据
         mapList.clear();
+    }
+
+    /**
+     * 处理数据
+     *
+     * @param mapLength 有用的数据长度
+     * @param entries   数据
+     */
+    private void processSpecialData(Map.Entry<String, String>[] entries, int mapLength) {
+        if (mapLength <= 1) {
+            // 数据缺失直接返回
+            return;
+        }
+        if (mapLength == 2) {
+            // 单条数据
+            addMapData(entries, mapLength, 0);
+        }
+        if (mapLength > 2) {
+            // 多条数据
+            for (int i = 0; i < mapLength - 1; i++) {
+                addMapData(entries, mapLength, i);
+            }
+        }
+    }
+
+    /**
+     * 添加数据
+     *
+     * @param entries   数据
+     * @param mapLength 有用的数据长度
+     * @param in        其他api占用的位置
+     */
+    private void addMapData(Map.Entry<String, String>[] entries, int mapLength, int in) {
+        // 最后一条数据默认是MindSpore的数据
+        Map.Entry<String, String> entry = entries[mapLength - 1];
+        // 其他api的数据
+        String otherString = entries[in].getKey();
+        // 数据组装
+        List msOperatorInfos = operatorMap.getOrDefault(otherString, new LinkedList());
+        msOperatorInfos.add(new MsOperatorInfo(entry.getKey(), entry.getValue()));
+        linkMap.put(entry.getKey(), entry.getValue());
+        operatorMap.put(otherString, msOperatorInfos);
     }
 
     private void suffixStringSplit(String key) {

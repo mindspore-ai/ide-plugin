@@ -121,7 +121,7 @@ public class FileUtils {
             createFile(path);
             return true;
         } catch (IOException exception) {
-            log.error("create file failed with error{}", exception.getMessage());
+            log.warn("create file failed with error{}", exception.getMessage());
             return false;
         }
     }
@@ -132,7 +132,7 @@ public class FileUtils {
             try {
                 Files.createDirectories(path);
             } catch (IOException exception) {
-                log.error("create directory failed with error{}", exception.getMessage());
+                log.warn("create directory failed with error{}", exception.getMessage());
                 return false;
             }
         }
@@ -182,6 +182,23 @@ public class FileUtils {
     }
 
     /**
+     * 列出指定路径下的所有文件名称
+     *
+     * @param path 指定路径
+     * @return 所有文件夹名称集合
+     * @throws IOException io exception
+     */
+    public static Set<String> listAllFile(Path path) throws IOException {
+        if (!Files.exists(path)) {
+            return Collections.emptySet();
+        }
+        return Files.list(path)
+                .filter((item) -> item != null && !Files.isDirectory(item) && item.getFileName() != null)
+                .map((item) -> item.getFileName().toString())
+                .collect(Collectors.toSet());
+    }
+
+    /**
      * 删除指定文件
      *
      * @param file 指定文件
@@ -213,7 +230,7 @@ public class FileUtils {
             List<String> newList = Files.readAllLines(newPath);
             return Objects.equals(oldList, newList);
         } catch (IOException ioException) {
-            log.error("Read file failed.", ioException);
+            log.warn("Read file failed.", ioException);
             return false;
         }
     }

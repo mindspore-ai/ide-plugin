@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -67,17 +68,22 @@ public class ModelFile {
         boolean isDownloadSucceed = false;
         for (int i = 0; i < maxDownloadTimes; i++) {
             isDownloadSucceed = ResourceManager.downloadResource(modelDownloadUrl,
-                    modelZipFullPath, accessToken);
+                    modelZipFullPath, accessToken, CompleteConfig.DOWNLOAD_TIMEOUT);
             if (isDownloadSucceed) {
                 break;
             }
         }
         if (isDownloadSucceed) {
             final String modelZipParentPath = completeConfig.getModelZipParentPath(currentModel);
+            String unzipFileLocation = modelZipParentPath;
+            if (completeConfig.isExtranet()) {
+                unzipFileLocation = completeConfig.getModelUnzipFolderFullPath(currentModel);
+            }
             EventCenter.INSTANCE.publish(new SmartCompleteEvents.DownloadCompleteModelEnd());
-            ResourceManager.unzipResource(modelZipFullPath, modelZipParentPath);
+            ResourceManager.unzipResource(modelZipFullPath, unzipFileLocation);
 
             setFolderPermission(modelZipParentPath);
+            deleteNoUseZipFile(modelZipParentPath);
         } else {
             NotificationUtils.notify(NotificationUtils.NotifyGroup.SMART_COMPLETE,
                     NotificationType.ERROR,
@@ -99,7 +105,7 @@ public class ModelFile {
                     deleteInvalidModel(pluginVersion, modelFolderPath);
                 }
             } catch (IOException ioException) {
-                log.error("Delete invalid model failed.", ioException);
+                log.warn("Delete invalid model failed.", ioException);
             }
         });
     }
@@ -136,7 +142,21 @@ public class ModelFile {
             try {
                 builder.start().waitFor();
             } catch (IOException | InterruptedException exception) {
-                log.error("Change folder \"{}\" permission failed.", modelZipParentPath, exception);
+                log.warn("Change folder \"{}\" permission failed.", modelZipParentPath, exception);
+            }
+        }
+    }
+
+    private void deleteNoUseZipFile(String folderPath) {
+        Set<String> fileNameSet = Collections.emptySet();
+        try {
+            fileNameSet = FileUtils.listAllFile(Paths.get(folderPath));
+        } catch (IOException ioException) {
+            log.warn("List model zip file failed.", ioException);
+        }
+        for (String fileName : fileNameSet) {
+            if (fileName.endsWith(".zip")) {
+                FileUtils.deleteFile(new File(String.join(File.separator, folderPath, fileName)));
             }
         }
     }

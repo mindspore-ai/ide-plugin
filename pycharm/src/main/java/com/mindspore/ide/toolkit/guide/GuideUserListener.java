@@ -41,17 +41,20 @@ public class GuideUserListener {
         if(config.getGuideSettingUrl().isEmpty()){
             return;
         }
-        GuideUserEntity remoteEntity = YamlUtils.INSTANCE.parse(HttpUtils.doGet(config.getGuideSettingUrl(), buildDownloadHeader()).getEntity().getContent(), GuideUserEntity.class);
+        GuideUserEntity remoteEntity = YamlUtils.INSTANCE.parse(HttpUtils.doGet(config.getGuideSettingUrl(),
+                buildDownloadHeader()).getEntity().getContent(), GuideUserEntity.class);
         if(remoteEntity == null){
             return;
         }
         if (!entity.isAskAgain() && entity.getVersion().equals(remoteEntity.getVersion())) {
-            NotificationGroup notificationGroup = new NotificationGroup(remoteEntity.getNotificationTitle(), NotificationDisplayType.BALLOON, false);
-            Notification notification = notificationGroup.createNotification(remoteEntity.getNotificationTitle(), remoteEntity.getNotificationContent(), NotificationType.INFORMATION, null);
+            NotificationGroup notificationGroup = new NotificationGroup(remoteEntity.getTitle(),
+                    NotificationDisplayType.BALLOON, false);
+            Notification notification = notificationGroup.createNotification(remoteEntity.getContent(),
+                    remoteEntity.getContent(), NotificationType.INFORMATION, null);
             notification.addAction(ActionManager.getInstance().getAction("mindSporeGuideAction"));
             notification.addAction(ActionManager.getInstance().getAction("mindSporeDontAskAgain"));
             Notifications.Bus.notify(notification);
-            NotificationGroup.balloonGroup(remoteEntity.getNotificationTitle()).createNotification();
+            NotificationGroup.balloonGroup(remoteEntity.getTitle()).createNotification();
             FileUtils.writeDataToFile(Paths.get(config.getConfigFilePath()), new Yaml().dumpAsMap(remoteEntity));
         }
     }
