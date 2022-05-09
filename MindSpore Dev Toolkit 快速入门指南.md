@@ -92,3 +92,39 @@ MindSpore Dev Toolkit作为Pycharm插件工具，为用户提供一键安装cond
       ![img](./images/clip_image028.jpg)
 
       ![img](./images/clip_image029.jpg)
+
+## 二、算子互搜
+
+### 使用步骤
+
+1. 双击shift弹出全局搜索页面。
+
+      ![img](./images/clip_image060.jpg)
+
+2. 选择MindSpore。
+
+      ![img](./images/clip_image062.jpg)
+
+3. 输入要搜索的PyTorch或TensorFlow的算子，获取与MindSpore算子的对应关系列表。
+
+      ![img](./images/clip_image064.jpg)
+
+      ![img](./images/clip_image066.jpg)
+
+4. 点击列表中的条目，可以在右边侧边栏浏览对应条目的官网文档。
+
+      ![img](./images/clip_image068.jpg)
+
+## 三、代码补全
+
+### 使用步骤
+
+1. 打开Python文件编写代码。
+
+      ![img](./images/clip_image088.jpg)
+
+2. 编码时，补全会自动生效。有MindSpore图标的条目为MindSpore Dev Toolkit智能补全提供的代码。
+
+      ![img](./images/clip_image090.jpg)
+
+      ![img](./images/clip_image092.jpg)
