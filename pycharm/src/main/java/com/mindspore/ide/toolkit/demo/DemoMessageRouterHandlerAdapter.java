@@ -16,26 +16,27 @@
 
 package com.mindspore.ide.toolkit.demo;
 
+import org.cef.browser.CefBrowser;
+import org.cef.browser.CefFrame;
+import org.cef.callback.CefQueryCallback;
+import org.cef.handler.CefMessageRouterHandlerAdapter;
+
 /**
- * User type enum
+ * js交互类
  *
  * @since 2022-04-18
  */
-public enum UserType {
-    NEWBIE,
-    TRANSFER,
-    MASTER;
-
-    /**
-     * current
-     */
-    private static UserType current = UserType.NEWBIE;
-
-    public static UserType getCurrent() {
-        return current;
-    }
-
-    public static void setCurrent(UserType current) {
-        UserType.current = current;
+public class DemoMessageRouterHandlerAdapter extends CefMessageRouterHandlerAdapter {
+    @Override
+    public boolean onQuery(
+            CefBrowser browser,
+            CefFrame frame,
+            long queryId,
+            String request,
+            boolean isPersistent,
+            CefQueryCallback callback) {
+        String result = WebCommunicator.search(request);
+        callback.success(result);
+        return super.onQuery(browser, frame, queryId, request, isPersistent, callback);
     }
 }

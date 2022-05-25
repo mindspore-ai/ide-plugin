@@ -16,26 +16,18 @@
 
 package com.mindspore.ide.toolkit.demo;
 
+import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.actionSystem.AnActionEvent;
+import org.jetbrains.annotations.NotNull;
+
 /**
- * User type enum
+ * MASTER
  *
  * @since 2022-04-18
  */
-public enum UserType {
-    NEWBIE,
-    TRANSFER,
-    MASTER;
-
-    /**
-     * current
-     */
-    private static UserType current = UserType.NEWBIE;
-
-    public static UserType getCurrent() {
-        return current;
-    }
-
-    public static void setCurrent(UserType current) {
-        UserType.current = current;
+public class DemoSearchType3Action extends AnAction {
+    @Override
+    public void actionPerformed(@NotNull AnActionEvent event) {
+        DemoSearchTypeActionUtils.demoSearchTypeActionUtils(3);
     }
 }

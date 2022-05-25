@@ -48,10 +48,14 @@ dependencies {
     implementation "com.google.protobuf:protobuf-gradle-plugin:0.8.1"
     implementation "io.grpc:grpc-all:1.33.1"
     implementation 'com.vladsch.flexmark:flexmark-all:0.62.2'
+    implementation('redis.clients:jedis:3.6.3') {
+        exclude group: 'org.slf4j', module: 'slf4j-api'
+    }
+    implementation "com.google.code.gson:gson:2,7"
     compileOnly(fileTree("libs"))
 }
 
-protobuf{
+protobuf {
     protoc {
         artifact = "com.google.protobuf:protoc:3.7.1"
     }
@@ -89,12 +93,12 @@ tasks {
     }
 }
 
-spotbugs{
+spotbugs {
     toolVersion = "4.5.2"
     ignoreFailures = false
-    showStackTraces =true
+    showStackTraces = true
     showProgress = true
     effort = 'default'
     reportLevel = 'default'
-    onlyAnalyze = ['com.mindspore.ide.toolkit.*' ]
+    onlyAnalyze = ['com.mindspore.ide.toolkit.*']
 }

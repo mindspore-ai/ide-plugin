@@ -16,26 +16,29 @@
 
 package com.mindspore.ide.toolkit.demo;
 
+import com.intellij.openapi.project.Project;
+
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * User type enum
+ * 浏览器窗口单例
  *
  * @since 2022-04-18
  */
-public enum UserType {
-    NEWBIE,
-    TRANSFER,
-    MASTER;
+public class DemoBrowserWindowManager {
+    private static final Map<Project, DemoBrowserWindowContent> BROWSER_WINDOW_CONTENT_MAP = new HashMap<>();
 
     /**
-     * current
+     * get BrowserWindow
+     *
+     * @param project Project
+     * @return HdcBrowserWindowContent
      */
-    private static UserType current = UserType.NEWBIE;
-
-    public static UserType getCurrent() {
-        return current;
-    }
-
-    public static void setCurrent(UserType current) {
-        UserType.current = current;
+    public static DemoBrowserWindowContent getBrowserWindow(Project project) {
+        if (BROWSER_WINDOW_CONTENT_MAP.get(project) == null) {
+            BROWSER_WINDOW_CONTENT_MAP.put(project, new DemoBrowserWindowContent());
+        }
+        return BROWSER_WINDOW_CONTENT_MAP.get(project);
     }
 }

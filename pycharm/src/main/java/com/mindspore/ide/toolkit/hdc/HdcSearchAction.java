@@ -14,28 +14,20 @@
  * limitations under the License.
  */
 
-package com.mindspore.ide.toolkit.demo;
+package com.mindspore.ide.toolkit.hdc;
+
+import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.actionSystem.AnActionEvent;
+import org.jetbrains.annotations.NotNull;
 
 /**
- * User type enum
+ * 刷新页面按钮
  *
  * @since 2022-04-18
  */
-public enum UserType {
-    NEWBIE,
-    TRANSFER,
-    MASTER;
-
-    /**
-     * current
-     */
-    private static UserType current = UserType.NEWBIE;
-
-    public static UserType getCurrent() {
-        return current;
-    }
-
-    public static void setCurrent(UserType current) {
-        UserType.current = current;
+public class HdcSearchAction extends AnAction {
+    @Override
+    public void actionPerformed(@NotNull AnActionEvent event) {
+        HdcBrowserWindowManager.getBrowserWindow(event.getProject()).refreshBrowser();
     }
 }
