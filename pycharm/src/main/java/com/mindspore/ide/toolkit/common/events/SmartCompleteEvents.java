@@ -19,15 +19,15 @@ package com.mindspore.ide.toolkit.common.events;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.openapi.editor.Document;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.Set;
 
 public class SmartCompleteEvents {
     public static class CodeRecommendStart {
         private Document doc;
         private int myOffset;
         private String prefix;
-        private CompletableFuture<List<LookupElement>> predictResult = new CompletableFuture<>();
+        private CompletableFuture<Set<LookupElement>> predictResult = new CompletableFuture<>();
 
         public Document getDoc() {
             return doc;
@@ -53,11 +53,11 @@ public class SmartCompleteEvents {
             this.prefix = prefix;
         }
 
-        public CompletableFuture<List<LookupElement>> getPredictResult() {
+        public CompletableFuture<Set<LookupElement>> getPredictResult() {
             return predictResult;
         }
 
-        public void setPredictResult(CompletableFuture<List<LookupElement>> predictResult) {
+        public void setPredictResult(CompletableFuture<Set<LookupElement>> predictResult) {
             this.predictResult = predictResult;
         }
     }

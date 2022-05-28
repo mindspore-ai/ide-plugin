@@ -2,6 +2,7 @@ package com.mindspore.ide.toolkit.services.complete;
 
 import com.google.common.collect.Lists;
 
+import com.intellij.codeInsight.AutoPopupController;
 import com.intellij.codeInsight.lookup.LookupEvent;
 import com.intellij.codeInsight.lookup.LookupListener;
 import com.intellij.openapi.command.WriteCommandAction;
@@ -71,6 +72,9 @@ public class SmartCompletionLookupListener implements LookupListener {
         if (isMindspore && event.getItem() != null && event.getItem() instanceof MindSporeLookupElement) {
             EventCenter.INSTANCE.publish(new SmartCompleteEvents.CodeCompleteEnd());
             handleSuffix(event);
+            AutoPopupController
+                .getInstance(event.getLookup().getProject())
+                .scheduleAutoPopup(event.getLookup().getEditor());
         }
     }
 
