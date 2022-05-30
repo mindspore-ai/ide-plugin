@@ -31,7 +31,7 @@ public class FusionSearchResponse {
 
     private String path;
 
-    private String testContent;
+    private String textContent;
 
     private String title;
 
@@ -66,12 +66,12 @@ public class FusionSearchResponse {
         this.path = path;
     }
 
-    public String getTestContent() {
-        return testContent;
+    public String getTextContent() {
+        return textContent;
     }
 
-    public void setTestContent(String testContent) {
-        this.testContent = testContent;
+    public void setTextContent(String textContent) {
+        this.textContent = textContent;
     }
 
     public String getTitle() {

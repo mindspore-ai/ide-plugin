@@ -13,10 +13,20 @@
         <!-- Add your extensions here -->
         <completion.contributor id="SmartCompletion" language="any"
                                 implementationClass="com.mindspore.ide.toolkit.services.complete.SmartCompletion"
-                                order="first" />
-        <toolWindow id="MindSpore" factoryClass="com.mindspore.ide.toolkit.ui.search.BrowserWindowFactory" canCloseContents="false" anchor="right" icon="MsIcons.MS_ICON_16PXWP"/>
-        <searchEverywhereContributor implementation="com.mindspore.ide.toolkit.search.MindSporeSearchEverywhereContributor$Factory"/>
-        <directoryProjectGenerator implementation="com.mindspore.ide.toolkit.wizard.MindSporeProjectGenerator" />
+                                order="first"/>
+        <toolWindow id="MindSpore" factoryClass="com.mindspore.ide.toolkit.ui.search.BrowserWindowFactory"
+                    canCloseContents="false" anchor="right" icon="MsIcons.MS_ICON_16PXWP"/>
+        <toolWindow id="MindSporeDemo" factoryClass="com.mindspore.ide.toolkit.demo.DemoBrowserWindowFactory"
+                    canCloseContents="false" anchor="right" icon="MsIcons.MS_ICON_16PXWP"/>
+        <toolWindow id="MindSporeHDC" factoryClass="com.mindspore.ide.toolkit.hdc.HdcBrowserWindowFactory"
+                    canCloseContents="false" anchor="right" icon="MsIcons.MS_ICON_16PXWP"/>
+
+        <searchEverywhereContributor
+                implementation="com.mindspore.ide.toolkit.search.MindSporeSearchEverywhereContributor$Factory"/>
+        <directoryProjectGenerator implementation="com.mindspore.ide.toolkit.wizard.MindSporeProjectGenerator"/>
+
+        <configurationType implementation="com.mindspore.ide.toolkit.hdc.MsConfigurationType" id="MsConfigurationType"
+                           order="first"/>
     </extensions>
 
     <actions>
@@ -27,12 +37,43 @@
         </action>
         <action class="com.mindspore.ide.toolkit.ui.guide.DontAskAgainAction" text="不再提示"/>
         <action class="com.mindspore.ide.toolkit.ui.guide.GuideAction" text="查看使用说明"/>
-        <action class="com.mindspore.ide.toolkit.ui.search.SearchRefreshAction" id="mindSporeRefreshAction" icon="/icons/search_home.png"/>
+        <action class="com.mindspore.ide.toolkit.ui.search.SearchRefreshAction" id="mindSporeRefreshAction"
+                icon="/icons/search_home.png"/>
+
+
+        <action class="com.mindspore.ide.toolkit.demo.DemoSearchAction" id="demoRefreshAction"
+                icon="/icons/search_home.png"/>
+
+        <group id="PlatformioActionGroup1" text="切换UserType" popup="true">
+            <action class="com.mindspore.ide.toolkit.demo.DemoSearchType1Action" id="UserType.NEWBIE" text="（√） 新手"/>
+            <action class="com.mindspore.ide.toolkit.demo.DemoSearchType2Action" id="UserType.TRANSFER"
+                    text="    其他框架使用者"/>
+            <action class="com.mindspore.ide.toolkit.demo.DemoSearchType3Action" id="UserType.MASTER"
+                    text="    MindSpore大师"/>
+        </group>
+
+        <action class="com.mindspore.ide.toolkit.hdc.HdcSearchAction" id="HDCRefreshAction"
+                icon="/icons/search_home.png"/>
+
+        <action class="com.mindspore.ide.toolkit.hdc.TestRunAnAction" id="TestRunAnAction" icon="MsIcons.MS_ICON_16PX"
+                text="TestRunAnAction">
+            <add-to-group group-id="EditorGutterPopupMenu" anchor="first"/>
+        </action>
+        <action class="com.mindspore.ide.toolkit.hdc.TestRunAnAction2" id="TestRunAnAction2" icon="MsIcons.MS_ICON_16PX"
+                text="TestRunAnAction2">
+            <add-to-group group-id="EditorGutterPopupMenu" anchor="first"/>
+        </action>
+        <action class="com.mindspore.ide.toolkit.hdc.TestRunAnAction3" id="TestRunAnAction3" icon="MsIcons.MS_ICON_16PX"
+                text="TestRunAnAction3">
+            <add-to-group group-id="RunMenu" anchor="first"/>
+        </action>
 
     </actions>
     <projectListeners>
-        <listener class="com.mindspore.ide.toolkit.services.OpenCloseListener" topic="com.intellij.openapi.project.ProjectManagerListener"/>
-        <listener class="com.mindspore.ide.toolkit.ui.search.MindSporeToolWindowListener" topic="com.intellij.openapi.wm.ex.ToolWindowManagerListener"/>
+        <listener class="com.mindspore.ide.toolkit.services.OpenCloseListener"
+                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
+        <listener class="com.mindspore.ide.toolkit.ui.search.MindSporeToolWindowListener"
+                  topic="com.intellij.openapi.wm.ex.ToolWindowManagerListener"/>
     </projectListeners>
     <applicationListeners>
         <listener class="com.mindspore.ide.toolkit.Initializer" topic="com.intellij.ide.AppLifecycleListener"/>
