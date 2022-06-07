@@ -25,8 +25,9 @@
             <keyboard-shortcut first-keystroke="ctrl alt shift g" keymap="$default">
             </keyboard-shortcut>
         </action>
-        <action class="com.mindspore.ide.toolkit.ui.guide.DontAskAgainAction" text="不再提示"/>
-        <action class="com.mindspore.ide.toolkit.ui.guide.GuideAction" text="查看使用说明"/>
+        <action class="com.mindspore.ide.toolkit.ui.guide.DontAskAgainAction" text="不再提示" id="mindSporeDontAskAgain"/>
+        <action class="com.mindspore.ide.toolkit.ui.guide.GuideAction" text="查看使用说明" id="mindSporeGuideAction"/>
+        <action class="com.mindspore.ide.toolkit.ui.guide.QuestionnaireAction" text="问卷调查" id="mindsporeQuestionnaireAction"/>
         <action class="com.mindspore.ide.toolkit.ui.search.SearchRefreshAction" id="mindSporeRefreshAction" icon="/icons/search_home.png"/>
 
     </actions>
