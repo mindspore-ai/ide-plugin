@@ -13,10 +13,10 @@ import com.mindspore.ide.toolkit.smartcomplete.grpc.CompletionException;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
@@ -36,8 +36,8 @@ public enum CompleteService {
     public void onPredicting(SmartCompleteEvents.CodeRecommendStart codeRecommendStart) {
         String formattedContent = getContentBeforeCursor(codeRecommendStart);
         log.info("Data send to model is: {}", formattedContent);
-        List<String> backMsgList = getBackMsgFormModelToGrpc(formattedContent, codeRecommendStart.getPrefix());
-        List<LookupElement> lookupElements = getListLookUpElement(backMsgList);
+        Set<String> backMsgSet = getBackMsgFormModelToGrpc(formattedContent, codeRecommendStart.getPrefix());
+        Set<LookupElement> lookupElements = getLookupElementSet(backMsgSet);
         codeRecommendStart.getPredictResult().complete(lookupElements);
     }
 
@@ -51,8 +51,8 @@ public enum CompleteService {
         return codeRecommendStart.getDoc().getText(new TextRange(beginIndex, endIndex));
     }
 
-    private List<String> getBackMsgFormModelToGrpc(String content, String prefix) {
-        List<String> predictList = new ArrayList<>();
+    private Set<String> getBackMsgFormModelToGrpc(String content, String prefix) {
+        Set<String> predictSet = new LinkedHashSet<>();
         try {
             Optional<CompleteReply> completeReply = ModelManager.INSTANCE.communicateWithModel(content, prefix);
             if (completeReply.isPresent()) {
@@ -61,12 +61,17 @@ public enum CompleteService {
                 log.info("Has data from model. Data count: {}", resultEntries.getResultEntryCount());
                 for (int index = 0; index < resultEntries.getResultEntryCount(); index++) {
                     ResultEntry entry = resultEntries.getResultEntry(index);
-                    String newPrefix = entry.getNewPrefix().trim();
+                    log.info("  Data from model is: {}:{}", entry.getNewPrefix(), entry.getDetails());
+                    String newPrefix = trimEnd(entry.getNewPrefix().toCharArray());
                     if (!Objects.equals(prefix, oldPrefix) && newPrefix.startsWith(oldPrefix)) {
                         newPrefix = newPrefix.replaceFirst(Pattern.quote(oldPrefix), prefix);
                     }
-                    predictList.add(newPrefix);
-                    log.info("  Data from model is: {}:{}", newPrefix, entry.getDetails());
+                    if (!Objects.equals(prefix, newPrefix) && !newPrefix.isBlank()) {
+                        predictSet.add(newPrefix);
+                        log.info("  Data presented to user is: {}:{}", newPrefix, entry.getDetails());
+                    } else {
+                        log.info("  Data is not displayed to user: {}:{}", entry.getNewPrefix(), entry.getDetails());
+                    }
                 }
             } else {
                 log.info("No data from model.");
@@ -74,16 +79,26 @@ public enum CompleteService {
         } catch (CompletionException completionException) {
             log.warn("Get message from completion model failed.", completionException);
         }
-        return predictList;
+        return predictSet;
     }
 
-    private List<LookupElement> getListLookUpElement(List<String> predictList) {
+    private Set<LookupElement> getLookupElementSet(Set<String> predictSet) {
         int maxResult = 5;
-        List<LookupElement> lookupElements = new ArrayList<>(maxResult);
-        for (String code : predictList) {
+        Set<LookupElement> lookupElements = new LinkedHashSet<>(maxResult);
+        for (String code : predictSet) {
             lookupElements.add(new MindSporeLookupElement(LookupElementBuilder
                     .create(code).withBoldness(true)));
         }
         return lookupElements;
+    }
+
+    private String trimEnd(char[] value) {
+        int len = value.length;
+        int startIndex = 0;
+        while ((startIndex < len) && (value[len - 1] <= ' ')) {
+            len--;
+        }
+        String finalValue = new String(value);
+        return len < value.length ? finalValue.substring(startIndex, len) : finalValue;
     }
 }
