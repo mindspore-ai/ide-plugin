@@ -3,6 +3,7 @@
 set -e
 BASEPATH=$(cd "$(dirname $0)"; pwd)
 
+gradle clean
 gradle spotbugsMain
 gradle buildPlugin
 
