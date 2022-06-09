@@ -28,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
  * @since 2022-04-18
  */
 public class MsConfigurationFactory extends ConfigurationFactory {
-    protected MsConfigurationFactory(@NotNull ConfigurationType type) {
+    public MsConfigurationFactory(@NotNull ConfigurationType type) {
         super(type);
     }
 
