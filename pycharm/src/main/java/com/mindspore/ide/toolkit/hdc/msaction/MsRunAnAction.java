@@ -16,19 +16,14 @@
 
 package com.mindspore.ide.toolkit.hdc.msaction;
 
-import com.intellij.execution.ExecutionBundle;
-import com.intellij.execution.configurations.ConfigurationType;
-import com.intellij.execution.configurations.ConfigurationTypeUtil;
 import com.intellij.execution.impl.EditConfigurationsDialog;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.actionSystem.Presentation;
-import com.intellij.openapi.actionSystem.ActionPlaces;
-import com.intellij.openapi.application.Experiments;
-import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
+import com.mindspore.ide.toolkit.hdc.MsConfigurationFactory;
+import com.mindspore.ide.toolkit.hdc.MsConfigurationType;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -47,27 +42,8 @@ public class MsRunAnAction extends AnAction {
             // setup template project configurations
             project = ProjectManager.getInstance().getDefaultProject();
         }
-        new EditConfigurationsDialog(project).show();
-    }
-
-    @Override
-    public void update(@NotNull final AnActionEvent event) {
-        Presentation presentation = event.getPresentation();
-        Project project = event.getProject();
-        boolean isEnabled = isEnabled(project);
-        presentation.setEnabled(isEnabled);
-        if (ActionPlaces.RUN_CONFIGURATIONS_COMBOBOX.equals(event.getPlace())) {
-            presentation.setText(ExecutionBundle.messagePointer("edit.configuration.action"));
-            presentation.setDescription(presentation.getText());
-        }
-    }
-
-    private boolean isEnabled(Project project) {
-        return (project == null
-            || !DumbService.isDumb(project)
-            || (Experiments.getInstance().isFeatureEnabled("edit.run.configurations.while.dumb")
-            && ConfigurationType.CONFIGURATION_TYPE_EP
-            .extensions()
-            .anyMatch(ConfigurationTypeUtil::isEditableInDumbMode)));
+        MsConfigurationType msConfigurationType = new MsConfigurationType();
+        MsConfigurationFactory msConfigurationFactory = new MsConfigurationFactory(msConfigurationType);
+        new EditConfigurationsDialog(project, msConfigurationFactory).show();
     }
 }
