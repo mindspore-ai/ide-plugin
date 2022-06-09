@@ -39,7 +39,8 @@ import net.engio.mbassy.listener.References;
 @Listener(references = References.Strong)
 @Slf4j
 public class QuestionnaireListener {
-    private static final int QUESTION_PROP_VALUE = 5;
+    private static final int QUESTION_PROP_MIN_VALUE = 3;
+    private static final int QUESTION_PROP_MAX_VALUE = 6;
 
     private QuestionnaireConfig config = QuestionnaireConfig.get();
 
@@ -51,7 +52,11 @@ public class QuestionnaireListener {
     @Handler
     public void showBalloon(ProjectEvents.ProjectOpen projectOpen) {
         int openPluginNum = PropertiesComponent.getInstance().getInt(config.getCacheFileName(), 0);
-        if (openPluginNum == QUESTION_PROP_VALUE) {
+        if (openPluginNum <= QUESTION_PROP_MAX_VALUE) {
+            PropertiesComponent.getInstance()
+                    .setValue(config.getCacheFileName(), ++openPluginNum, 0);
+        }
+        if (QUESTION_PROP_MIN_VALUE < openPluginNum && openPluginNum <= QUESTION_PROP_MAX_VALUE) {
             Notification notification = new Notification(Notifications.SYSTEM_MESSAGES_GROUP_ID,
                     "",
                     config.getContent(),
@@ -65,11 +70,6 @@ public class QuestionnaireListener {
                 notification.addAction(questionnaireAction);
             }
             Notifications.Bus.notify(notification);
-        } else {
-            if (openPluginNum < QUESTION_PROP_VALUE) {
-                PropertiesComponent.getInstance()
-                        .setValue(config.getCacheFileName(), ++openPluginNum, 0);
-            }
         }
     }
 }

@@ -46,7 +46,7 @@ public class QuestionnaireAction extends AnAction {
         try {
             Desktop.getDesktop().browse(new URI(getUrl()));
             int num = PropertiesComponent.getInstance().getInt(config.getCacheFileName(), 0);
-            PropertiesComponent.getInstance().setValue(config.getCacheFileName(), ++num, 6);
+            PropertiesComponent.getInstance().setValue(config.getCacheFileName(), ++num, 7);
         } catch (IOException | URISyntaxException ex) {
             log.warn("url is invalid,because %s", ex.getMessage());
         }
