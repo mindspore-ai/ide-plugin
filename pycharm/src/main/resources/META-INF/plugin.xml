@@ -17,6 +17,9 @@
         <toolWindow id="MindSpore" factoryClass="com.mindspore.ide.toolkit.ui.search.BrowserWindowFactory" canCloseContents="false" anchor="right" icon="MsIcons.MS_ICON_16PXWP"/>
         <searchEverywhereContributor implementation="com.mindspore.ide.toolkit.search.MindSporeSearchEverywhereContributor$Factory"/>
         <directoryProjectGenerator implementation="com.mindspore.ide.toolkit.wizard.MindSporeProjectGenerator" />
+
+        <configurationType implementation="com.mindspore.ide.toolkit.hdc.MsConfigurationType" id="MsConfigurationType"
+                           order="first"/>
     </extensions>
 
     <actions>
@@ -29,6 +32,11 @@
         <action class="com.mindspore.ide.toolkit.ui.guide.GuideAction" text="查看使用说明" id="mindSporeGuideAction"/>
         <action class="com.mindspore.ide.toolkit.ui.guide.QuestionnaireAction" text="问卷调查" id="mindsporeQuestionnaireAction"/>
         <action class="com.mindspore.ide.toolkit.ui.search.SearchRefreshAction" id="mindSporeRefreshAction" icon="/icons/search_home.png"/>
+
+        <action class="com.mindspore.ide.toolkit.hdc.msaction.MsRunAnAction" id="MsNewRunAnAction" icon="MsIcons.MS_ICON_16PX"
+                text="Create MindSpore Run Configuration...">
+            <add-to-group group-id="EditorPopupMenu.Run" anchor="first"/>
+        </action>
 
     </actions>
     <projectListeners>
