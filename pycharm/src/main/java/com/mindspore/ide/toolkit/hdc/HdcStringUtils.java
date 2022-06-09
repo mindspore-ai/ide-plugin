@@ -70,6 +70,7 @@ public class HdcStringUtils {
      */
     private static void typeErrorList(int in, List<String> errorList, List<String> allList) {
         if (allList.get(in).contains(ERROR_TITLE)) {
+            // 获取到错误信息，添加当前一行和上一行信息
             errorList.add(allList.get(in - 1));
             errorList.add(allList.get(in));
             lineNumber = in;
@@ -86,13 +87,17 @@ public class HdcStringUtils {
      * @param allList   allList
      */
     private static void addErrorList(int in, List<String> errorList, List<String> allList) {
-        if (lineNumber != -1 && in - lineNumber < 8) {
+        if (lineNumber != -1 && in - lineNumber < 6) {
+            // 小于6行不可能有结尾信息。
             errorList.add(allList.get(in));
-        } else if (lineNumber != -1 && in - lineNumber >= 8) {
-            if (allList.get(in).equals(errorList.get(0))) {
+        } else if (lineNumber != -1 && in - lineNumber >= 6) {
+            // 获取到最后一行信息，和第三行或者第一行相同
+            if (allList.get(in).equals(errorList.get(0))
+                    || allList.get(in).equals(errorList.get(2))) {
                 errorList.add(allList.get(in));
                 lineNumber = -1;
             } else {
+                // 不是结尾信息，继续添加
                 errorList.add(allList.get(in));
             }
         } else {
@@ -212,7 +217,6 @@ public class HdcStringUtils {
             mapTwo.put(inInt, strings[1]);
         }
     }
-
 
     /**
      * 处理最后一条数据
