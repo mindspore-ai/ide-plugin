@@ -79,9 +79,6 @@ public class ErrorDialogController {
                         while ((line = reader.readLine()) != null) {
                             stringBuilder.append(line).append(File.separator);
                             stringAllList.add(line);
-                            if (line.equals("############")) {
-                                break;
-                            }
                         }
                         if (stringAllList.size() > 0) {
                             ErrorDialog errorDialog =
