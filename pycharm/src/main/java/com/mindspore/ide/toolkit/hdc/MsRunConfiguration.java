@@ -47,8 +47,9 @@ public class MsRunConfiguration extends PythonRunConfiguration {
     @Override
     public RunProfileState getState(@NotNull Executor executor, @NotNull ExecutionEnvironment env)
             throws ExecutionException {
+        RunProfileState runProfileState = super.getState(executor, env);
         ErrorDialogController errorDialogController = new ErrorDialogController();
-        errorDialogController.errorDialogController(super.getState(executor, env), executor, this.getProject());
-        return super.getState(executor, env);
+        errorDialogController.errorDialogController(runProfileState, executor, this.getProject());
+        return runProfileState;
     }
 }
