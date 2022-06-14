@@ -18,6 +18,7 @@ package com.mindspore.ide.toolkit.hdc;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.util.ui.UIUtil;
 import com.mindspore.ide.toolkit.hdc.msjtable.GridBagTable;
 import com.mindspore.ide.toolkit.hdc.msjtable.TableViewRenderer;
 
@@ -33,6 +34,7 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Desktop;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
@@ -71,28 +73,50 @@ public class ErrorDialog extends JDialog {
         this.setModal(true);
         this.setSize(1020, 670);
         setLocationRelativeTo(null);
-        init();
+        initJLabel();
+        initJTable();
+        // 事件
+        buttonListener();
         this.setLayout(null);
     }
 
-    private void init() {
+    private void initJLabel() {
         // 标题
         JLabel firstLinePromptJLabel = new JLabel(errorDataInfo.getTitleString(), JLabel.CENTER);
         firstLinePromptJLabel.setBounds(new Rectangle(0, 10, 1020, 25));
+        if (UIUtil.isUnderDarcula()) {
+            firstLinePromptJLabel.setForeground(Color.WHITE);
+        } else {
+            firstLinePromptJLabel.setForeground(Color.BLACK);
+        }
         this.add(firstLinePromptJLabel);
         // 复制粘贴按钮
         copyJLabel = new JButton("复制错误报告");
         copyJLabel.setBounds(new Rectangle(800, 10, 150, 30));
+        if (UIUtil.isUnderDarcula()) {
+            copyJLabel.setForeground(Color.WHITE);
+        } else {
+            copyJLabel.setForeground(Color.BLACK);
+        }
         this.add(copyJLabel);
+    }
+
+    private void initJTable() {
         // 表格和表格数据处理
         objects = errorDataInfo.getStrings().toArray(new String[0][]);
         String[] titles = {errorDataInfo.getProjectString(), errorDataInfo.getDescriptionString()};
         DefaultTableModel defaultTableModel = new DefaultTableModel(objects, titles);
         jTable = new GridBagTable(defaultTableModel);
+        if (UIUtil.isUnderDarcula()) {
+            jTable.getTableHeader().setForeground(Color.WHITE);
+        } else {
+            jTable.getTableHeader().setForeground(Color.BLACK);
+        }
         // 单元格行高
         jTable.setRowHeight(25);
         // 设置文字换行和url变色
-        jTable.setDefaultRenderer(Object.class, new TableViewRenderer(errorDataInfo.getInts()));
+        TableViewRenderer tableViewRenderer = new TableViewRenderer();
+        jTable.setDefaultRenderer(Object.class, tableViewRenderer);
         // 合并单元格数据
         for (int[] ints : errorDataInfo.getIntMerge()) {
             jTable.mergeCells(ints[0], ints[1], ints[2], ints[3]);
@@ -102,17 +126,20 @@ public class ErrorDialog extends JDialog {
         // 大小
         jTable.setBounds(new Rectangle(0, 50, 1000, 650));
         // 比列
-        jTable.getColumnModel().getColumn(0).setPreferredWidth(100);
-        jTable.getColumnModel().getColumn(1).setPreferredWidth(900);
+        jTable.getColumnModel().getColumn(0).setPreferredWidth(150);
+        jTable.getColumnModel().getColumn(1).setPreferredWidth(850);
         // 设置居中
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
         renderer.setHorizontalAlignment(JTextField.CENTER);
+        if (UIUtil.isUnderDarcula()) {
+            renderer.setForeground(Color.WHITE);
+        } else {
+            renderer.setForeground(Color.BLACK);
+        }
         jTable.getColumnModel().getColumn(0).setCellRenderer(renderer);
         JScrollPane scrollPane = new JScrollPane(jTable);
         scrollPane.setBounds(new Rectangle(0, 50, 1000, 650));
         this.add(scrollPane, BorderLayout.CENTER);
-        // 事件
-        buttonListener();
     }
 
     private void buttonListener() {

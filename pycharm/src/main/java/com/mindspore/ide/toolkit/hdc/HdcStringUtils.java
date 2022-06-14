@@ -114,7 +114,6 @@ public class HdcStringUtils {
     public static ErrorDataInfo errorListToErrorDataInfo(List<String> errorList) {
         ErrorDataInfo errorDataInfo = new ErrorDataInfo();
         List<String[]> stringList = new LinkedList<>();
-        List<Integer> ints = new LinkedList<>();
         StringBuilder errorString = new StringBuilder();
         for (int i = 0; i < errorList.size(); i++) {
             errorString.append(errorList.get(i)).append(System.getProperty("line.separator"));
@@ -138,17 +137,12 @@ public class HdcStringUtils {
                 if (descriptionStr.contains("+---") && descriptionStr.contains("---+")) {
                     descriptionStr = "";
                 }
-                String strHttp = HdcRegularUtils.filterSpecialStr(HdcRegularUtils.REGEX_HTTP, descriptionStr);
-                if (!strHttp.isEmpty()) {
-                    ints.add(stringList.size());
-                }
                 String[] strings = {projectStr, descriptionStr};
                 stringList.add(strings);
             } else {
                 errorList.size();
             }
         }
-        errorDataInfo.setInts(ints);
         errorDataInfo.setStrings(stringList);
         errorDataInfo.setErrorString(errorString.toString());
         errorDataInfo = filterErrorDataInfo(errorDataInfo);
@@ -169,6 +163,7 @@ public class HdcStringUtils {
         for (int i = 0; i < errorDataInfo.getStrings().size(); i++) {
             String[] strings = errorDataInfo.getStrings().get(i);
             mapOne.put(i, strings[0]);
+            // 第一条为空，合并。
             if (strings[0].equals("")) {
                 equalsEmpty(strings, i, errorDataInfo);
             } else {
@@ -202,18 +197,24 @@ public class HdcStringUtils {
 
     private static void equalsNoEmpty(ErrorDataInfo errorDataInfo, int inInt, String[] strings) {
         if (stringBuilderTwo.length() > 0) {
+            // 需要合并的数据
             int[] stringsMergeOne = {iOne, inInt - 1, 0, 0};
             if (errorDataInfo.getStrings().get(iOne)[0].contains("代码")) {
+                // 标题包含代码，标题和内容都合并
                 int[] stringsMergeTwo = {iOne, inInt - 1, 1, 1};
                 intMerge.add(stringsMergeTwo);
+                mapTwo.put(iOne, stringBuilderTwo.toString());
+            } else {
+                // 标题不包含代码，内容需要展示
+                for (int in = iOne; in < inInt; in++) {
+                    mapTwo.put(in, errorDataInfo.getStrings().get(in)[1]);
+                }
             }
             intMerge.add(stringsMergeOne);
-            if (errorDataInfo.getStrings().get(iOne)[0].contains("代码")) {
-                mapTwo.put(iOne, stringBuilderTwo.toString());
-            }
             mapTwo.put(inInt, strings[1]);
             stringBuilderTwo.delete(0, stringBuilderTwo.length());
         } else {
+            // 正常数据
             mapTwo.put(inInt, strings[1]);
         }
     }
@@ -227,18 +228,21 @@ public class HdcStringUtils {
      */
     private static void lastDataFormat(int inInt, ErrorDataInfo errorDataInfo, String[] strings) {
         if (stringBuilderTwo.length() > 0) {
-            int[] stringsMergeOne = {iOne, inInt, 0, 0};
             if (errorDataInfo.getStrings().get(iOne)[0].contains("代码")) {
+                // 标题包含代码，标题和内容都合并
                 int[] stringsMergeTwo = {iOne, inInt, 1, 1};
                 intMerge.add(stringsMergeTwo);
-            }
-            intMerge.add(stringsMergeOne);
-            if (errorDataInfo.getStrings().get(iOne)[0].contains("代码")) {
                 mapTwo.put(iOne, stringBuilderTwo.toString());
                 mapTwo.put(inInt, "");
             } else {
+                // 标题不包含代码，内容需要展示
                 mapTwo.put(inInt, strings[1]);
+                for (int in = iOne; in < inInt; in++) {
+                    mapTwo.put(in, errorDataInfo.getStrings().get(in)[1]);
+                }
             }
+            int[] stringsMergeOne = {iOne, inInt, 0, 0};
+            intMerge.add(stringsMergeOne);
             // 有值不为空变下一条
             stringBuilderTwo.delete(0, stringBuilderTwo.length());
         } else {
@@ -281,7 +285,6 @@ public class HdcStringUtils {
         errorDataInfoNew.setTitleString(errorDataInfo.getTitleString());
         errorDataInfoNew.setDescriptionString(errorDataInfo.getDescriptionString());
         errorDataInfoNew.setProjectString(errorDataInfo.getProjectString());
-        errorDataInfoNew.setInts(errorDataInfo.getInts());
         errorDataInfoNew.setErrorString(errorDataInfo.getErrorString());
         errorDataInfoNew.setStrings(listNew);
         errorDataInfoNew.setIntMerge(intMerge);

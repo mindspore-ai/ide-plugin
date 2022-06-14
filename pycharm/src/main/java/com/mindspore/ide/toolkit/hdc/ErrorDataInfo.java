@@ -50,11 +50,6 @@ public class ErrorDataInfo {
     private List<int[]> intMerge;
 
     /**
-     * 有url的数据，字体变色
-     */
-    private List<Integer> ints;
-
-    /**
      * 整体错误信息
      */
     private String errorString;
@@ -97,14 +92,6 @@ public class ErrorDataInfo {
 
     public void setIntMerge(List<int[]> intMerge) {
         this.intMerge = intMerge;
-    }
-
-    public List<Integer> getInts() {
-        return ints;
-    }
-
-    public void setInts(List<Integer> ints) {
-        this.ints = ints;
     }
 
     public String getErrorString() {

@@ -16,13 +16,14 @@
 
 package com.mindspore.ide.toolkit.hdc.msjtable;
 
+import com.intellij.util.ui.UIUtil;
+import com.mindspore.ide.toolkit.hdc.HdcRegularUtils;
+
 import javax.swing.JTextArea;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 import java.awt.Component;
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * TableViewRenderer
@@ -30,28 +31,23 @@ import java.util.List;
  * @since 2022-04-18
  */
 public class TableViewRenderer extends JTextArea implements TableCellRenderer {
-    private List<Integer> ints = new ArrayList<>();
-
-    /**
-     * construction method
-     *
-     * @param ints ints
-     */
-    public TableViewRenderer(List<Integer> ints) {
-        // 将表格设为自动换行,利用JTextArea的自动换行方法
-        setLineWrap(true);
-        this.ints = ints;
-    }
-
     @Override
     public Component getTableCellRendererComponent(JTable jtable, Object obj, boolean isSelected,
             boolean hasFocus, int row, int column) {
-        // 利用JTextArea的setText设置文本方法
-        setText(obj == null ? "" : obj.toString());
-        for (Integer anInt : ints) {
-            if (row == anInt && column == 1) {
+        if (obj != null) {
+            setText(obj.toString());
+            String strHttp = HdcRegularUtils.filterSpecialStr(HdcRegularUtils.REGEX_HTTP, obj.toString());
+            if (!strHttp.isEmpty()) {
                 setForeground(Color.green);
+            } else {
+                if (UIUtil.isUnderDarcula()) {
+                    setForeground(Color.WHITE);
+                } else {
+                    setForeground(Color.BLACK);
+                }
             }
+        } else {
+            setText("");
         }
         return this;
     }
