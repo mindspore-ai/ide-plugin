@@ -35,6 +35,8 @@ import java.awt.Toolkit;
 import java.awt.Desktop;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.Dimension;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
@@ -71,10 +73,12 @@ public class ErrorDialog extends JDialog {
         this.project = project;
         this.setTitle("Trouble shooting");
         this.setModal(true);
-        this.setSize(1020, 670);
+        int dialogHeight = 135 + errorDataInfo.getStrings().size() * 30;
+        this.setSize(1040, dialogHeight);
         setLocationRelativeTo(null);
         initJLabel();
-        initJTable();
+        int tableHeight = errorDataInfo.getStrings().size() * 30 + 35;
+        initJTable(tableHeight);
         // 事件
         buttonListener();
         this.setLayout(null);
@@ -83,7 +87,8 @@ public class ErrorDialog extends JDialog {
     private void initJLabel() {
         // 标题
         JLabel firstLinePromptJLabel = new JLabel(errorDataInfo.getTitleString(), JLabel.CENTER);
-        firstLinePromptJLabel.setBounds(new Rectangle(0, 10, 1020, 25));
+        firstLinePromptJLabel.setBounds(new Rectangle(0, 10, 1040, 30));
+        firstLinePromptJLabel.setFont(new Font("微软雅黑", Font.BOLD, 16));
         if (UIUtil.isUnderDarcula()) {
             firstLinePromptJLabel.setForeground(Color.WHITE);
         } else {
@@ -92,7 +97,8 @@ public class ErrorDialog extends JDialog {
         this.add(firstLinePromptJLabel);
         // 复制粘贴按钮
         copyJLabel = new JButton("复制错误报告");
-        copyJLabel.setBounds(new Rectangle(800, 10, 150, 30));
+        copyJLabel.setBounds(new Rectangle(800, 5, 150, 40));
+        copyJLabel.setFont(new Font("微软雅黑", Font.BOLD, 16));
         if (UIUtil.isUnderDarcula()) {
             copyJLabel.setForeground(Color.WHITE);
         } else {
@@ -101,7 +107,7 @@ public class ErrorDialog extends JDialog {
         this.add(copyJLabel);
     }
 
-    private void initJTable() {
+    private void initJTable(int height) {
         // 表格和表格数据处理
         objects = errorDataInfo.getStrings().toArray(new String[0][]);
         String[] titles = {errorDataInfo.getProjectString(), errorDataInfo.getDescriptionString()};
@@ -112,8 +118,12 @@ public class ErrorDialog extends JDialog {
         } else {
             jTable.getTableHeader().setForeground(Color.BLACK);
         }
+        jTable.getTableHeader().setBounds(new Rectangle(0, 0, 1000, 30));
+        jTable.getTableHeader().setPreferredSize(new Dimension(1000, 30));
+        jTable.getTableHeader().setFont(new Font("微软雅黑", Font.BOLD, 16));
+        jTable.setFont(new Font("微软雅黑", 0, 16));
         // 单元格行高
-        jTable.setRowHeight(25);
+        jTable.setRowHeight(30);
         // 设置文字换行和url变色
         TableViewRenderer tableViewRenderer = new TableViewRenderer();
         jTable.setDefaultRenderer(Object.class, tableViewRenderer);
@@ -124,12 +134,14 @@ public class ErrorDialog extends JDialog {
         // 不可编辑
         jTable.setEnabled(false);
         // 大小
-        jTable.setBounds(new Rectangle(0, 50, 1000, 650));
+        jTable.setBounds(new Rectangle(13, 50, 1000, height));
         // 比列
         jTable.getColumnModel().getColumn(0).setPreferredWidth(150);
         jTable.getColumnModel().getColumn(1).setPreferredWidth(850);
         // 设置居中
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+        renderer.setFont(new Font("微软雅黑", Font.BOLD, 16));
+        renderer.setBounds(new Rectangle(0, 0, 1000, 30));
         renderer.setHorizontalAlignment(JTextField.CENTER);
         if (UIUtil.isUnderDarcula()) {
             renderer.setForeground(Color.WHITE);
@@ -138,7 +150,7 @@ public class ErrorDialog extends JDialog {
         }
         jTable.getColumnModel().getColumn(0).setCellRenderer(renderer);
         JScrollPane scrollPane = new JScrollPane(jTable);
-        scrollPane.setBounds(new Rectangle(0, 50, 1000, 650));
+        scrollPane.setBounds(new Rectangle(13, 50, 1000, height));
         this.add(scrollPane, BorderLayout.CENTER);
     }
 

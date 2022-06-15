@@ -24,6 +24,7 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 import java.awt.Component;
 import java.awt.Color;
+import java.awt.Font;
 
 /**
  * TableViewRenderer
@@ -34,6 +35,7 @@ public class TableViewRenderer extends JTextArea implements TableCellRenderer {
     @Override
     public Component getTableCellRendererComponent(JTable jtable, Object obj, boolean isSelected,
             boolean hasFocus, int row, int column) {
+        setFont(new Font("微软雅黑", 0, 16));
         if (obj != null) {
             setText(obj.toString());
             String strHttp = HdcRegularUtils.filterSpecialStr(HdcRegularUtils.REGEX_HTTP, obj.toString());
