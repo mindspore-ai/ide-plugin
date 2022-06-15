@@ -16,6 +16,7 @@
 
 package com.mindspore.ide.toolkit.hdc.msaction;
 
+import com.intellij.execution.configurations.ConfigurationType;
 import com.intellij.execution.impl.EditConfigurationsDialog;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -42,7 +43,16 @@ public class MsRunAnAction extends AnAction {
             // setup template project configurations
             project = ProjectManager.getInstance().getDefaultProject();
         }
-        MsConfigurationType msConfigurationType = new MsConfigurationType();
+        MsConfigurationType msConfigurationType = null;
+        ConfigurationType[] configurationTypes = MsConfigurationType.CONFIGURATION_TYPE_EP.getExtensions();
+        for (ConfigurationType configurationType : configurationTypes) {
+            if (configurationType instanceof MsConfigurationType) {
+                msConfigurationType = (MsConfigurationType) configurationType;
+            }
+        }
+        if (msConfigurationType == null) {
+            msConfigurationType = new MsConfigurationType();
+        }
         MsConfigurationFactory msConfigurationFactory = new MsConfigurationFactory(msConfigurationType);
         new EditConfigurationsDialog(project, msConfigurationFactory).show();
     }
