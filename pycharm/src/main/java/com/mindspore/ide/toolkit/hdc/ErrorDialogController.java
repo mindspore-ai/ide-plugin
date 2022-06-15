@@ -19,27 +19,18 @@ package com.mindspore.ide.toolkit.hdc;
 import com.intellij.execution.ExecutionResult;
 import com.intellij.execution.Executor;
 import com.intellij.execution.configurations.RunProfileState;
-import com.intellij.execution.process.OSProcessHandler;
 import com.intellij.execution.process.ProcessHandler;
+import com.intellij.execution.process.OSProcessHandler;
 import com.intellij.execution.process.ProcessTerminatedListener;
+import com.intellij.execution.process.ProcessAdapter;
+import com.intellij.execution.process.ProcessEvent;
 import com.intellij.openapi.project.Project;
-import com.jetbrains.python.run.PythonCommandLineState;
+import com.intellij.openapi.util.Key;
+import com.jetbrains.python.run.PythonScriptCommandLineState;
+import org.jetbrains.annotations.NotNull;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.Future;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 
 /**
  * 处理数据
@@ -47,9 +38,6 @@ import java.util.concurrent.TimeoutException;
  * @since 2022-04-18
  */
 public class ErrorDialogController {
-    private BlockingQueue blockingQueue = new LinkedBlockingQueue(100);
-    private ThreadPoolExecutor threadPool;
-
     /**
      * 数据处理
      *
@@ -59,43 +47,50 @@ public class ErrorDialogController {
      */
     public void errorDialogController(RunProfileState runProfileState, Executor executor, Project project) {
         try {
-            if (runProfileState instanceof PythonCommandLineState) {
-                PythonCommandLineState pythonCommandLineState = (PythonCommandLineState) runProfileState;
-                threadPool = new ThreadPoolExecutor(2, 64, 60L,
-                        TimeUnit.SECONDS, blockingQueue);
-                ExecutionResult executionResult = pythonCommandLineState.execute(executor,
-                        pythonCommandLineState.getEnvironment().getRunner());
+            if (runProfileState instanceof PythonScriptCommandLineState) {
+                PythonScriptCommandLineState pythonScriptCommandLineState =
+                        (PythonScriptCommandLineState) runProfileState;
+                ExecutionResult executionResult = pythonScriptCommandLineState.execute(executor,
+                        pythonScriptCommandLineState.getEnvironment().getRunner());
                 ProcessHandler processHandler = executionResult.getProcessHandler();
                 if (processHandler instanceof OSProcessHandler) {
                     OSProcessHandler osProcessHandler = (OSProcessHandler) processHandler;
-                    InputStream inputStream = osProcessHandler.getProcess().getInputStream();
-                    BufferedReader reader =
-                            new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-                    inputStream.available();
-                    StringBuilder stringBuilder = new StringBuilder();
-                    List<String> stringAllList = new LinkedList<>();
-                    Future<String> future = threadPool.submit(() -> {
-                        String line = " ";
-                        while ((line = reader.readLine()) != null) {
-                            stringBuilder.append(line).append(File.separator);
-                            stringAllList.add(line);
-                        }
-                        if (stringAllList.size() > 0) {
-                            ErrorDialog errorDialog =
-                                    new ErrorDialog(HdcStringUtils
-                                            .errorListToErrorDataInfo(HdcStringUtils
-                                                    .allListToErrorList(stringAllList)), project);
-                            errorDialog.setVisible(true);
-                        }
-                        return stringBuilder.toString();
-                    });
-                    String result = future.get(10, TimeUnit.MILLISECONDS);
+                    osProcessHandler.startNotify();
                     ProcessTerminatedListener.attach(osProcessHandler);
+                    List<String> stringAllList = new LinkedList<>();
+                    osProcessHandler.addProcessListener(new ProcessAdapter() {
+                        @Override
+                        public void startNotified(@NotNull ProcessEvent event) {
+                            super.startNotified(event);
+                        }
+
+                        @Override
+                        public void processTerminated(@NotNull ProcessEvent event) {
+                            showErrorDialog(stringAllList, project);
+                            super.processTerminated(event);
+                        }
+
+                        @Override
+                        public void onTextAvailable(@NotNull ProcessEvent event, @NotNull Key outputType) {
+                            stringAllList.add(event.getText());
+                            super.onTextAvailable(event, outputType);
+                        }
+                    });
                 }
             }
-        } catch (IOException | ExecutionException | InterruptedException
-                | TimeoutException | com.intellij.execution.ExecutionException exception) {
-            return;
+        } catch (com.intellij.execution.ExecutionException exception) {
+            exception.getMessage();
+        }
+    }
+
+    private void showErrorDialog(List<String> stringAllList, Project project) {
+        if (stringAllList.size() > 0) {
+            List<String> stringList = HdcStringUtils.allListToErrorList(stringAllList);
+            if (stringList.size() >= 6) {
+                ErrorDataInfo errorDataInfo = HdcStringUtils.errorListToErrorDataInfo(stringList);
+                ErrorDialog errorDialog = new ErrorDialog(errorDataInfo, project);
+                errorDialog.setVisible(true);
+            }
         }
     }
 }
