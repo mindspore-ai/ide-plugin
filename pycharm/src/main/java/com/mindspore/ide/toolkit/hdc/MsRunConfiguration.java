@@ -16,7 +16,6 @@
 
 package com.mindspore.ide.toolkit.hdc;
 
-import com.intellij.execution.ExecutionException;
 import com.intellij.execution.Executor;
 import com.intellij.execution.configurations.ConfigurationFactory;
 import com.intellij.execution.configurations.RunProfileState;
@@ -45,11 +44,7 @@ public class MsRunConfiguration extends PythonRunConfiguration {
     }
 
     @Override
-    public RunProfileState getState(@NotNull Executor executor, @NotNull ExecutionEnvironment env)
-            throws ExecutionException {
-        RunProfileState runProfileState = super.getState(executor, env);
-        ErrorDialogController errorDialogController = new ErrorDialogController();
-        errorDialogController.errorDialogController(runProfileState, executor, this.getProject());
-        return runProfileState;
+    public RunProfileState getState(@NotNull Executor executor, @NotNull ExecutionEnvironment env) {
+        return new MsPythonScriptCommandLineState(this, env, this.getProject());
     }
 }
