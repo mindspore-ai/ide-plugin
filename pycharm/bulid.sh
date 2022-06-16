@@ -3,9 +3,17 @@
 set -e
 BASEPATH=$(cd "$(dirname $0)"; pwd)
 
+echo "start clean"
 gradle clean
+echo "end clean"
+
+echo "start spotbugsMain"
 gradle spotbugsMain
+echo "end spotbugsMain"
+
+echo "start buildPlugin"
 gradle buildPlugin
+echo "end buildPlugin"
 
 mkdir output
 mv $BASEPATH/build/distributions/* $BASEPATH/output/
