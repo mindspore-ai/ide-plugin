@@ -7,13 +7,13 @@ echo "start clean"
 gradle clean
 echo "end clean"
 
-echo "start spotbugsMain"
-gradle spotbugsMain
-echo "end spotbugsMain"
-
 echo "start buildPlugin"
 gradle buildPlugin
 echo "end buildPlugin"
+
+echo "start spotbugsMain"
+gradle spotbugsMain
+echo "end spotbugsMain"
 
 mkdir output
 mv $BASEPATH/build/distributions/* $BASEPATH/output/
