@@ -18,12 +18,12 @@ package com.mindspore.ide.toolkit.ui.wizard;
 
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.mindspore.ide.toolkit.common.utils.OSInfoUtils;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+//import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 
-@SuppressFBWarnings({"EI_EXPOSE_REP", "UWF_UNWRITTEN_FIELD"})
+//@SuppressFBWarnings({"EI_EXPOSE_REP", "UWF_UNWRITTEN_FIELD"})
 public abstract class AbstractMsSettingProjectPeer {
     protected JPanel mainPanel;
     protected JComboBox hardwareSelector;
