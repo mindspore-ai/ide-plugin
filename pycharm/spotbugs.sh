@@ -1,5 +1,6 @@
-csasd
-cd $(dirname $0)
-pwd
+#csasd
+#cd $(dirname $0)
+#pwd
 
-gradle spotbugsMain
+echo "spotbugs.sh"
+#gradle spotbugsMain
