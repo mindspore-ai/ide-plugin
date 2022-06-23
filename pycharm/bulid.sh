@@ -11,7 +11,7 @@ BASEPATH=$(cd "$(dirname $0)"; pwd)
 chmod +x gradlew
 
 echo "start buildPlugin"
-./gradlew buildPlugin
+./gradlew buildPlugin --debug
 echo "end buildPlugin"
 
 #echo "start spotbugsMain"
