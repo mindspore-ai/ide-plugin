@@ -2,13 +2,13 @@
 
 set -e
 BASEPATH=$(cd "$(dirname $0)"; pwd)
-gradle --no-daemon
+#gradle --no-daemon
 #echo "start clean"
 #gradle clean
 #echo "end clean"
 
 echo "start buildPlugin"
-gradle buildPlugin
+gradlew buildPlugin
 echo "end buildPlugin"
 
 #echo "start spotbugsMain"
