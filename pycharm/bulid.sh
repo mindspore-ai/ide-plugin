@@ -10,7 +10,7 @@ BASEPATH=$(cd "$(dirname $0)"; pwd)
 #:wrapper
 
 echo "start buildPlugin"
-./gradlew buildPlugin --info
+./gradlew buildPlugin
 echo "end buildPlugin"
 
 #echo "start spotbugsMain"
