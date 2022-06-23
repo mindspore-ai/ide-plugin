@@ -7,6 +7,7 @@ BASEPATH=$(cd "$(dirname $0)"; pwd)
 #gradle clean
 #echo "end clean"
 gradle wrapper
+:wrapper
 
 echo "start buildPlugin"
 gradlew buildPlugin
