@@ -6,11 +6,11 @@ BASEPATH=$(cd "$(dirname $0)"; pwd)
 #echo "start clean"
 #gradle clean
 #echo "end clean"
-gradle wrapper
-:wrapper
+#gradle wrapper
+#:wrapper
 
 echo "start buildPlugin"
-gradlew buildPlugin
+gradle buildPlugin
 echo "end buildPlugin"
 
 #echo "start spotbugsMain"
