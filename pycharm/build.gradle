@@ -10,7 +10,7 @@ version '1.7.0'
 
 intellij {
     type = 'PC'
-    version = '2020.3'
+    version = '2021.1'
     plugins = ['python-ce']
     buildSearchableOptions.enabled = false
     downloadSources = false
