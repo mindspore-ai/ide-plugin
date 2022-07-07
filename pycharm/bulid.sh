@@ -33,7 +33,7 @@ echo "end unzip gradle.zip"
 
 ls $GRADLE_USER_HOME -all
 echo "start copy gradle.zip"
-cp -rf .gradle/cache $GRADLE_USER_HOME 
+cp -rf .gradle/caches $GRADLE_USER_HOME 
 echo "end copy gradle.zip"
 
 
