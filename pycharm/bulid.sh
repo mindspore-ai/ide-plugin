@@ -5,7 +5,7 @@ BASEPATH=$(cd "$(dirname $0)"; pwd)
 
 echo $BASEPATH
 
-ls
+ls -all
 #gradle --no-daemon
 #echo "start clean"
 #gradle clean
@@ -17,13 +17,13 @@ echo "start download gradle.zip"
 wget 'https://tools.mindspore.cn/libs/ide_plugin_dependencies/pycharm/gradle.zip' --no-check-certificate
 echo "end download gradle.zip"
 
-ls
+ls -all
 
 echo "start unzip gradle.zip"
 unzip gradle.zip
 echo "end unzip gradle.zip"
 
-ls
+ls -all
 
 chmod +x gradlew
 
