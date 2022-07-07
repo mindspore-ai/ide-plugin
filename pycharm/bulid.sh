@@ -27,7 +27,7 @@ echo "end download gradle.zip"
 ls -all
 
 echo "start unzip gradle.zip"
-unzip gradle.zip
+unzip -qq gradle.zip
 #unzip -qq gradle.zip -d /home/jenkins/agent-working-dir
 echo "end unzip gradle.zip"
 
@@ -45,8 +45,10 @@ echo "start buildPlugin"
 gradle buildPlugin
 echo "end buildPlugin"
 
-ls -r .gradle/caches
-ls -r $GRADLE_USER_HOME
+echo "workdir"
+ls -R .gradle/caches/module-2/files-2.1/com.google.protobuf
+echo "globaldir"
+ls -R $GRADLE_USER_HOME/caches/module-2/files-2.1/com.google.protobuf
 
 #ls $BASEPATH/.gradle/caches/module-2/files-2.1
 
