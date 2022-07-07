@@ -2,6 +2,8 @@
 
 set -e
 BASEPATH=$(cd "$(dirname $0)"; pwd)
+
+echo BASEPATH
 #gradle --no-daemon
 #echo "start clean"
 #gradle clean
