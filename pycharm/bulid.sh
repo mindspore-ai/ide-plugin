@@ -32,7 +32,7 @@ echo "start buildPlugin"
 gradle buildPlugin --debug
 echo "end buildPlugin"
 
-ls .gradle/caches/module-2/files-2.1
+ls $BASEPATH/.gradle/caches/module-2/files-2.1
 
 #echo "start spotbugsMain"
 #gradle spotbugsMain
