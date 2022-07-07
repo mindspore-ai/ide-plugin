@@ -35,7 +35,8 @@ ls $GRADLE_USER_HOME -all
 echo "start copy gradle.zip"
 cp -rf .gradle/caches $GRADLE_USER_HOME 
 echo "end copy gradle.zip"
-
+mkdir -p $GRADLE_USER_HOME/caches/module-2/files-2.1/com.google.protobuf/protoc/3.7.1/bf162385553faf7da54f895e42ef0e94a01f02a7
+cp -f libs/protoc-3.7.1-linux-x86_64.exe $GRADLE_USER_HOME/caches/module-2/files-2.1/com.google.protobuf/protoc/3.7.1/bf162385553faf7da54f895e42ef0e94a01f02a7
 
 ls -all
 
