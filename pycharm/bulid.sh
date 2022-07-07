@@ -14,7 +14,7 @@ ls
 #:wrapper
 
 echo "start download gradle.zip"
-wget https://tools.mindspore.cn/libs/ide_plugin_dependencies/pycharm/gradle.zip
+wget 'https://tools.mindspore.cn/libs/ide_plugin_dependencies/pycharm/gradle.zip' --no-check-certificate
 echo "end download gradle.zip"
 
 ls
