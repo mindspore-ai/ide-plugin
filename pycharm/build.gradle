@@ -2,7 +2,6 @@ plugins {
     id 'java'
     id 'com.github.spotbugs' version "4.7.10"
     id "org.jetbrains.intellij" version "0.6.3"
-    id 'com.google.protobuf' version '0.8.14'
 }
 
 group 'com.mindspore'
@@ -49,31 +48,6 @@ dependencies {
     implementation "io.grpc:grpc-all:1.33.1"
     implementation 'com.vladsch.flexmark:flexmark-all:0.62.2'
     compileOnly(fileTree("libs"))
-}
-
-protobuf{
-    protoc {
-        artifact = "com.google.protobuf:protoc:3.7.1"
-    }
-    plugins {
-        grpc {
-            artifact = 'io.grpc:protoc-gen-grpc-java:1.33.1'
-        }
-    }
-    generateProtoTasks {
-        all()*.plugins {
-            grpc {}
-        }
-    }
-}
-
-sourceSets {
-    main {
-        java {
-            srcDirs "build/generated/source/proto/main/grpc"
-            srcDirs "build/generated/source/proto/main/java"
-        }
-    }
 }
 
 tasks.forEach {
