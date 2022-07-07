@@ -7,6 +7,8 @@ echo $BASEPATH
 
 echo $GRADLE_USER_HOME
 
+ls $GRADLE_USER_HOME -all
+
 
 #rm -rf $GRADLE_USER_HOME/caches/
 
@@ -27,11 +29,12 @@ ls -all
 echo "start unzip gradle.zip"
 unzip -qq gradle.zip
 #unzip -qq gradle.zip -d /home/jenkins/agent-working-dir
-cp -rf .gradle/cache $GRADLE_USER_HOME 
+echo "end unzip gradle.zip"
 
 ls $GRADLE_USER_HOME -all
-
-echo "end unzip gradle.zip"
+echo "start copy gradle.zip"
+cp -rf .gradle/cache $GRADLE_USER_HOME 
+echo "end copy gradle.zip"
 
 
 ls -all
