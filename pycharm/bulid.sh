@@ -19,17 +19,20 @@ echo "end download gradle.zip"
 
 ls -all
 
-echo "start unzip gradle.zip"
-unzip gradle.zip
-echo "end unzip gradle.zip"
+#echo "start unzip gradle.zip"
+#unzip gradle.zip
+#echo "end unzip gradle.zip"
+
 
 ls -all
 
-chmod +x gradlew
+#chmod +x gradlew
 
 echo "start buildPlugin"
-./gradlew buildPlugin --debug
+gradle buildPlugin --debug
 echo "end buildPlugin"
+
+ls ~/.gradle/caches/module-2/files-2.1
 
 #echo "start spotbugsMain"
 #gradle spotbugsMain
