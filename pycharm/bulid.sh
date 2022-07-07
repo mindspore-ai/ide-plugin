@@ -45,6 +45,7 @@ echo "start buildPlugin"
 gradle buildPlugin
 echo "end buildPlugin"
 
+ls -r .gradle/caches
 ls -r $GRADLE_USER_HOME
 
 #ls $BASEPATH/.gradle/caches/module-2/files-2.1
