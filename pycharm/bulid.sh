@@ -12,16 +12,16 @@ ls -all
 #echo "end clean"
 #gradle wrapper
 #:wrapper
-gradle showMeCache
+#gradle showMeCache
 echo "start download gradle.zip"
-#wget 'https://tools.mindspore.cn/libs/ide_plugin_dependencies/pycharm/gradle.zip' --no-check-certificate
+wget 'https://tools.mindspore.cn/libs/ide_plugin_dependencies/pycharm/gradle.zip' --no-check-certificate
 echo "end download gradle.zip"
 
 ls -all
 
-#echo "start unzip gradle.zip"
-#unzip gradle.zip
-#echo "end unzip gradle.zip"
+echo "start unzip gradle.zip"
+unzip gradle.zip
+echo "end unzip gradle.zip"
 
 
 ls -all
@@ -34,7 +34,7 @@ echo "end buildPlugin"
 
 ls -all
 
-ls $BASEPATH/.gradle/caches/module-2/files-2.1
+#ls $BASEPATH/.gradle/caches/module-2/files-2.1
 
 #echo "start spotbugsMain"
 #gradle spotbugsMain
