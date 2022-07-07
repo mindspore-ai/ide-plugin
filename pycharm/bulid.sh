@@ -42,7 +42,7 @@ ls -all
 #chmod +x gradlew
 
 echo "start buildPlugin"
-gradle --offline buildPlugin
+gradle buildPlugin
 echo "end buildPlugin"
 
 ls -all
