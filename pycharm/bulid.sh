@@ -27,7 +27,7 @@ ls -all
 echo "start unzip gradle.zip"
 unzip -qq gradle.zip
 #unzip -qq gradle.zip -d /home/jenkins/agent-working-dir
-cp -r -f .gradle/cache $GRADLE_USER_HOME 
+cp -rf .gradle/cache $GRADLE_USER_HOME 
 
 ls $GRADLE_USER_HOME -all
 
