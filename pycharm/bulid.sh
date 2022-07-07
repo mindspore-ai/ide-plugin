@@ -12,7 +12,7 @@ ls -all
 #echo "end clean"
 #gradle wrapper
 #:wrapper
-
+gradle showMeCache
 echo "start download gradle.zip"
 #wget 'https://tools.mindspore.cn/libs/ide_plugin_dependencies/pycharm/gradle.zip' --no-check-certificate
 echo "end download gradle.zip"
