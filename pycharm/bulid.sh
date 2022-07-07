@@ -20,7 +20,7 @@ echo "end download gradle.zip"
 ls
 
 echo "start unzip gradle.zip"
-tar xvf gradle.zip
+unzip gradle.zip
 echo "end unzip gradle.zip"
 
 ls
