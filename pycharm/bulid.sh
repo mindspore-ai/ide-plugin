@@ -26,6 +26,7 @@ echo "end unzip gradle.zip"
 
 ls -all
 ls .gradle/caches/modules-2/files-2.1/
+echo "spotbugs plugin"
 ls .gradle/caches/modules-2/files-2.1/com.github.spotbugs.snom/
 
 chmod -R 777 .gradle/caches/modules-2/files-2.1/com.github.spotbugs.snom/
@@ -33,7 +34,7 @@ chmod -R 777 .gradle/caches/modules-2/files-2.1/com.github.spotbugs.snom/
 #chmod +x gradlew
 
 echo "start buildPlugin"
-gradle --offline buildPlugin
+gradle --offline buildPlugin --debug
 echo "end buildPlugin"
 
 ls -all
