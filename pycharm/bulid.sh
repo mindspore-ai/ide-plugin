@@ -5,6 +5,8 @@ BASEPATH=$(cd "$(dirname $0)"; pwd)
 
 echo $BASEPATH
 
+echo $GRADLE_USER_HOME
+
 ls -all
 #gradle --no-daemon
 #echo "start clean"
