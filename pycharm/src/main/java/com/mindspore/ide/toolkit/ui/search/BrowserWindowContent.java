@@ -19,14 +19,16 @@ package com.mindspore.ide.toolkit.ui.search;
 import com.intellij.openapi.Disposable;
 import com.intellij.ui.jcef.JBCefApp;
 import com.intellij.ui.jcef.JBCefBrowser;
+
 import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import org.cef.CefSettings;
+
 import org.cef.browser.CefBrowser;
 import org.cef.browser.CefFrame;
-import org.cef.handler.CefDisplayHandler;
+import org.cef.handler.CefLoadHandler;
+import org.cef.network.CefRequest;
 
 /**
  * browser window content
@@ -48,34 +50,35 @@ public class BrowserWindowContent implements Disposable {
         } else {
             jbCefBrowser = new JBCefBrowser();
             content.add(jbCefBrowser.getComponent(), BorderLayout.CENTER);
-            jbCefBrowser.getJBCefClient().getCefClient().addDisplayHandler(new CefDisplayHandler() {
+            jbCefBrowser.getJBCefClient().getCefClient().addLoadHandler(new CefLoadHandler() {
                 @Override
-                public void onAddressChange(CefBrowser cefBrowser, CefFrame cefFrame, String url) {
+                public void onLoadingStateChange(CefBrowser cefBrowser, boolean b, boolean b1, boolean b2) {
+                }
+
+                @Override
+                public void onLoadStart(CefBrowser cefBrowser,
+                                        CefFrame cefFrame,
+                                        CefRequest.TransitionType transitionType) {
                     if (url.contains("mindspore")) {
                         cefBrowser.executeJavaScript(
-                                "setSensorsCustomBuriedData(\"ide-Plugin\", \"1\")", url, 0);
+                                "var idePluginMessage = \"1\";", url, 0);
                     }
                 }
 
                 @Override
-                public void onTitleChange(CefBrowser cefBrowser, String title) {
-
+                public void onLoadEnd(CefBrowser cefBrowser, CefFrame cefFrame, int i) {
+                    if (url.contains("mindspore")) {
+                        cefBrowser.executeJavaScript(
+                                "setSensorsCustomBuriedData(\"ideplugin\", \"1\");", url, 0);
+                    }
                 }
 
                 @Override
-                public boolean onTooltip(CefBrowser cefBrowser, String text) {
-                    return false;
-                }
-
-                @Override
-                public void onStatusMessage(CefBrowser cefBrowser, String value) {
-
-                }
-
-                @Override
-                public boolean onConsoleMessage(CefBrowser cefBrowser, CefSettings.LogSeverity
-                        logSeverity, String message, String source, int line) {
-                    return false;
+                public void onLoadError(CefBrowser cefBrowser,
+                                        CefFrame cefFrame,
+                                        ErrorCode errorCode,
+                                        String s,
+                                        String s1) {
                 }
             });
             jbCefBrowser.loadURL(url);
