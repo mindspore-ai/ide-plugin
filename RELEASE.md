@@ -2,20 +2,18 @@
 
 [查看中文](./RELEASE_CN.md)
 
-## MindSpore Dev Toolkit 1.7.0 Release Notes
+## MindSpore Dev Toolkit 1.8.0 Release Notes
 
 ### Major Features and Improvement
 
 #### One-click environment wizard
 
-- [BETA]Create python environment and install MindSpore
-- [BETA]Generate MindSpore project structure and provide MindSpore best practice project
+- [BETA]Support MacOS-x86_64 platform
 
 #### Smart code completion
 
-- [BETA]Provide code completion for MindSpore based on AI
+- [BETA]Fix duplicate completion items problem caused by trailing space
 
 #### Operator search
 
-- [BETA]Search API mapping in Search Everywhere
-- [BETA]Provide MindSpore operator document in tool window
+- [BETA]Update API mapping documents for mapping PyTorch and TensorFlow operators to MindSpore operators
