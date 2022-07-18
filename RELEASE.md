@@ -8,12 +8,12 @@
 
 #### One-click environment wizard
 
-- [BETA]Support MacOS-x86_64 platform
+- [BETA] Support MacOS-x86_64 platform
 
 #### Smart code completion
 
-- [BETA]Fix duplicate completion items problem caused by trailing space
+- [BETA] Fix duplicate completion items problem caused by trailing space
 
 #### Operator search
 
-- [BETA]Update API mapping documents for mapping PyTorch and TensorFlow operators to MindSpore operators
+- [BETA] Update API mapping documents for mapping PyTorch and TensorFlow operators to MindSpore operators
