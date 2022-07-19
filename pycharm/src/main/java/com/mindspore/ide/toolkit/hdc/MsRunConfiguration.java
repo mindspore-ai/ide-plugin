@@ -35,12 +35,9 @@ public class MsRunConfiguration extends PythonRunConfiguration {
      *
      * @param project              project
      * @param configurationFactory configurationFactory
-     * @param parameter            parameter
      */
-    protected MsRunConfiguration(Project project, ConfigurationFactory configurationFactory,
-            String parameter) {
+    protected MsRunConfiguration(Project project, ConfigurationFactory configurationFactory) {
         super(project, configurationFactory);
-        super.setScriptParameters(parameter);
     }
 
     @Override

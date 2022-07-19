@@ -24,6 +24,7 @@ import com.intellij.execution.process.OSProcessHandler;
 import com.intellij.execution.process.ProcessTerminatedListener;
 import com.intellij.execution.process.ProcessAdapter;
 import com.intellij.execution.process.ProcessEvent;
+import com.intellij.execution.process.ProcessOutputType;
 import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
@@ -83,7 +84,9 @@ public class MsPythonScriptCommandLineState extends PythonScriptCommandLineState
 
                     @Override
                     public void onTextAvailable(@NotNull ProcessEvent event, @NotNull Key outputType) {
-                        stringAllList.add(event.getText());
+                        if (outputType instanceof ProcessOutputType && ((ProcessOutputType) outputType).isStdout()) {
+                            stringAllList.add(event.getText());
+                        }
                         super.onTextAvailable(event, outputType);
                     }
                 });

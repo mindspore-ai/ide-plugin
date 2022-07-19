@@ -35,6 +35,6 @@ public class MsConfigurationFactory extends ConfigurationFactory {
     @Override
     @NotNull
     public RunConfiguration createTemplateConfiguration(@NotNull Project project) {
-        return new MsRunConfiguration(project, this, "test");
+        return new MsRunConfiguration(project, this);
     }
 }
