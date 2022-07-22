@@ -96,8 +96,8 @@ public class ErrorDialog extends JDialog {
         }
         this.add(firstLinePromptJLabel);
         // 复制粘贴按钮
-        copyJLabel = new JButton("复制错误报告");
-        copyJLabel.setBounds(new Rectangle(800, 5, 150, 40));
+        copyJLabel = new JButton("复制错误报告 Copy FAR");
+        copyJLabel.setBounds(new Rectangle(800, 5, 213, 40));
         copyJLabel.setFont(new Font("微软雅黑", Font.BOLD, 16));
         if (UIUtil.isUnderDarcula()) {
             copyJLabel.setForeground(Color.WHITE);
