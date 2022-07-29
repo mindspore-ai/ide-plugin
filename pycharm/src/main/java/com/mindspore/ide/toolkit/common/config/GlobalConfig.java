@@ -18,6 +18,7 @@ package com.mindspore.ide.toolkit.common.config;
 
 import com.mindspore.ide.toolkit.common.utils.YamlUtils;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -41,6 +42,8 @@ public class GlobalConfig {
     private String msEnvValidatorFile;
 
     private CompleteModelInfo completeModelInfo;
+
+    private List<String> pythonVersions;
 
     public String getResourceFolder() {
         return resourceFolder;
@@ -96,6 +99,14 @@ public class GlobalConfig {
 
     public void setCompleteModelInfo(CompleteModelInfo completeModelInfo) {
         this.completeModelInfo = completeModelInfo;
+    }
+
+    public List<String> getPythonVersions() {
+        return pythonVersions;
+    }
+
+    public void setPythonVersions(List<String> pythonVersions) {
+        this.pythonVersions = pythonVersions;
     }
 
     private static class ConfigBuilder {

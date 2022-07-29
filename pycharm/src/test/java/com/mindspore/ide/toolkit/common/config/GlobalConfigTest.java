@@ -19,6 +19,8 @@ package com.mindspore.ide.toolkit.common.config;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.List;
+
 /**
  * GlobalConfig Test
  *
@@ -48,6 +50,7 @@ public class GlobalConfigTest {
         globalConfig1.setMsEnvValidatorFile("msEnvValidatorFile");
         GlobalConfig.CompleteModelInfo completeModelInfo = new GlobalConfig.CompleteModelInfo();
         globalConfig1.setCompleteModelInfo(completeModelInfo);
+        globalConfig1.setPythonVersions(List.of("3.7", "3.8", "3.9"));
         Assert.assertEquals(globalConfig1.getResourceFolder(), "resourceFolder");
         Assert.assertEquals(globalConfig1.getDownloadBaseUrl(), "downloadBaseUrl");
         Assert.assertEquals(globalConfig1.getToolWindowName(), "toolWindowName");

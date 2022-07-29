@@ -17,11 +17,13 @@
 package com.mindspore.ide.toolkit.ui.wizard;
 
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
+import com.mindspore.ide.toolkit.common.config.GlobalConfig;
 import com.mindspore.ide.toolkit.common.utils.OSInfoUtils;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
+import java.util.stream.Collectors;
 
 @SuppressFBWarnings({"EI_EXPOSE_REP", "UWF_UNWRITTEN_FIELD"})
 public abstract class AbstractMsSettingProjectPeer {
@@ -36,15 +38,17 @@ public abstract class AbstractMsSettingProjectPeer {
     protected JComboBox pythonVersionSelector;
     protected JComboBox templateSelector;
     protected JLabel osName;
+    protected JLabel pythonVersionMustEqualLabel;
     protected ButtonGroup envButtons;
 
     public AbstractMsSettingProjectPeer() {
         newEnvironmentUsingRadioButton.addChangeListener(this::changeEnvState);
         existingEnvironmentRadioButton.addChangeListener(this::changeEnvState);
         setOsToLabel();
+        setPythonVersion();
     }
 
-    private void changeEnvState(ChangeEvent actionEvent){
+    private void changeEnvState(ChangeEvent actionEvent) {
         condaEnvTextField.setEnabled(newEnvironmentUsingRadioButton.isSelected());
         pythonVersionSelector.setEnabled(newEnvironmentUsingRadioButton.isSelected());
         existEnvSelector.setEnabled(existingEnvironmentRadioButton.isSelected());
@@ -58,5 +62,14 @@ public abstract class AbstractMsSettingProjectPeer {
 
     private void setOsToLabel() {
         osName.setText(OSInfoUtils.INSTANCE.getOsName());
+    }
+
+    private void setPythonVersion() {
+        String text = GlobalConfig.get()
+                .getPythonVersions()
+                .stream()
+                .peek(item -> pythonVersionSelector.addItem(item))
+                .collect(Collectors.joining(" , ", "Python version must equal to ", ""));
+        pythonVersionMustEqualLabel.setText(text);
     }
 }
