@@ -50,7 +50,7 @@ public class BrowserWindowContent implements Disposable {
         } else {
             jbCefBrowser = new JBCefBrowser();
             content.add(jbCefBrowser.getComponent(), BorderLayout.CENTER);
-            jbCefBrowser.getJBCefClient().getCefClient().addLoadHandler(new CefLoadHandler() {
+            jbCefBrowser.getJBCefClient().addLoadHandler(new CefLoadHandler() {
                 @Override
                 public void onLoadingStateChange(CefBrowser cefBrowser, boolean b, boolean b1, boolean b2) {
                 }
@@ -80,7 +80,7 @@ public class BrowserWindowContent implements Disposable {
                                         String s,
                                         String s1) {
                 }
-            });
+            }, jbCefBrowser.getCefBrowser());
             jbCefBrowser.loadURL(url);
         }
     }
