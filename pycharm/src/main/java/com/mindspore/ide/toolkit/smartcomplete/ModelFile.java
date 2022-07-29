@@ -85,9 +85,11 @@ public class ModelFile {
             setFolderPermission(modelZipParentPath);
             deleteNoUseZipFile(modelZipParentPath);
         } else {
-            NotificationUtils.notify(NotificationUtils.NotifyGroup.SMART_COMPLETE,
-                    NotificationType.ERROR,
-                    "Download complete model failed.");
+            if (SystemInfo.isWindows || SystemInfo.isLinux) {
+                NotificationUtils.notify(NotificationUtils.NotifyGroup.SMART_COMPLETE,
+                        NotificationType.ERROR,
+                        "Download complete model failed.");
+            }
         }
         log.info("Smart complete model download result:{}", isDownloadSucceed);
         return isDownloadSucceed;

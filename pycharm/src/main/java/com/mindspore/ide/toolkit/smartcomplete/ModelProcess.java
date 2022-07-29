@@ -2,6 +2,7 @@ package com.mindspore.ide.toolkit.smartcomplete;
 
 import com.intellij.notification.NotificationType;
 
+import com.intellij.openapi.util.SystemInfo;
 import com.mindspore.ide.toolkit.common.utils.FileUtils;
 import com.mindspore.ide.toolkit.common.utils.NotificationUtils;
 import com.mindspore.ide.toolkit.protomessage.CompleteReply;
@@ -51,14 +52,16 @@ public class ModelProcess {
             log.info("Init smart complete model failed. Plugin version is {}. Model version is {}.",
                     model.getPluginVersion(), model.getModelVersion(), ioException);
         }
-        if (isInited) {
-            NotificationUtils.notify(NotificationUtils.NotifyGroup.SMART_COMPLETE,
-                    NotificationType.INFORMATION,
-                    String.format(notifyContent, "succeed"));
-        } else {
-            NotificationUtils.notify(NotificationUtils.NotifyGroup.SMART_COMPLETE,
-                    NotificationType.ERROR,
-                    String.format(notifyContent, "failed"));
+        if (SystemInfo.isWindows || SystemInfo.isLinux) {
+            if (isInited) {
+                NotificationUtils.notify(NotificationUtils.NotifyGroup.SMART_COMPLETE,
+                        NotificationType.INFORMATION,
+                        String.format(notifyContent, "succeed"));
+            } else {
+                NotificationUtils.notify(NotificationUtils.NotifyGroup.SMART_COMPLETE,
+                        NotificationType.ERROR,
+                        String.format(notifyContent, "failed"));
+            }
         }
     }
 

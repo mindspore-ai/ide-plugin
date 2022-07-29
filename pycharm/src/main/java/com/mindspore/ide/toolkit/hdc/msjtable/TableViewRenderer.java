@@ -19,9 +19,11 @@ package com.mindspore.ide.toolkit.hdc.msjtable;
 import com.intellij.util.ui.UIUtil;
 import com.mindspore.ide.toolkit.hdc.HdcRegularUtils;
 
-import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
 import java.awt.Component;
 import java.awt.Color;
 import java.awt.Font;
@@ -31,16 +33,24 @@ import java.awt.Font;
  *
  * @since 2022-04-18
  */
-public class TableViewRenderer extends JTextArea implements TableCellRenderer {
+public class TableViewRenderer extends JTextPane implements TableCellRenderer {
+    /**
+     * 链接颜色
+     */
+    public static final Color HTML_COLOR = new Color(40, 107, 221);
+
     @Override
     public Component getTableCellRendererComponent(JTable jtable, Object obj, boolean isSelected,
             boolean hasFocus, int row, int column) {
-        setFont(new Font("微软雅黑", 0, 16));
+        setFont(new Font("Default", 0, 16));
         if (obj != null) {
-            setText(obj.toString());
+            setText(obj.toString().trim());
             String strHttp = HdcRegularUtils.filterSpecialStr(HdcRegularUtils.REGEX_HTTP, obj.toString());
             if (!strHttp.isEmpty()) {
-                setForeground(Color.green);
+                SimpleAttributeSet set = new SimpleAttributeSet();
+                StyleConstants.setUnderline(set, true);
+                StyleConstants.setForeground(set, HTML_COLOR);
+                getStyledDocument().setCharacterAttributes(0, getText().length(), set, false);
             } else {
                 if (UIUtil.isUnderDarcula()) {
                     setForeground(Color.WHITE);
