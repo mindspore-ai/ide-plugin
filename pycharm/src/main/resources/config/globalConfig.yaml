@@ -3,6 +3,8 @@ downloadBaseUrl: ""
 toolWindowName: "MindSpore"
 toolWindowSearchContent: "SearchDoc"
 toolWindowUrl: "https://www.mindspore.cn/search"
+chatWindowName: "Robot"
+chatWindowUrl: "http://mindspore-robot.s3-website.ap-east-1.amazonaws.com/index.html"
 msEnvValidatorFile: "MindSporeEnvValidator.py"
 completeModelInfo:
   oldConfig: "oldConfig.yaml"
