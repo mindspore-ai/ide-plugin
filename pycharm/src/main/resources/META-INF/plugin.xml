@@ -15,6 +15,7 @@
                                 implementationClass="com.mindspore.ide.toolkit.services.complete.SmartCompletion"
                                 order="first" />
         <toolWindow id="MindSpore" factoryClass="com.mindspore.ide.toolkit.ui.search.BrowserWindowFactory" canCloseContents="false" anchor="right" icon="MsIcons.MS_ICON_16PXWP"/>
+        <toolWindow id="Robot" factoryClass="com.mindspore.ide.toolkit.ui.robot.BrowserWindowFactory" canCloseContents="false" anchor="right" icon="MsIcons.MS_ICON_16PXWP"/>
         <searchEverywhereContributor implementation="com.mindspore.ide.toolkit.search.MindSporeSearchEverywhereContributor$Factory"/>
         <directoryProjectGenerator implementation="com.mindspore.ide.toolkit.wizard.MindSporeProjectGenerator" />
 
@@ -32,6 +33,7 @@
         <action class="com.mindspore.ide.toolkit.ui.guide.GuideAction" text="查看使用说明" id="mindSporeGuideAction"/>
         <action class="com.mindspore.ide.toolkit.ui.guide.QuestionnaireAction" text="问卷调查" id="mindsporeQuestionnaireAction"/>
         <action class="com.mindspore.ide.toolkit.ui.search.SearchRefreshAction" id="mindSporeRefreshAction" icon="/icons/search_home.png"/>
+        <action class="com.mindspore.ide.toolkit.ui.robot.SearchRefreshAction" id="robotRefreshAction" icon="/icons/search_home.png"/>
 
         <action class="com.mindspore.ide.toolkit.hdc.msaction.MsRunAnAction" id="MsNewRunAnAction" icon="MsIcons.MS_ICON_16PX"
                 text="Create MindSpore Run Configuration...">
@@ -42,6 +44,7 @@
     <projectListeners>
         <listener class="com.mindspore.ide.toolkit.services.OpenCloseListener" topic="com.intellij.openapi.project.ProjectManagerListener"/>
         <listener class="com.mindspore.ide.toolkit.ui.search.MindSporeToolWindowListener" topic="com.intellij.openapi.wm.ex.ToolWindowManagerListener"/>
+        <listener class="com.mindspore.ide.toolkit.ui.robot.MindSporeToolWindowListener" topic="com.intellij.openapi.wm.ex.ToolWindowManagerListener"/>
     </projectListeners>
     <applicationListeners>
         <listener class="com.mindspore.ide.toolkit.Initializer" topic="com.intellij.ide.AppLifecycleListener"/>

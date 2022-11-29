@@ -37,6 +37,10 @@ public class GlobalConfig {
 
     private String toolWindowUrl;
 
+    private String chatWindowName;
+
+    private String chatWindowUrl;
+
     private String toolWindowSearchContent;
 
     private String msEnvValidatorFile;
@@ -75,6 +79,22 @@ public class GlobalConfig {
 
     public void setToolWindowUrl(String toolWindowUrl) {
         this.toolWindowUrl = toolWindowUrl;
+    }
+
+    public String getChatWindowName() {
+        return chatWindowName;
+    }
+
+    public void setChatWindowName(String chatWindowName) {
+        this.chatWindowName = chatWindowName;
+    }
+
+    public String getChatWindowUrl() {
+        return chatWindowUrl;
+    }
+
+    public void setChatWindowUrl(String chatWindowUrl) {
+        this.chatWindowUrl = chatWindowUrl;
     }
 
     public String getToolWindowSearchContent() {
