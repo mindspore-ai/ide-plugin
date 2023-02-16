@@ -16,11 +16,11 @@
 
 package com.mindspore.ide.toolkit.search;
 
+import com.mindspore.ide.toolkit.search.entity.OperatorRecord;
 import com.mindspore.ide.toolkit.search.structure.TrieNode;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * operator search
@@ -31,7 +31,7 @@ public enum OperatorSearchService {
     INSTANCE;
 
     private TrieNode root = new TrieNode();
-    private SearchEveryWhereDataHub<String> mdFile2Map = SearchEveryWhereDataHub.getOperatorDataHub();
+    private SearchEveryWhereDataHub<String, OperatorRecord> mdFile2Map = SearchEveryWhereDataHub.getOperatorDataHub();
 
     OperatorSearchService() {
         mdFile2Map.searchable().forEach(root::addWord);
@@ -43,7 +43,7 @@ public enum OperatorSearchService {
      * @param inputString input
      * @return search content
      */
-    public Map<String, String> search(String inputString) {
+    public List<OperatorRecord> search(String inputString) {
         return search(inputString, Integer.MAX_VALUE);
     }
 
@@ -54,11 +54,21 @@ public enum OperatorSearchService {
      * @param count       number
      * @return search content
      */
-    public Map<String, String> search(String inputString, int count) {
+    public List<OperatorRecord> search(String inputString, int count) {
         if (inputString == null || inputString.isEmpty()) {
-            return new HashMap<>();
+            return new ArrayList<>();
         }
         List<String> topSearch = root.search(inputString, count);
         return mdFile2Map.assemble(topSearch, inputString, count);
+    }
+
+    /**
+     * search
+     *
+     * @param inputString input
+     * return search content
+     */
+    public List<OperatorRecord> searchFullMatch(String inputString) {
+        return mdFile2Map.fetchAllMatch(inputString);
     }
 }

@@ -16,23 +16,24 @@
 
 package com.mindspore.ide.toolkit.search;
 
+import com.mindspore.ide.toolkit.search.entity.OperatorRecord;
+
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
  * store data for search every where
  *
- * @param <T> search input type
+ * @param <V> search input type
  * @since 2022/01/24
  */
-public interface SearchEveryWhereDataHub<T> {
+public interface SearchEveryWhereDataHub<K, V> {
     /**
      * all records should be indexed
      *
      * @return resource set
      */
-    Set<T> searchable();
+    Set<K> searchable();
 
     /**
      * assemble well-prepared map for search everywhere
@@ -42,14 +43,22 @@ public interface SearchEveryWhereDataHub<T> {
      * @param count expected result set length
      * @return result map to show
      */
-    Map<String, String> assemble(List<T> rawList, String search, int count);
+    List<V> assemble(List<K> rawList, K search, int count);
+
+    /**
+     * Precise full search
+     *
+     * @param input input
+     * @return result map to show
+     */
+    List<V> fetchAllMatch(String input);
 
     /**
      * get operator data hub by this interface
      *
      * @return operator data hub
      */
-    static SearchEveryWhereDataHub getOperatorDataHub() {
+    static SearchEveryWhereDataHub<String, OperatorRecord> getOperatorDataHub() {
         return OperatorMapDataHub.INSTANCE;
     }
 }

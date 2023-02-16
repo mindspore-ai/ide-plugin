@@ -33,6 +33,8 @@ import com.jetbrains.python.remote.PyProjectSynchronizer;
 import com.jetbrains.python.sdk.PyLazySdk;
 import com.mindspore.ide.toolkit.common.beans.NormalInfoConstants;
 import com.mindspore.ide.toolkit.common.enums.EnumProperties;
+import com.mindspore.ide.toolkit.common.events.CommonEvent;
+import com.mindspore.ide.toolkit.common.events.EventCenter;
 import com.mindspore.ide.toolkit.common.utils.VersionUtils;
 import com.mindspore.ide.toolkit.ui.wizard.WizardMsSettingProjectPeer;
 import lombok.extern.slf4j.Slf4j;
@@ -92,6 +94,9 @@ public class MindSporeProjectGenerator extends PythonProjectGenerator<PyNewProje
                                     @NotNull Module module,
                                     @Nullable PyProjectSynchronizer synchronizer) {
         super.configureProject(project, baseDir, settings, module, synchronizer);
+        CommonEvent createMindSporeProject = new CommonEvent();
+        createMindSporeProject.setData("configureProject");
+        EventCenter.INSTANCE.publish(createMindSporeProject);
         MindSporeService.createMindSporeTemplate(baseDir.getPresentableUrl(),
                 msSettingProjectPeer.getTemplate());
         MindSporeService.createStructure(baseDir.getPresentableUrl());
@@ -115,11 +120,17 @@ public class MindSporeProjectGenerator extends PythonProjectGenerator<PyNewProje
         boolean isMindSporeInstalled = (Boolean) ProgressManager.getInstance().run(installMindSporeTask);
         if (!isMindSporeInstalled) {
             log.info("MindSpore install failed, check by validate");
+            CommonEvent createMindSporeProjectFailed = new CommonEvent();
+            createMindSporeProjectFailed.setData("MindSpore install failed, check by validate");
+            EventCenter.INSTANCE.publish(createMindSporeProjectFailed);
             return;
         }
         boolean isNewSdk = msSettingProjectPeer.isUsingNewCondaEnv();
         Task.WithResult setSdkTask = MsCondaEnvService.setSdkTask(project, module, sdk, isNewSdk);
         Long sessionId = (Long) ProgressManager.getInstance().run(setSdkTask);
+        CommonEvent createMindSporeProjectSuccess = new CommonEvent();
+        createMindSporeProjectSuccess.setData("create MindSpore project successful");
+        EventCenter.INSTANCE.publish(createMindSporeProjectSuccess);
         log.info("session ID {}", sessionId);
     }
 

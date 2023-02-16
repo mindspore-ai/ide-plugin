@@ -21,6 +21,8 @@
 
         <configurationType implementation="com.mindspore.ide.toolkit.hdc.MsConfigurationType" id="MsConfigurationType"
                            order="first"/>
+
+        <toolWindow id="MindSporeApiMapping" factoryClass="com.mindspore.ide.toolkit.apiscanning.MappingWindowFactory" canCloseContents="true" anchor="right" secondary="true" doNotActivateOnStart="true" icon="MsIcons.MS_ICON_16PXWP"/>
     </extensions>
 
     <actions>
@@ -40,6 +42,9 @@
             <add-to-group group-id="EditorPopupMenu.Run" anchor="first"/>
         </action>
 
+        <action class="com.mindspore.ide.toolkit.apiscanning.TransApiAction" text="operator scan" id="PythonTfAction" icon="MsIcons.MS_ICON_16PXWP">
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+        </action>
     </actions>
     <projectListeners>
         <listener class="com.mindspore.ide.toolkit.services.OpenCloseListener" topic="com.intellij.openapi.project.ProjectManagerListener"/>

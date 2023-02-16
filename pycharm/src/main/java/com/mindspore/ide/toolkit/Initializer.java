@@ -6,6 +6,8 @@ import com.mindspore.ide.toolkit.common.events.ProjectEvents;
 import com.mindspore.ide.toolkit.common.utils.PathUtils;
 import com.mindspore.ide.toolkit.guide.GuideUserListener;
 import com.mindspore.ide.toolkit.quesionnaire.QuestionnaireListener;
+import com.mindspore.ide.toolkit.search.MdDataGet;
+import com.mindspore.ide.toolkit.search.MsVersionDataConfig;
 import com.mindspore.ide.toolkit.smartcomplete.SmartCompleteListener;
 import com.mindspore.ide.toolkit.ui.search.GlobalSearchListener;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +24,7 @@ public class Initializer implements AppLifecycleListener {
         AppLifecycleListener.super.appFrameCreated(commandLineArgs);
         initListener();
         PathUtils.initResourceFolder();
+        MdDataGet.getInstance().getMdStr(MsVersionDataConfig.getInstance().parseVersionJsonFile().get(0));
         EventCenter.INSTANCE.publish(new ProjectEvents.AppFrameCreated());
     }
 

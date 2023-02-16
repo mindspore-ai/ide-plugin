@@ -16,18 +16,26 @@
 
 package com.mindspore.ide.toolkit.search;
 
-import com.mindspore.ide.toolkit.search.entity.MsOperatorInfo;
+import com.mindspore.ide.toolkit.search.entity.ApiType;
+import com.mindspore.ide.toolkit.search.entity.LinkInfo;
+import com.mindspore.ide.toolkit.search.entity.OperatorRecord;
 import com.vladsch.flexmark.ast.Link;
-import com.vladsch.flexmark.ast.Paragraph;
-import com.vladsch.flexmark.ast.SoftLineBreak;
+import com.vladsch.flexmark.ext.tables.TableBlock;
+import com.vladsch.flexmark.ext.tables.TableBody;
+import com.vladsch.flexmark.ext.tables.TableHead;
+import com.vladsch.flexmark.ext.tables.TableRow;
+import com.vladsch.flexmark.ext.tables.TablesExtension;
 import com.vladsch.flexmark.parser.Parser;
+import com.vladsch.flexmark.parser.ParserEmulationProfile;
 import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.data.MutableDataSet;
+import com.vladsch.flexmark.util.sequence.BasedSequence;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -39,39 +47,54 @@ import java.util.stream.Collectors;
  *
  * @since 1.0
  */
-public enum OperatorMapDataHub implements SearchEveryWhereDataHub<String> {
+public enum OperatorMapDataHub implements SearchEveryWhereDataHub<String, OperatorRecord> {
     INSTANCE;
 
-    private static final boolean IS_SHOW_MINDSPORE_OPERATOR = false;
-
-    private Map<String, String> linkMap = new HashMap<>();
-    private Map<String, List<MsOperatorInfo>> operatorMap = new HashMap<>();
+    /**
+     * node数据
+     */
     private Map<String, List<String>> nodeMap = new HashMap<>();
 
+    /**
+     * md文件处理后的数据
+     */
+    private Map<String, List<OperatorRecord>> operatorMap = new LinkedHashMap<>();
+
     OperatorMapDataHub() {
-        mdStringList(MdPathString.PYTORCH_MD_STR);
-        mdStringList(MdPathString.TENSORFLOW_MD_STR);
-        operatorMap.entrySet().forEach(entry -> suffixStringSplit(entry.getKey()));
-        if (IS_SHOW_MINDSPORE_OPERATOR) {
-            linkMap.entrySet().forEach(entry -> suffixStringSplit(entry.getKey()));
+        if (MdDataGet.pytorchMdStr.isEmpty()) {
+            mdStringList(MdPathString.PYTORCH_MD_STR, ApiType.PyTorch);
+        } else {
+            mdStringList(MdDataGet.pytorchMdStr, ApiType.PyTorch);
         }
+        if (MdDataGet.tensorflowMdStr.isEmpty()) {
+            mdStringList(MdPathString.TENSORFLOW_MD_STR, ApiType.TensorFlow);
+        } else {
+            mdStringList(MdDataGet.tensorflowMdStr, ApiType.TensorFlow);
+        }
+        for (Map.Entry<String, List<OperatorRecord>> entry : operatorMap.entrySet()) {
+            suffixStringSplit(entry.getKey());
+        }
+        Set<String> white = new HashSet<>(Arrays.asList(new String[]{"mindspore.ops.abs", "mindspore.ops.acos", "mindspore.ops.add", "mindspore.ops.argmin", "mindspore.ops.asin", "mindspore.ops.atan", "mindspore.ops.atan2", "mindspore.ops.bartlett_window", "mindspore.ops.bitwise_and", "mindspore.ops.bitwise_or", "mindspore.ops.bitwise_xor", "mindspore.ops.blackman_window", "mindspore.ops.BatchMatMul", "mindspore.ops.broadcast_to", "mindspore.ops.ceil", "mindspore.ops.clip", "mindspore.ops.conj", "mindspore.ops.cos", "mindspore.ops.cosh", "mindspore.ops.cross", "mindspore.numpy.cross", "mindspore.ops.cumprod", "mindspore.ops.cumsum", "mindspore.ops.diag", "mindspore.ops.div", "mindspore.numpy.empty", "mindspore.numpy.empty_like", "mindspore.ops.equal", "mindspore.ops.erfc", "mindspore.ops.erfinv", "mindspore.ops.exp", "mindspore.ops.expm1", "mindspore.ops.eye", "mindspore.ops.flatten", "mindspore.ops.floor", "mindspore.ops.full", "mindspore.ops.full_like", "mindspore.numpy.hanning", "mindspore.ops.isreal", "mindspore.ops.norm", "mindspore.ops.log", "mindspore.ops.max", "mindspore.ops.mean", "mindspore.ops.min", "mindspore.ops.matmul", "mindspore.ops.multiply", "mindspore.ops.not_equal", "mindspore.ops.ones", "mindspore.ops.repeat_interleave", "mindspore.ops.stack", "mindspore.ops.sqrt", "mindspore.ops.tanh", "mindspore.ops.topk", "mindspore.ops.expand_dims", "mindspore.ops.zeros", "mindspore.ops.AllGather", "mindspore.ops.AllReduce", "mindspore.communication.get_rank", "mindspore.communication.init", "mindspore.communication.create_group", "mindspore.nn.AdaptiveAvgPool2d", "mindspore.nn.AvgPool1d", "mindspore.nn.AvgPool2d", "mindspore.nn.AvgPool3d", "mindspore.nn.BCEWithLogitsLoss", "mindspore.nn.BatchNorm1d", "mindspore.nn.BatchNorm2d", "mindspore.nn.CTCLoss", "mindspore.nn.Conv1d", "mindspore.nn.Conv2d", "mindspore.nn.Conv3d", "mindspore.nn.Conv1dTranspose", "mindspore.nn.Conv2dTranspose", "mindspore.nn.Conv3dTranspose", "mindspore.nn.CosineEmbeddingLoss", "mindspore.nn.CrossEntropyLoss", "mindspore.nn.Dropout", "mindspore.ops.dropout", "mindspore.nn.FractionalMaxPool2d", "mindspore.nn.GELU", "mindspore.nn.GRU", "mindspore.nn.GroupNorm", "mindspore.nn.HShrink", "mindspore.nn.L1Loss", "mindspore.nn.LPPool1d", "mindspore.nn.LPPool2d", "mindspore.nn.LSTM", "mindspore.nn.LSTMCell", "mindspore.nn.LayerNorm", "mindspore.nn.LeakyReLU", "mindspore.nn.Dense", "mindspore.nn.MSELoss", "mindspore.nn.MarginRankingLoss", "mindspore.nn.MaxPool1d", "mindspore.nn.MaxPool2d", "mindspore.nn.MaxPool3d", "mindspore.nn.NLLLoss", "mindspore.nn.PReLU", "mindspore.nn.PixelShuffle", "mindspore.nn.PixelUnshuffle", "mindspore.nn.ReLU", "mindspore.nn.SequentialCell", "mindspore.nn.Sigmoid", "mindspore.nn.SmoothL1Loss", "mindspore.nn.Softmax", "mindspore.nn.SoftShrink", "mindspore.nn.Tanh", "mindspore.nn.Unfold", "mindspore.nn.BCELoss", "mindspore.ops.elu", "mindspore.ops.interpolate", "mindspore.nn.L1Loss", "mindspore.ops.log_softmax", "mindspore.ops.lp_pool1d", "mindspore.ops.lp_pool2d", "mindspore.ops.margin_ranking_loss", "mindspore.ops.max_unpool1d", "mindspore.ops.max_unpool2d", "mindspore.ops.max_unpool3d", "mindspore.nn.MSELoss", "mindspore.ops.pad", "mindspore.ops.pixel_shuffle", "mindspore.ops.pixel_unshuffle", "mindspore.ops.relu", "mindspore.nn.SoftMarginLoss", "mindspore.ops.softmax", "mindspore.Tensor.is_signed", "mindspore.Tensor.logsumexp", "mindspore.Tensor.norm", "mindspore.Tensor.repeat_interleave", "mindspore.Tensor.reshape_as", "mindspore.Tensor.rot90", "mindspore.ops.tensor_scatter_elements", "mindspore.ops.tensor_scatter_elements", "mindspore.Tensor.short", "mindspore.Tensor.t", "mindspore.nn.cosine_decay_lr", "mindspore.nn.exponential_decay_lr", "mindspore.nn.piecewise_constant_lr", "mindspore.nn.piecewise_constant_lr", "None", "mindspore.dataset.GeneratorDataset", "mindspore.dataset.DistributedSampler", "mindspore.dataset.RandomSampler", "mindspore.dataset.SequentialSampler", "mindspore.dataset.SubsetRandomSampler", "mindspore.dataset.WeightedRandomSampler", "mindspore.numpy.arange", "mindspore.ops.argmax", "mindspore.numpy.bincount", "mindspore.ops.BroadcastTo", "mindspore.ops.Split", "mindspore.numpy.diagflat", "mindspore.numpy.diagonal", "mindspore.ops.tensor_dot", "mindspore.ops.ReverseV2", "mindspore.ops.FloorDiv", "mindspore.ops.Mod", "mindspore.Tensor.from_numpy", "mindspore.ops.GatherD", "mindspore.ops.GreaterEqual", "mindspore.ops.Greater", "mindspore.numpy.hamming", "mindspore.ops.HistogramFixedWidth", "mindspore.ops.Imag", "mindspore.ops.IsFinite", "mindspore.ops.IsInf", "mindspore.ops.IsNan", "mindspore.ops.LessEqual", "mindspore.ops.Lerp", "mindspore.ops.LinSpace", "mindspore.load_checkpoint", "mindspore.ops.Log1p", "mindspore.numpy.log2", "mindspore.ops.LogicalAnd", "mindspore.numpy.logical_not", "mindspore.ops.LogicalOr", "mindspore.numpy.logical_xor", "mindspore.numpy.logspace", "mindspore.ops.Less", "mindspore.numpy.matrix_power", "mindspore.ops.Rank", "mindspore.ops.Maximum", "mindspore.ops.ReduceMean", "mindspore.ops.Meshgrid", "mindspore.ops.MatMul", "mindspore.ops.Mul", "mindspore.ops.multinomial", "mindspore.ops.NotEqual", "mindspore.ops.Neg", "mindspore.ops.Size", "mindspore.ops.OnesLike", "mindspore.ops.random_poisson", "mindspore.ops.Pow", "mindspore.ops.ReduceProd", "mindspore.numpy.promote_types", "mindspore.ops.UniformReal", "mindspore.ops.UniformReal", "mindspore.ops.UniformInt", "mindspore.ops.UniformInt", "mindspore.ops.StandardNormal", "mindspore.ops.Randperm", "mindspore.numpy.remainder", "mindspore.ops.Reshape", "mindspore.numpy.result_type", "mindspore.numpy.rot90", "mindspore.ops.Rint", "mindspore.ops.Rsqrt", "mindspore.save_checkpoint", "mindspore.ops.Sigmoid", "mindspore.ops.Sin", "mindspore.ops.Sinh", "mindspore.ops.Sort", "mindspore.SparseTensor", "mindspore.ops.Split", "mindspore.ops.Square", "mindspore.ops.Squeeze", "mindspore.Tensor.std", "mindspore.ops.ReduceMean", "mindspore.Tensor.take", "mindspore.ops.Tan", "mindspore.ops.Tanh", "mindspore.Tensor", "mindspore.Tensor", "mindspore.numpy.tensordot", "mindspore.Tensor.trace", "mindspore.Tensor.transpose", "mindspore.numpy.trapz", "mindspore.numpy.tril_indices", "mindspore.numpy.triu_indices", "mindspore.numpy.trunc", "mindspore.ops.Unique", "mindspore.Tensor.var", "mindspore.numpy.where", "mindspore.ops.ZerosLike", "mindspore.grad", "mindspore.ops.stop_gradient", "mindspore.grad", "mindspore.ops.stop_gradient", "mindspore.Parameter", "mindspore.communication.get_group_size", "mindspore.set_context", "mindspore.ops.Gamma", "mindspore.nn.Embedding", "mindspore.nn.Flatten", "mindspore.nn.FastGelu", "mindspore.ops.KLDivLoss", "mindspore.ops.MaxPool3D", "mindspore.nn.transformer.MultiHeadAttention", "mindspore.nn.Cell", "mindspore.nn.Cell.insert_child_to_cell", "mindspore.nn.Cell.untrainable_params", "mindspore.nn.Cell.cells", "mindspore.load_param_into_net", "mindspore.nn.Cell.name_cells", "mindspore.nn.Cell.cells_and_names", "mindspore.nn.Cell.get_parameters", "mindspore.nn.Cell.parameters_dict", "mindspore.nn.Cell.set_train", "mindspore.nn.CellList", "mindspore.Parameter", "mindspore.ParameterTuple", "mindspore.nn.Pad", "mindspore.ops.SeLU", "mindspore.nn.SyncBatchNorm", "mindspore.nn.transformer.Transformer", "mindspore.nn.transformer.TransformerEncoder", "mindspore.nn.transformer.TransformerDecoder", "mindspore.nn.transformer.TransformerEncoderLayer", "mindspore.nn.transformer.TransformerDecoderLayer", "mindspore.nn.ResizeBilinear", "mindspore.nn.AdaptiveAvgPool2d", "mindspore.nn.AvgPool1d", "mindspore.ops.AvgPool", "mindspore.ops.AvgPool3D", "mindspore.ops.BatchNorm", "mindspore.ops.Conv2D", "mindspore.nn.CosineEmbeddingLoss", "mindspore.ops.CTCLoss", "mindspore.ops.KLDivLoss", "mindspore.ops.LayerNorm", "mindspore.nn.LeakyReLU", "mindspore.ops.L2Normalize", "mindspore.ops.OneHot", "mindspore.nn.SmoothL1Loss", "mindspore.ops.Softplus", "mindspore.ops.Softsign", "mindspore.common.initializer.Constant", "mindspore.common.initializer.HeNormal", "mindspore.common.initializer.HeUniform", "mindspore.common.initializer.Normal", "mindspore.common.initializer.One", "mindspore.common.initializer.XavierUniform", "mindspore.common.initializer.Zero", "mindspore.common.initializer.Uniform", "mindspore.ops.ApplyAdadelta", "mindspore.nn.Adagrad", "mindspore.nn.Adam", "mindspore.ops.ApplyAdaMax", "mindspore.nn.AdamWeightDecay", "mindspore.nn.Optimizer", "mindspore.nn.TrainOneStepCell", "mindspore.nn.RMSProp", "mindspore.nn.SGD", "mindspore.ops.repeat_elements", "mindspore.Tensor.all", "mindspore.Tensor.any", "mindspore.ops.Minimum", "mindspore.Tensor.abs", "mindspore.Tensor.argmax", "mindspore.Tensor.argmin", "mindspore.ops.Split", "mindspore.Tensor.copy", "mindspore.set_context", "mindspore.Tensor.cumsum", "mindspore.Tensor.diagonal", "mindspore.Tensor.dtype", "mindspore.ops.BroadcastTo", "mindspore.Tensor.expand_as", "mindspore.ops.Fill", "mindspore.Tensor.flatten", "mindspore.ops.Cast", "mindspore.ops.InplaceAdd", "mindspore.Tensor.item", "mindspore.Tensor.max", "mindspore.Tensor.mean", "mindspore.Tensor.min", "mindspore.ops.MatMul", "mindspore.ops.Mul", "mindspore.Tensor.ndim", "mindspore.numpy.full", "mindspore.ops.Zeros", "mindspore.Tensor.asnumpy", "mindspore.ops.Pow", "mindspore.ops.Transpose", "mindspore.numpy.tile", "mindspore.Parameter.requires_grad", "mindspore.Tensor.reshape", "mindspore.Tensor.resize", "mindspore.ops.Round", "mindspore.ops.ScatterNdAdd", "mindspore.nn.Sigmoid", "mindspore.Tensor.shape", "mindspore.ops.Sqrt", "mindspore.Tensor.strides", "mindspore.Tensor.squeeze", "mindspore.ops.Sub", "mindspore.Tensor.sum", "mindspore.ops.Transpose", "mindspore.Tensor.T", "mindspore.Tensor.transpose", "mindspore.ops.ExpandDims", "mindspore.Tensor.view", "mindspore.Tensor.view", "mindspore.ops.ZerosLike", "mindspore.dataset.text.RegexReplace", "mindspore.dataset.text.SentencePieceVocab", "mindspore.dataset.text.Lookup", "mindspore.dataset.text.SentencePieceTokenizer", "mindspore.dataset.text.SentencePieceTokenizer", "mindspore.dataset.text.WhitespaceTokenizer", "mindspore.dataset.text.Ngram", "mindspore.dataset.CelebADataset", "mindspore.dataset.Cifar10Dataset", "mindspore.dataset.Cifar100Dataset", "mindspore.dataset.CocoDataset", "mindspore.dataset.ImageFolderDataset", "mindspore.dataset.MnistDataset", "mindspore.dataset.VOCDataset", "mindspore.dataset.VOCDataset", "mindspore.ops.NMSWithMask", "mindspore.ops.ROIAlign", "mindspore.dataset.vision.CenterCrop", "mindspore.dataset.vision.RandomColorAdjust", "mindspore.dataset.transforms.Compose", "mindspore.dataset.transforms.TypeCast", "mindspore.dataset.vision.FiveCrop", "mindspore.dataset.vision.GaussianBlur", "mindspore.dataset.vision.Grayscale", "mindspore.dataset.vision.LinearTransformation", "mindspore.dataset.vision.Normalize", "mindspore.dataset.vision.Pad", "mindspore.dataset.vision.RandomAffine", "mindspore.dataset.transforms.RandomApply", "mindspore.dataset.transforms.RandomChoice", "mindspore.dataset.vision.RandomCrop", "mindspore.dataset.vision.RandomErasing", "mindspore.dataset.vision.RandomGrayscale", "mindspore.dataset.vision.RandomHorizontalFlip", "mindspore.dataset.transforms.RandomOrder", "mindspore.dataset.vision.RandomPerspective", "mindspore.dataset.vision.RandomPosterize", "mindspore.dataset.vision.RandomResizedCrop", "mindspore.dataset.vision.RandomRotation", "mindspore.dataset.vision.RandomSolarize", "mindspore.dataset.vision.RandomVerticalFlip", "mindspore.dataset.vision.Resize", "mindspore.dataset.vision.TenCrop", "mindspore.dataset.vision.ToPIL", "mindspore.dataset.vision.ToTensor", "mindspore.ops.argmax", "mindspore.ops.argmin", "mindspore.ops.clip_by_value", "mindspore.ops.expand_dims", "mindspore.ops.eye", "mindspore.ops.fill", "mindspore.nn.Dense", "mindspore.nn.Momentum", "mindspore.nn.ProximalAdagrad", "mindspore.nn.RMSProp", "mindspore.nn.exponential_decay_lr", "mindspore.nn.CosineDecayLR", "mindspore.dataset.GeneratorDataset.apply", "mindspore.dataset.GeneratorDataset.batch", "mindspore.dataset.GeneratorDataset.concat", "mindspore.dataset.GeneratorDataset.filter", "mindspore.dataset.GeneratorDataset.flat_map", "mindspore.dataset.GeneratorDataset", "mindspore.dataset.NumpySlicesDataset", "mindspore.dataset.GeneratorDataset.map", "mindspore.dataset.config.set_prefetch_size", "mindspore.dataset.GeneratorDataset.repeat", "mindspore.dataset.GeneratorDataset.shuffle", "mindspore.dataset.GeneratorDataset.skip", "mindspore.dataset.GeneratorDataset.take", "mindspore.dataset.GeneratorDataset.zip", "mindspore.dataset.TextFileDataset", "mindspore.dataset.TFRecordDataset", "mindspore.dataset.GeneratorDataset.bucket_batch_by_length", "mindspore.dataset.CSVDataset", "mindspore.ops.add", "mindspore.ops.cumsum", "mindspore.ops.div", "mindspore.ops.erf", "mindspore.dataset.vision.CenterCrop", "mindspore.dataset.transforms.TypeCast", "mindspore.dataset.vision.Crop", "mindspore.dataset.vision.HorizontalFlip", "mindspore.dataset.vision.VerticalFlip", "mindspore.dataset.vision.ConvertColor", "mindspore.dataset.vision.HsvToRgb", "mindspore.dataset.vision.Pad", "mindspore.dataset.vision.Normalize", "mindspore.dataset.vision.RandomCrop", "mindspore.dataset.vision.RandomHorizontalFlip", "mindspore.dataset.vision.RandomVerticalFlip", "mindspore.dataset.vision.Inter", "mindspore.dataset.vision.Resize", "mindspore.dataset.vision.ConvertColor", "mindspore.dataset.vision.Rotate", "mindspore.nn.SSIM", "mindspore.nn.LSTM", "mindspore.nn.LayerNorm", "mindspore.nn.PReLU", "mindspore.nn.SGD", "mindspore.nn.BatchNorm2d", "mindspore.nn.Adagrad", "mindspore.nn.Adam", "mindspore.nn.FTRL", "mindspore.nn.AvgPool2d", "mindspore.ops.bias_add", "mindspore.nn.Conv2d", "mindspore.nn.Conv2dTranspose", "mindspore.ops.CTCLoss", "mindspore.ops.dropout", "mindspore.ops.elu", "mindspore.nn.LeakyReLU", "mindspore.nn.MaxPool2d", "mindspore.nn.Moments", "mindspore.nn.ReLU", "mindspore.nn.Softmax", "mindspore.nn.SoftmaxCrossEntropyWithLogits", "mindspore.ops.Gather", "mindspore.grad", "mindspore.ops.OnesLike", "mindspore.nn.Pad", "mindspore.ops.Print", "mindspore.Tensor.repeat", "mindspore.ops.Reshape", "mindspore.Tensor.reshape", "mindspore.ops.Shape", "mindspore.ops.Size", "mindspore.ops.Slice", "mindspore.Tensor.squeeze", "mindspore.ops.stop_gradient", "mindspore.Tensor", "mindspore.ops.Tile", "mindspore.ops.Transpose", "mindspore.ops.ZerosLike", "mindspore.Tensor.argmax", "mindspore.Tensor.argmin", "mindspore.dataset.vision.Decode", "mindspore.train.Model", "mindspore.train.Model.train", "mindspore.train.Model.train", "mindspore.train.Model.train", "mindspore.train.Model.train", "mindspore.train.Model.eval", "mindspore.train.Model.eval", "mindspore.train.Model.eval", "mindspore.train.Model.eval", "mindspore.ops.batch_dot", "mindspore.ops.dot", "mindspore.dataset.Cifar10Dataset", "mindspore.dataset.Cifar100Dataset", "mindspore.dataset.FashionMnistDataset", "mindspore.dataset.IMDBDataset", "mindspore.dataset.MnistDataset", "mindspore.common.initializer.Constant", "mindspore.common.initializer.One", "mindspore.common.initializer.Normal", "mindspore.common.initializer.Uniform", "mindspore.common.initializer.TruncatedNormal", "mindspore.common.initializer.XavierUniform", "mindspore.common.initializer.Zero", "mindspore.nn.Embedding", "mindspore.nn.Flatten", "mindspore.ops.DynamicRNN", "mindspore.train.Accuracy", "mindspore.train.Accuracy", "mindspore.train.Accuracy", "mindspore.train.Accuracy", "mindspore.train.Accuracy", "mindspore.train.Accuracy", "mindspore.train.Accuracy", "mindspore.train.Accuracy", "mindspore.train.Accuracy", "mindspore.train.Accuracy", "mindspore.train.auc", "mindspore.train.CosineSimilarity", "mindspore.train.Loss", "mindspore.train.MAE", "mindspore.train.MSE", "mindspore.train.Precision", "mindspore.train.Recall", "mindspore.dataset.vision.RandomRotation", "mindspore.dataset.vision.RandomAffine", "mindspore.dataset.vision.RandomAffine", "mindspore.ops.MatMul", "mindspore.ops.Greater", "mindspore.ops.LessEqual", "mindspore.ops.Log", "mindspore.ops.Mul", "mindspore.ops.Pow", "mindspore.Tensor.std", "mindspore.Tensor.sum", "mindspore.Tensor.var", "mindspore.nn.Sigmoid", "mindspore.ops.Sub", "mindspore.ops.IOU", "mindspore.ops.BatchNorm", "mindspore.ops.L2Loss", "mindspore.ops.L2Normalize", "mindspore.ops.MaxPoolWithArgmax", "mindspore.ops.SeLU", "mindspore.ops.SigmoidCrossEntropyWithLogits", "mindspore.ops.Gamma", "mindspore.ops.uniform", "mindspore.SparseTensor", "mindspore.nn.probability.bijector.Softplus"}));
+
+        for (Map.Entry<String, List<OperatorRecord>> single: operatorMap.entrySet()){
+            single.getValue().forEach(record ->{
+                if (white.contains(record.getMindSporeOperator())) {
+                    record.setInWhiteList(true);
+                }
+            });
+        }
+
     }
 
     @Override
-    public Map<String, String> assemble(List<String> topResults, String input, int count) {
-        Map<String, String> result = new LinkedHashMap<>();
+    public List<OperatorRecord> assemble(List<String> topResults, String input, int count) {
+        List<OperatorRecord> result = new ArrayList<>();
         for (String topResult : topResults) {
             for (String operator : nodeMap.get(topResult).stream().sorted().collect(Collectors.toList())) {
                 if (result.size() >= count) {
                     return result;
                 }
-                if (!operatorMap.containsKey(operator)) {
-                    result.put(operator, linkMap.get(operator));
-                    continue;
-                }
-                for (MsOperatorInfo value : operatorMap.get(operator)) {
-                    result.put(operator + " -> " + value.getMindSporeOperator(), value.getLink());
-                }
+                result.addAll(operatorMap.get(operator));
             }
         }
         return result;
@@ -80,103 +103,6 @@ public enum OperatorMapDataHub implements SearchEveryWhereDataHub<String> {
     @Override
     public Set<String> searchable() {
         return nodeMap.keySet();
-    }
-
-    /**
-     * 处理md数据，获取api对应api和api对应url
-     *
-     * @param mdString md数据
-     * @return api对应api
-     */
-    private void mdStringList(String mdString) {
-        MutableDataSet options = new MutableDataSet();
-        Parser parser = Parser.builder(options).build();
-        Node document = parser.parse(mdString);
-        document.getChildIterator().forEachRemaining(paragraphNode -> {
-            if (paragraphNode instanceof Paragraph) {
-                LinkedHashMap<String, String> mapList = new LinkedHashMap<>();
-                paragraphNode.getChildIterator().forEachRemaining(innerNode -> {
-                    if (innerNode instanceof Link) {
-                        Link link = (Link) innerNode;
-                        String text = link.getText().toString();
-                        String url = link.getUrl().toString();
-                        mapList.put(text, url);
-                    } else if (innerNode instanceof SoftLineBreak) {
-                        // 换行处理缓存数据
-                        setMapData(mapList);
-                    } else {
-                        innerNode.getNodeName();
-                    }
-                });
-                // 防止一条数据没有换行直接进入下一个循环导致数据丢失
-                setMapData(mapList);
-            }
-        });
-    }
-
-    /**
-     * 处理缓存数据
-     *
-     * @param mapList 缓存数据
-     */
-    private void setMapData(LinkedHashMap<String, String> mapList) {
-        if (mapList.size() <= 1) {
-            return;
-        }
-        Map.Entry<String, String>[] entries = mapList.entrySet().toArray(new Map.Entry[]{});
-        // 获取map最后一条数据
-        Map.Entry<String, String> entry = entries[entries.length - 1];
-        // map最后一条数据是diff或者差异对比
-        if (entry.getKey().equals("差异对比") || entry.getKey().equals("diff")) {
-            // 如果最后一条是差异对比或者diff，有用数据长度减一
-            processSpecialData(entries, entries.length - 1);
-        } else {
-            processSpecialData(entries, entries.length);
-        }
-        // 清除缓存数据
-        mapList.clear();
-    }
-
-    /**
-     * 处理数据
-     *
-     * @param mapLength 有用的数据长度
-     * @param entries   数据
-     */
-    private void processSpecialData(Map.Entry<String, String>[] entries, int mapLength) {
-        if (mapLength <= 1) {
-            // 数据缺失直接返回
-            return;
-        }
-        if (mapLength == 2) {
-            // 单条数据
-            addMapData(entries, mapLength, 0);
-        }
-        if (mapLength > 2) {
-            // 多条数据
-            for (int i = 0; i < mapLength - 1; i++) {
-                addMapData(entries, mapLength, i);
-            }
-        }
-    }
-
-    /**
-     * 添加数据
-     *
-     * @param entries   数据
-     * @param mapLength 有用的数据长度
-     * @param in        其他api占用的位置
-     */
-    private void addMapData(Map.Entry<String, String>[] entries, int mapLength, int in) {
-        // 最后一条数据默认是MindSpore的数据
-        Map.Entry<String, String> entry = entries[mapLength - 1];
-        // 其他api的数据
-        String otherString = entries[in].getKey();
-        // 数据组装
-        List msOperatorInfos = operatorMap.getOrDefault(otherString, new LinkedList());
-        msOperatorInfos.add(new MsOperatorInfo(entry.getKey(), entry.getValue()));
-        linkMap.put(entry.getKey(), entry.getValue());
-        operatorMap.put(otherString, msOperatorInfos);
     }
 
     private void suffixStringSplit(String key) {
@@ -189,5 +115,115 @@ public enum OperatorMapDataHub implements SearchEveryWhereDataHub<String> {
             nodeMap.put(sb.toString(), operators);
             sb.insert(0, ".");
         }
+    }
+
+    /**
+     * 处理md数据，获取api对应api和api对应url
+     *
+     * @param mdString md数据
+     * @param apiType type
+     */
+    private void mdStringList(String mdString, ApiType apiType) {
+        MutableDataSet options = new MutableDataSet();
+        options.setFrom(ParserEmulationProfile.MARKDOWN);
+        options.set(Parser.EXTENSIONS, Arrays.asList(TablesExtension.create()));
+        Parser parser = Parser.builder(options).build();
+        Node document = parser.parse(mdString);
+
+        document.getChildIterator().forEachRemaining(paragraphNode -> {
+            if (!(paragraphNode instanceof TableBlock)) {
+                return;
+            }
+            final String[] versionTitle = new String[1];
+            paragraphNode.getChildIterator().forEachRemaining(nodeBlock -> {
+                if (nodeBlock instanceof TableBody) {
+                    nodeBlock.getChildIterator().forEachRemaining(nodeBody -> {
+                        if (nodeBody instanceof TableRow) {
+                            List<Node> nodeList = new ArrayList<>();
+                            nodeBody.getChildIterator().forEachRemaining(nodeList::add);
+                            Node nodePytorch = nodeList.get(0);
+                            Node nodeMindSpore = nodeList.get(1);
+                            Node nodeDescription = nodeList.get(2);
+                            List<LinkInfo> linkInfoPytorch = getListData(nodePytorch);
+                            List<LinkInfo> linkInfoMindSpore = getListData(nodeMindSpore);
+                            LinkInfo linkInfoDescription = getListDescriptionData(nodeDescription);
+                            setMapData(linkInfoPytorch, linkInfoMindSpore, linkInfoDescription, apiType, versionTitle);
+                        }
+                    });
+                } else if (nodeBlock instanceof TableHead) {
+                    nodeBlock.getChildIterator().forEachRemaining(nodeHead -> {
+                        if (nodeHead instanceof TableRow) {
+                            TableRow tableRow = (TableRow) nodeHead;
+                            if (tableRow.getFirstChild() != null) {
+                                BasedSequence basedSequence = tableRow.getFirstChild().getChars();
+                                String title = basedSequence.toString().replaceAll("\\|", "").trim();
+                                versionTitle[0] = title;
+                            }
+                        }
+                    });
+                }
+            });
+        });
+    }
+
+    private List<LinkInfo> getListData(Node nodeRow) {
+        List<LinkInfo> list = new ArrayList<>();
+        nodeRow.getChildIterator().forEachRemaining(nodeCell -> {
+            if (nodeCell instanceof Link) {
+                Link link = (Link) nodeCell;
+                String text = link.getText().toString();
+                String url = link.getUrl().toString();
+                LinkInfo linkInfo = new LinkInfo(text, url);
+                list.add(linkInfo);
+            } else {
+                String text = nodeCell.getChars().toString();
+                if (!text.equals("<br>") && !text.equals("")) {
+                    String url = "";
+                    LinkInfo linkInfo = new LinkInfo(text, url);
+                    list.add(linkInfo);
+                }
+            }
+        });
+        return list;
+    }
+
+    private LinkInfo getListDescriptionData(Node nodeRow) {
+        final String[] descriptionText = {""};
+        final String[] descriptionUrl = {""};
+        nodeRow.getChildIterator().forEachRemaining(nodeCell -> {
+            if (nodeCell instanceof Link) {
+                Link link = (Link) nodeCell;
+                descriptionText[0] = descriptionText[0] + link.getText().toString();
+                descriptionUrl[0] = link.getUrl().toString();
+            } else {
+                String text = nodeCell.getChars().toString();
+                descriptionText[0] = descriptionText[0] + text;
+            }
+        });
+        return new LinkInfo(descriptionText[0], descriptionUrl[0]);
+    }
+
+    private void setMapData(List<LinkInfo> linkInfoPytorch, List<LinkInfo> linkInfoMindSpore,
+                            LinkInfo linkInfoDescription, ApiType apiType, String[] versionTitle) {
+        linkInfoPytorch.forEach(linkInfo -> {
+            linkInfoMindSpore.forEach(linkInfo1 -> {
+                OperatorRecord operatorRecord = new OperatorRecord();
+                operatorRecord.setVersionText(versionTitle[0])
+                        .setApiType(apiType)
+                        .setOriginalOperator(linkInfo.getText())
+                        .setOriginalLink(linkInfo.getUrl())
+                        .setMindSporeOperator(linkInfo1.getText())
+                        .setMindSporeLink(linkInfo1.getUrl())
+                        .setDescription(linkInfoDescription.getText())
+                        .setDescriptionLink(linkInfoDescription.getUrl());
+                operatorMap.computeIfAbsent(linkInfo.getText(), (key) -> new ArrayList<>()).add(operatorRecord);
+                System.out.println(operatorRecord.getMindSporeOperator());
+            });
+        });
+    }
+
+    @Override
+    public List<OperatorRecord> fetchAllMatch(String input) {
+        return operatorMap.getOrDefault(input, new ArrayList<>());
     }
 }
