@@ -19,8 +19,6 @@ package com.mindspore.ide.toolkit.search.entity;
 import com.intellij.openapi.actionSystem.AnAction;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
-
 public class DocumentSearch {
     private final Object value;
 
@@ -57,8 +55,8 @@ public class DocumentSearch {
         if (value instanceof AnAction) {
             return ((AnAction) value).getTemplatePresentation().getText();
         }
-        if (value instanceof Map.Entry) {
-            return ((Map.Entry<String, String>) value).getKey();
+        if (value instanceof OperatorRecord) {
+            return ((OperatorRecord) value).getShowText();
         }
         return "";
     }

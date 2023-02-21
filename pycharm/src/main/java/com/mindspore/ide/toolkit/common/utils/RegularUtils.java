@@ -1,21 +1,27 @@
 package com.mindspore.ide.toolkit.common.utils;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class RegularUtils {
-    private static final String REGEX_CHINESE = "[^\\x00-\\xff]";
+    private static final String REGEX = "[a-zA-Z0-9._]+";
+    private static final Pattern PATTERN = Pattern.compile(REGEX);
 
-    private static final Pattern PATTERN = Pattern.compile(REGEX_CHINESE);
-
-    public static String removeChinese(String code) {
-        if (code == null) {
-            return "";
-        }
-        Matcher mat = PATTERN.matcher(code);
-        return mat.replaceAll("");
+    /**
+     * 判断api内容
+     *
+     * @param str str
+     * @return true or false
+     */
+    public static boolean isApi(String str) {
+        return PATTERN.matcher(str).matches();
     }
 
+    /**
+     * 非空
+     *
+     * @param str str
+     * @return true or false
+     */
     public static boolean isEmpty(String str) {
         return str == null || str.trim().length() == 0 || "null".equals(str);
     }

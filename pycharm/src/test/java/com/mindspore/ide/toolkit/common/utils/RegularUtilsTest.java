@@ -27,12 +27,6 @@ import org.junit.Test;
 public class RegularUtilsTest {
     @Test
     public void initTest() {
-        Assert.assertEquals(RegularUtils.removeChinese(null), "");
-        Assert.assertEquals(RegularUtils.removeChinese(""), "");
-        Assert.assertEquals(RegularUtils.removeChinese("123"), "123");
-        Assert.assertEquals(RegularUtils.removeChinese("123."), "123.");
-        Assert.assertEquals(RegularUtils.removeChinese("123，。"), "123");
-
         Assert.assertTrue(RegularUtils.isEmpty(""));
         Assert.assertTrue(RegularUtils.isEmpty(" "));
         Assert.assertFalse(RegularUtils.isEmpty("1111"));
