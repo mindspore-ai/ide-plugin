@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package proto;
+
+option java_package = "com.huawei.bitfun.smartcoder.protomessage";
+option java_multiple_files = true;
+option java_outer_classname = "CodeCompletionProto";
+
+// The greeting service definition.
+service Greeter {
+    // Sends a greeting
+    rpc getRecommendation (CompleteRequest) returns (CompleteReply) {}
+}
+
+// The request message containing the user's name.
+message CompleteRequest {
+    string prefix = 1;
+    string before = 2;
+    string after = 3;
+}
+
+// The response message containing the greetings
+message CompleteReply {
+    string old_prefix = 1;
+    ResultEntries results=2;
+}
+
+message ResultEntries {
+    repeated ResultEntry resultEntry = 1;
+}
+
+message ResultEntry {
+    string new_prefix = 1;
+    string details = 2;
+}

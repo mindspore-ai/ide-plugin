@@ -1,0 +1,50 @@
+# 是否是外网——true:外网，false:内网
+extranet: true
+localDir: "smartComplete"
+modelFolder: "model"
+modelMap:
+  default_plugin_version:
+    windows:
+      modelDownloadUrl: "https://ms-release.obs.cn-north-4.myhuaweicloud.com/1.6.0/IdePlugin/models/completion_model_v1.0_win.zip"
+      accessToken: ""
+      modelZipName: "completion_model_v1.0_win.zip"
+      modelUnzipFolderName: "completion_model_v1.0_win"
+      modelExePath: "grpc_server.exe"
+      modelVersion: "1.0"
+    linux:
+      modelDownloadUrl: "https://ms-release.obs.cn-north-4.myhuaweicloud.com/1.6.0/IdePlugin/models/completion_model_v1.1_linux.zip"
+      accessToken: ""
+      modelZipName: "completion_model_v1.1_linux.zip"
+      modelUnzipFolderName: "completion_model_v1.1_linux"
+      modelExePath: "grpc_server"
+      modelVersion: "1.0"
+  1.6.1:
+    windows:
+      modelDownloadUrl: "https://ms-release.obs.cn-north-4.myhuaweicloud.com/1.6.0/IdePlugin/models/completion_model_v1.0_win.zip"
+      accessToken: ""
+      modelZipName: "completion_model_v1.0_win.zip"
+      modelUnzipFolderName: "completion_model_v1.0_win"
+      modelExePath: "grpc_server.exe"
+      modelVersion: "1.0"
+    linux:
+      modelDownloadUrl: "https://ms-release.obs.cn-north-4.myhuaweicloud.com/1.6.0/IdePlugin/models/completion_model_v1.1_linux.zip"
+      accessToken: ""
+      modelZipName: "completion_model_v1.1_linux.zip"
+      modelUnzipFolderName: "completion_model_v1.1_linux"
+      modelExePath: "grpc_server"
+      modelVersion: "1.0"
+  1.7.0Beta1:
+    windows:
+      modelDownloadUrl: "https://ms-release.obs.cn-north-4.myhuaweicloud.com/1.6.0/IdePlugin/models/completion_model_v1.0_win.zip"
+      accessToken: ""
+      modelZipName: "completion_model_v1.0_win.zip"
+      modelUnzipFolderName: "completion_model_v1.0_win"
+      modelExePath: "grpc_server.exe"
+      modelVersion: "1.0"
+    linux:
+      modelDownloadUrl: "https://ms-release.obs.cn-north-4.myhuaweicloud.com/1.6.0/IdePlugin/models/completion_model_v1.1_linux.zip"
+      accessToken: ""
+      modelZipName: "completion_model_v1.1_linux.zip"
+      modelUnzipFolderName: "completion_model_v1.1_linux"
+      modelExePath: "grpc_server"
+      modelVersion: "1.0"
