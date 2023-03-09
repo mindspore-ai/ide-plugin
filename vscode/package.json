@@ -1,8 +1,9 @@
 {
-  "name": "mindspore_dev_toolkit",
+  "name": "mindspore-dev-toolkit",
   "displayName": "MindSpore Dev Toolkit",
   "description": "Add AI powered code completions to your VS Code",
   "version": "2.0.0",
+  "publisher": "MindSpore",
   "engines": {
     "vscode": "^1.75.0"
   },
