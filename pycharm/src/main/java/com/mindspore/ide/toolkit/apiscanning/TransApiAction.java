@@ -108,7 +108,7 @@ public class TransApiAction extends AnAction {
         EventCenter.INSTANCE.publish(new CommonEvent());
     }
 
-    private Set<String> filteringApi(Set<String> apiNameList) {
+    public static Set<String> filteringApi(Set<String> apiNameList) {
         Set<String> stringSet = new LinkedHashSet<>();
         apiNameList.forEach(s -> {
             if (RegularUtils.isApi(s)) {
@@ -118,7 +118,7 @@ public class TransApiAction extends AnAction {
         return stringSet;
     }
 
-    private Object[][] trans(List<Object[]> data) {
+    public static Object[][] trans(List<Object[]> data) {
         if (CollectionUtils.isEmpty(data)) {
             return new Object[][] {};
         }
@@ -147,7 +147,7 @@ public class TransApiAction extends AnAction {
         });
     }
 
-    private void importMapDataSortIf(Set<String> apiString, Set<String> apiNameList, String key) {
+    public static void importMapDataSortIf(Set<String> apiString, Set<String> apiNameList, String key) {
         for (String str : apiNameList) {
             String[] split = str.split("\\.");
             if (split.length > 0) {
@@ -162,7 +162,7 @@ public class TransApiAction extends AnAction {
         }
     }
 
-    private void importMapDataSortElse(Set<String> apiString, Set<String> apiNameList, String key, String value) {
+    public static void importMapDataSortElse(Set<String> apiString, Set<String> apiNameList, String key, String value) {
         for (String str : apiNameList) {
             String[] split = str.split("\\.");
             if (split.length > 0) {
@@ -189,7 +189,7 @@ public class TransApiAction extends AnAction {
         });
     }
 
-    private void fromMapDataSortElse(Set<String> apiString, Set<String> apiNameList, String key, String value) {
+    public static void fromMapDataSortElse(Set<String> apiString, Set<String> apiNameList, String key, String value) {
         for (String str : apiNameList) {
             String[] split = str.split("\\.");
             if (split.length > 0) {
@@ -221,7 +221,7 @@ public class TransApiAction extends AnAction {
         });
     }
 
-    private Set<String> filteringData(Set<String> apiNameList) {
+    public static Set<String> filteringData(Set<String> apiNameList) {
         Set<String> apiString = new LinkedHashSet<>();
         Iterator<String> it = apiNameList.iterator();
 
@@ -240,7 +240,7 @@ public class TransApiAction extends AnAction {
         return apiString;
     }
 
-    private List<Object[]> searchData(Set<String> apiStringSet, List<Object[]> apiNameNullList) {
+    public static List<Object[]> searchData(Set<String> apiStringSet, List<Object[]> apiNameNullList) {
         List<Object[]> apiList = new LinkedList<>();
         List<Object[]> nonMatchApiList = new LinkedList<>();
         for (String str : apiStringSet) {
@@ -361,7 +361,7 @@ public class TransApiAction extends AnAction {
      * @param fromMap from xxx import yyy     or     from xxx import *
      * @param fromAsMap from xxx import yyy as zzz
      */
-    private void translateImport(PsiElement psiElement, Map<String, String> importMap, Map<String, String> fromMap, Map<String, String> fromAsMap) {
+    public static void translateImport(PsiElement psiElement, Map<String, String> importMap, Map<String, String> fromMap, Map<String, String> fromAsMap) {
         PyImportElement importElement;
         for (PsiElement element : psiElement.getChildren()) {
             if (element instanceof PyImportStatementBase) {

@@ -141,20 +141,24 @@ public enum OperatorMapDataHub implements SearchEveryWhereDataHub<String, Operat
                         if (nodeBody instanceof TableRow) {
                             List<Node> nodeList = new ArrayList<>();
                             nodeBody.getChildIterator().forEachRemaining(nodeList::add);
-                            Node nodePytorch = nodeList.get(0);
-                            Node nodeMindSpore = nodeList.get(1);
-                            Node nodeDescription = nodeList.get(2);
-                            List<LinkInfo> linkInfoPytorch = getListData(nodePytorch);
-                            List<LinkInfo> linkInfoMindSpore = getListData(nodeMindSpore);
-                            LinkInfo linkInfoDescription = getListDescriptionData(nodeDescription);
-                            setMapData(linkInfoPytorch, linkInfoMindSpore, linkInfoDescription, apiType, versionTitle);
+                            if (nodeList.size() == 3) {
+                                Node nodePytorch = nodeList.get(0);
+                                Node nodeMindSpore = nodeList.get(1);
+                                Node nodeDescription = nodeList.get(2);
+                                List<LinkInfo> linkInfoPytorch = getListData(nodePytorch);
+                                List<LinkInfo> linkInfoMindSpore = getListData(nodeMindSpore);
+                                LinkInfo linkInfoDescription = getListDescriptionData(nodeDescription);
+                                setMapData(linkInfoPytorch, linkInfoMindSpore, linkInfoDescription, apiType, versionTitle);
+                            }
                         }
                     });
                 } else if (nodeBlock instanceof TableHead) {
                     nodeBlock.getChildIterator().forEachRemaining(nodeHead -> {
                         if (nodeHead instanceof TableRow) {
                             TableRow tableRow = (TableRow) nodeHead;
-                            if (tableRow.getFirstChild() != null) {
+                            List<Node> nodeList = new ArrayList<>();
+                            tableRow.getChildIterator().forEachRemaining(nodeList::add);
+                            if (nodeList.size() == 3 && tableRow.getFirstChild() != null) {
                                 BasedSequence basedSequence = tableRow.getFirstChild().getChars();
                                 String title = basedSequence.toString().replaceAll("\\|", "").trim();
                                 versionTitle[0] = title;
@@ -217,7 +221,6 @@ public enum OperatorMapDataHub implements SearchEveryWhereDataHub<String, Operat
                         .setDescription(linkInfoDescription.getText())
                         .setDescriptionLink(linkInfoDescription.getUrl());
                 operatorMap.computeIfAbsent(linkInfo.getText(), (key) -> new ArrayList<>()).add(operatorRecord);
-                System.out.println(operatorRecord.getMindSporeOperator());
             });
         });
     }
