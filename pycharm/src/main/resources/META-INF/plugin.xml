@@ -37,7 +37,7 @@
         <action class="com.mindspore.ide.toolkit.ui.search.SearchRefreshAction" id="mindSporeRefreshAction" icon="/icons/search_home.png"/>
         <action class="com.mindspore.ide.toolkit.ui.robot.SearchRefreshAction" id="robotRefreshAction" icon="/icons/search_home.png"/>
 
-        <action class="com.mindspore.ide.toolkit.apiscanning.TransProjectApiAction" text="operator scan project"
+        <action class="com.mindspore.ide.toolkit.apiscanning.TransProjectApiAction" text="operator scan project-level"
                 id="PythonTfActionAll" icon="MsIcons.MS_ICON_16PXWP">                <add-to-group group-id="EditorPopupMenu" anchor="first"/>
             <add-to-group group-id="ToolsMenu" anchor="first"/>
         </action>
