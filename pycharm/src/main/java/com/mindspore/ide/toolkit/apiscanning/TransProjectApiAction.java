@@ -8,7 +8,6 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.module.Module;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
@@ -38,42 +37,41 @@ public class TransProjectApiAction extends AnAction {
 
 
         Optional<VirtualFile> virtualFileOP;
-            Optional<Project> projectOp = Optional.ofNullable(e.getData(PlatformDataKeys.PROJECT));
+        Optional<Project> projectOp = Optional.ofNullable(e.getData(PlatformDataKeys.PROJECT));
+        if (projectOp.isPresent()) {
+            Document document = e.getData(CommonDataKeys.EDITOR).getDocument();
+            ModifiableRootModel modifiableModel = ModuleRootManager.getInstance(ProjectRootManager
+                    .getInstance(projectOp.get()).getFileIndex().getModuleForFile(PsiDocumentManager
+                            .getInstance(projectOp.get()).getPsiFile(document).getVirtualFile())).getModifiableModel();
+            Optional<String> projectUrlOp = Optional.ofNullable(projectOp.get().getPresentableUrl());
+            ApiMappingHandler apiMappingHandler = new ApiMappingHandler(projectOp.get());
             if (projectOp.isPresent()) {
-                Document document = e.getData(CommonDataKeys.EDITOR).getDocument();
-                VirtualFile virtualFile = PsiDocumentManager.getInstance(projectOp.get()).getPsiFile(document).getVirtualFile();
-                Module moduleForFile = ProjectRootManager.getInstance(projectOp.get()).getFileIndex().getModuleForFile(virtualFile);
-                ModifiableRootModel modifiableModel = ModuleRootManager.getInstance(moduleForFile).getModifiableModel();
-                Optional<String> projectUrlOp = Optional.ofNullable(projectOp.get().getPresentableUrl());
-                ApiMappingHandler apiMappingHandler = new ApiMappingHandler(projectOp.get());
-                if (projectOp.isPresent()) {
-                    virtualFileOP = Optional.ofNullable(StandardFileSystems.local().findFileByPath(projectUrlOp.get()));
-                    virtualFileOP.ifPresent(
-                            virtualFileRoot -> {
-                                ContentEntry contentEntry = MarkRootActionBase.findContentEntry(modifiableModel,
-                                        virtualFileRoot);
-                                if (contentEntry != null) {
-                                    ApiMappingHandler.excludedFilesMap.put(projectOp.get(),
-                                            contentEntry.getExcludeFolderFiles());
-                                }
+                virtualFileOP = Optional.ofNullable(StandardFileSystems.local().findFileByPath(projectUrlOp.get()));
+                virtualFileOP.ifPresent(
+                        virtualFileRoot -> {
+                            ContentEntry contentEntry = MarkRootActionBase.findContentEntry(modifiableModel,
+                                    virtualFileRoot);
+                            if (contentEntry != null) {
+                                ApiMappingHandler.excludedFilesMap.put(projectOp.get(),
+                                        contentEntry.getExcludeFolderFiles());
                             }
-                    );
-                    virtualFileOP.ifPresent(apiMappingHandler::iterateVfsTreeNode);
-                }
-                List<PsiFile> psiFiles = PsiUtilCore.toPsiFiles(PsiManager.getInstance(projectOp.get()),
-                        apiMappingHandler.getVirtualFileSet());
-                ProgressManager.getInstance().run(new Task.Backgroundable(projectOp.get(), "API Scan - Project level"){
-                    @Override
-                    public void run(@NotNull ProgressIndicator indicator) {
-                        ApplicationManager.getApplication().invokeLater(() -> ApplicationManager.getApplication().runReadAction(()-> apiMappingHandler.handleProjectApiMapping(psiFiles)));
-                    }});
-            } else {
-                log.warn("get project failed, can't execute api mapping");
+                        }
+                );
+                virtualFileOP.ifPresent(apiMappingHandler::iterateVfsTreeNode);
             }
-//        } else {
-//            log.warn("current module is null, can't execute api mapping");
-//        }
+            List<PsiFile> psiFiles = PsiUtilCore.toPsiFiles(PsiManager.getInstance(projectOp.get()),
+                    apiMappingHandler.getVirtualFileSet());
+            ProgressManager.getInstance().run(new Task.Backgroundable(projectOp.get(), "operator scan " +
+                    "project-level") {
+                @Override
+                public void run(@NotNull ProgressIndicator indicator) {
+                    ApplicationManager.getApplication().invokeLater(() -> ApplicationManager.getApplication()
+                            .runReadAction(() -> apiMappingHandler.handleProjectApiMapping(psiFiles)));
+                }
+            });
+        } else {
+            log.warn("get project failed, can't execute api mapping");
+        }
         log.info("api mapping for project cost " + (System.currentTimeMillis() - startTime) + " ms");
-        //EventCenter.INSTANCE.publish(new CommonEvent());
     }
 }
