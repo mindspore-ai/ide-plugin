@@ -364,34 +364,38 @@ public class TransApiAction extends AnAction {
     public static void translateImport(PsiElement psiElement, Map<String, String> importMap, Map<String, String> fromMap, Map<String, String> fromAsMap) {
         PyImportElement importElement;
         for (PsiElement element : psiElement.getChildren()) {
-            if (element instanceof PyImportStatementBase) {
-                PyImportStatementBase importStatementBase = (PyImportStatementBase) element;
-                if (element instanceof PyImportStatement) {
-                    // import mindspore.numpy as mnp; key是mindspore， value是mnp
-                    // import mindspore; key是mindspore, value是null
-                    importElement = importStatementBase.getImportElements()[0];
-                    importMap.put(importElement.getImportedQName().toString(), importElement.getAsName());
-                } else if (element instanceof PyFromImportStatement) {
-                    PyFromImportStatement pyFromImportStatement = (PyFromImportStatement) element;
-                    if (pyFromImportStatement.getImportElements().length >= 1) {
-                        if (pyFromImportStatement.getImportElements()[0].getAsName() == null) {
-                            // from mindspore.numpy import nn; key是mindspore.numpy.nn, value是nn
-                            for (PyImportElement pyImportElement : importStatementBase.getImportElements()) {
-                                fromMap.put(pyFromImportStatement.getImportSourceQName().toString() + "." + pyImportElement.getText(), pyImportElement.getText());
+            try {
+                if (element instanceof PyImportStatementBase) {
+                    PyImportStatementBase importStatementBase = (PyImportStatementBase) element;
+                    if (element instanceof PyImportStatement) {
+                        // import mindspore.numpy as mnp; key是mindspore， value是mnp
+                        // import mindspore; key是mindspore, value是null
+                        importElement = importStatementBase.getImportElements()[0];
+                        importMap.put(importElement.getImportedQName().toString(), importElement.getAsName());
+                    } else if (element instanceof PyFromImportStatement) {
+                        PyFromImportStatement pyFromImportStatement = (PyFromImportStatement) element;
+                        if (pyFromImportStatement.getImportElements().length >= 1) {
+                            if (pyFromImportStatement.getImportElements()[0].getAsName() == null) {
+                                // from mindspore.numpy import nn; key是mindspore.numpy.nn, value是nn
+                                for (PyImportElement pyImportElement : importStatementBase.getImportElements()) {
+                                    fromMap.put(pyFromImportStatement.getImportSourceQName().toString() + "." + pyImportElement.getText(), pyImportElement.getText());
+                                }
+                            } else {
+                                // from d2l import mindspore as dl; key是mindspore.d2l, value是dl
+                                fromAsMap.put(importStatementBase.getFullyQualifiedObjectNames().get(0), importStatementBase.getImportElements()[0].getAsName());
                             }
                         } else {
-                            // from d2l import mindspore as dl; key是mindspore.d2l, value是dl
-                            fromAsMap.put(importStatementBase.getFullyQualifiedObjectNames().get(0), importStatementBase.getImportElements()[0].getAsName());
+                            // from mindspore import *; key是mindspore, value是null
+                            //fromMap.put(pyFromImportStatement.getImportSourceQName().toString(), null);
                         }
                     } else {
-                        // from mindspore import *; key是mindspore, value是null
-                        fromMap.put(pyFromImportStatement.getImportSourceQName().toString(), null);
+                        log.info("psiFile exceptions");
                     }
                 } else {
-                    log.info("psiFile exceptions");
+                    translateImport(element, importMap, fromMap, fromAsMap);
                 }
-            } else {
-                translateImport(element, importMap, fromMap, fromAsMap);
+            } catch (Throwable ex) {
+                log.debug("import analyse error", ex);
             }
         }
     }
