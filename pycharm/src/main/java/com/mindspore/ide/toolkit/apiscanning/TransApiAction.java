@@ -1,5 +1,6 @@
 package com.mindspore.ide.toolkit.apiscanning;
 
+import com.intellij.notification.NotificationType;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -22,6 +23,7 @@ import com.jetbrains.python.psi.PyReferenceExpression;
 import com.mindspore.ide.toolkit.common.events.CommonEvent;
 import com.mindspore.ide.toolkit.common.events.EventCenter;
 import com.mindspore.ide.toolkit.common.utils.MSPsiUtils;
+import com.mindspore.ide.toolkit.common.utils.NotificationUtils;
 import com.mindspore.ide.toolkit.common.utils.RegularUtils;
 import com.mindspore.ide.toolkit.search.OperatorSearchService;
 import com.mindspore.ide.toolkit.search.entity.LinkInfo;
@@ -94,8 +96,12 @@ public class TransApiAction extends AnAction {
             ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project1);
             ToolWindow toolWindow = toolWindowManager.getToolWindow("MindSporeApiMapping");
             ContentManager contentManager = toolWindow.getContentManager();
-            JComponent jComponent = ApiMappingUI.build(trans(straightApiMappingList), trans(blurredApiMappingList), trans(apiNameNullList), project1);
             String name = psiFile.getName();
+            JComponent jComponent = ApiMappingUI.build(trans(straightApiMappingList),
+                    trans(blurredApiMappingList),
+                    trans(apiNameNullList),
+                    project1,
+                    name);
             Content content = ContentFactory.SERVICE.getInstance().createContent(jComponent, name, true);
             Content oldContent = contentMap.put(name, content);
             if (oldContent != null) {
@@ -104,6 +110,9 @@ public class TransApiAction extends AnAction {
             contentManager.addContent(content);
             contentManager.setSelectedContent(content, true, true);
             toolWindow.show();
+        } else {
+            NotificationUtils.notify(
+                    NotificationUtils.NotifyGroup.API_SCANNING, NotificationType.INFORMATION, "无相关API");
         }
         EventCenter.INSTANCE.publish(new CommonEvent());
     }
@@ -263,15 +272,18 @@ public class TransApiAction extends AnAction {
                     cells[2] = new LinkInfo(record.getMindSporeOperator(), record.getMindSporeLink());
                 }
                 if (Strings.isEmpty(record.getDescriptionLink())) { // 注释
-                    cells[3] = record.getDescription() + (record.isInWhiteList() ? "" : "（仅支持2.0及以上版本MindSpore）");
+                    cells[3] =
+                            record.getDescription() + (record.isInWhiteList() ? "" : "（仅支持2.0及以上版本MindSpore）");
                 } else {
-                    cells[3] = new LinkInfo(record.getDescription(), record.getDescriptionLink(), !record.isInWhiteList());
+                    cells[3] =
+                            new LinkInfo(record.getDescription(), record.getDescriptionLink(), !record.isInWhiteList());
                 }
                 apiList.add(cells);
             }
             if (records.isEmpty()) {
                 nonMatchApiList.add(new Object[]{str, "", "", new LinkInfo("缺失api处理策略",
-                        "https://www.mindspore.cn/docs/zh-CN/r1.9/migration_guide/analysis_and_preparation.html#%E7%BC%BA%E5%A4%84%E7%90%86%E7%AD%96%E7%95%A5")});
+                        "https://www.mindspore.cn/docs/zh-CN/r1.9/migration_guide/analysis_and_preparation.html" +
+                                "#%E7%BC%BA%E5%A4%B1api%E5%A4%84%E7%90%86%E7%AD%96%E7%95%A5")});
             }
         }
         Objects.requireNonNullElse(apiNameNullList, apiList).addAll(nonMatchApiList);

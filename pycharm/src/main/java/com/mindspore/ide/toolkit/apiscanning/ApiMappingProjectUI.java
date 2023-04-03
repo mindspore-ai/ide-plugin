@@ -45,6 +45,7 @@ public class ApiMappingProjectUI {
 
     private JTable apiNullJTable;
 
+    private JLabel emptyJLabel;
     private JPanel apiJPanel;
     private JLabel papiJLabel;
     private JButton export;
@@ -53,6 +54,7 @@ public class ApiMappingProjectUI {
     private JPanel papiJPanel;
     private JTree tree1;
     private JPanel main;
+    private JLabel apiJLabel;
 
     private JTable papiJTable;
     private ActionListener actionListener;
@@ -65,17 +67,28 @@ public class ApiMappingProjectUI {
         this.apiNull = apiNull;
         this.root = root;
         this.chosenFile = choseFile;
+        emptyJLabel.setVisible(false);
         addApiPanel();
         addApiNullPanel();
         addPapiPanel();
+        setEmptyPanel();
         actionListener = e -> {
-            ExportDialog exportListDialog = new ExportDialog(ApiMappingUiUtil.initData(api, apiNull, papi).toString());
+            ExportDialog exportListDialog = new ExportDialog(ApiMappingUiUtil.initData(api, apiNull, papi).toString(),
+                    root.getName());
             exportListDialog.setVisible(true);
         };
         ApiMappingUiUtil.buttonListener(export, actionListener);
     }
 
-    public void reload(Object[][] api, Object[][] papi, Object[][] apiNull) {
+    /**
+     * reload ui form
+     *
+     * @param api api array
+     * @param papi papi array
+     * @param apiNull null api array
+     * @param fileName trigger file name
+     */
+    public void reload(Object[][] api, Object[][] papi, Object[][] apiNull, String fileName) {
         this.api = api;
         this.papi = papi;
         this.apiNull = apiNull;
@@ -85,26 +98,44 @@ public class ApiMappingProjectUI {
         apiNullJPanel.remove(apiNullJTable);
         papiJPanel.remove(papiJTable.getTableHeader());
         papiJPanel.remove(papiJTable);
+        emptyJLabel.setVisible(false);
         addApiPanel();
         addApiNullPanel();
         addPapiPanel();
+        setEmptyPanel();
         export.removeActionListener(actionListener);
         actionListener = e -> {
-            ExportDialog exportListDialog = new ExportDialog(ApiMappingUiUtil.initData(api, apiNull, papi).toString());
+            ExportDialog exportListDialog = new ExportDialog(ApiMappingUiUtil.initData(api, apiNull, papi).toString(),
+                    fileName);
             exportListDialog.setVisible(true);
         };
         ApiMappingUiUtil.buttonListener(export, actionListener);
     }
 
+    private void setEmptyPanel() {
+        if (!apiJLabel.isVisible() && !apiNullJLabel.isVisible() && !papiJLabel.isVisible()) {
+            emptyJLabel.setVisible(true);
+        }
+    }
+
     private void addApiPanel() {
+        if (api == null || api.length == 0) {
+            apiJLabel.setVisible(false);
+            return;
+        }
         apiJTable = new JTable(new MsTableModel(api, API_COLUMNS));
         apiJTable.setDefaultRenderer(Object.class, new MsCellRender());
         apiJTable.addMouseListener(ApiMappingUiUtil.createListener(api, apiJTable, project));
         apiJPanel.add(apiJTable.getTableHeader(), BorderLayout.NORTH);
         apiJPanel.add(apiJTable, BorderLayout.CENTER);
+        apiJLabel.setVisible(true);
     }
 
     private void addApiNullPanel() {
+        if (apiNull == null || apiNull.length == 0) {
+            apiNullJLabel.setVisible(false);
+            return;
+        }
         apiNullJTable = new JTable(new MsTableModel(apiNull, API_NULL_COLUMNS));
         apiNullJTable.setDefaultRenderer(Object.class, new MsCellRender());
         apiNullJTable.addMouseListener(ApiMappingUiUtil.createListener(apiNull, apiNullJTable, project));
@@ -114,6 +145,10 @@ public class ApiMappingProjectUI {
     }
 
     private void addPapiPanel() {
+        if (papi == null || papi.length == 0) {
+            papiJLabel.setVisible(false);
+            return;
+        }
         papiJTable = new JTable(new MsTableModel(papi, PAPI_COLUMNS));
         papiJTable.setDefaultRenderer(Object.class, new MsCellRender());
         papiJTable.addMouseListener(ApiMappingUiUtil.createListener(papi, papiJTable, project));

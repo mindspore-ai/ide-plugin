@@ -14,6 +14,9 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -31,16 +34,22 @@ public class ExportDialog extends JDialog {
 
     private String apiString;
 
+    private String fileName;
+
+    private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
     /**
      * construction method
      *
      * @param apiString apiString
+     * @param fileName trigger file name
      */
-    public ExportDialog(String apiString) {
+    public ExportDialog(String apiString, String fileName) {
         this.apiString = apiString;
         this.setTitle("导出表格内容");
         this.setModal(true);
         this.setSize(600, 100);
+        this.fileName = fileName;
         setLocationRelativeTo(null);
         initDialog();
         this.setLayout(null);
@@ -49,7 +58,8 @@ public class ExportDialog extends JDialog {
     private void initDialog() {
         pathBrowseButton = new TextFieldWithBrowseButton();
         pathBrowseButton.setBounds(50, 10, 350, 30);
-        pathBrowseButton.setText(SystemProperties.getUserHome() + File.separator + System.currentTimeMillis() + ".csv");
+        pathBrowseButton.setText(SystemProperties.getUserHome() + File.separator + fileName + "-mapping-"
+                + dateFormat.format(new Date()) + ".csv");
         this.add(pathBrowseButton);
         pathBrowseButton.addBrowseFolderListener(
                 new TextBrowseFolderListener(new FileChooserDescriptor(false, true, false, false, false,false)) {
@@ -58,8 +68,8 @@ public class ExportDialog extends JDialog {
                     protected String chosenFileToResultingText(@NotNull VirtualFile chosenFile) {
                         String dir = chosenFile.getPresentableUrl();
                         String text = pathBrowseButton.getText();
-                        String fileName = text.substring(text.lastIndexOf(File.separator) + 1);
-                        return dir + File.separator + fileName;
+                        String fileNameTemp = text.substring(text.lastIndexOf(File.separator) + 1);
+                        return dir + File.separator + fileNameTemp;
                     }
                 });
 
