@@ -96,6 +96,10 @@ public class ApiMappingHandler {
     }
 
     public void handleProjectApiMapping(List<PsiFile> psiFiles) {
+        importMap = new HashMap<>();
+        fromMap = new HashMap<>();
+        fromAsMap = new HashMap<>();
+        apiNameList = new LinkedHashSet<>();
         psiFiles.stream()
                 .filter(psiFile -> psiFile.getName().contains(".py"))
                 .forEach(this::getProjectApiMappingInfoByPsi);
@@ -122,8 +126,11 @@ public class ApiMappingHandler {
         long startTime = System.currentTimeMillis();
         ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(myProject);
         ToolWindow toolWindow = toolWindowManager.getToolWindow("MindSporeApiMapping");
-        ContentManager contentManager = toolWindow.getContentManager();
         List<PsiFile> psiFiles = PsiUtilCore.toPsiFiles(PsiManager.getInstance(myProject), virtualFileSet);
+        importMap = new HashMap<>();
+        fromMap = new HashMap<>();
+        fromAsMap = new HashMap<>();
+        apiNameList = new LinkedHashSet<>();
         psiFiles.stream()
                 .filter(psiFile -> psiFile.getName().contains(".py"))
                 .forEach(this::getProjectApiMappingInfoByPsi);
@@ -131,24 +138,22 @@ public class ApiMappingHandler {
         List<Object[]> straightApiMappingList = sortList(apiNameFiltering, apiNameNullList);
         List<Object[]> blurredApiMappingList = sortList(apiBlurredNameFiltering, null);
         ApiMappingProjectUI projectMap = projectContentMap.get(contentManager.getSelectedContent());
+        String name = chosenFile.getName();
         projectMap.reload(trans(straightApiMappingList),
                 trans(blurredApiMappingList),
-                trans(apiNameNullList));
-        String name = chosenFile.getName();
-        contentManager.removeContent(contentManager.getSelectedContent(), true);
+                trans(apiNameNullList),
+                name);
+        ContentManager contentManagerLocal = toolWindow.getContentManager();
+        contentManagerLocal.removeContent(contentManagerLocal.getSelectedContent(), true);
         Content content = ContentFactory.SERVICE.getInstance()
-                .createContent(new JBScrollPane(projectMap.splitPane), name , true);
-        contentManager.addContent(content);
+                .createContent(new JBScrollPane(projectMap.splitPane), name, true);
+        contentManagerLocal.addContent(content);
         projectContentMap.put(content, projectMap);
-        contentManager.setSelectedContent(content, true, true);
+        contentManagerLocal.setSelectedContent(content, true, true);
         toolWindow.show();
         log.info("api mapping for project const" + (System.currentTimeMillis() - startTime) + " ms");
     }
     public void getProjectApiMappingInfoByPsi(@NotNull PsiFile psiFile) {
-        importMap = new HashMap<>();
-        fromMap = new HashMap<>();
-        fromAsMap = new HashMap<>();
-        apiNameList = new LinkedHashSet<>();
         apiBlurredNameList = new LinkedHashSet<>();
         translateImport(psiFile, importMap, fromMap, fromAsMap);
         translateCallExpression(psiFile);

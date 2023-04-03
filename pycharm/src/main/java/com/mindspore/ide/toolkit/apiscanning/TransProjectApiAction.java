@@ -37,39 +37,37 @@ public class TransProjectApiAction extends AnAction {
         long startTime = System.currentTimeMillis();
 
 
-        Optional<VirtualFile> virtualFileOP;
         Optional<Project> projectOp = Optional.ofNullable(e.getData(PlatformDataKeys.PROJECT));
         if (projectOp.isPresent()) {
-            Optional<String> projectUrlOp = Optional.ofNullable(projectOp.get().getPresentableUrl());
-            ApiMappingHandler apiMappingHandler = new ApiMappingHandler(projectOp.get());
-            if (projectOp.isPresent()) {
-                virtualFileOP = Optional.ofNullable(StandardFileSystems.local().findFileByPath(projectUrlOp.get()));
-                virtualFileOP.ifPresent(
-                        virtualFileRoot -> {
-                            Editor editor = e.getData(CommonDataKeys.EDITOR);
-                            if (editor != null) {
-                                ModifiableRootModel modifiableModel = ModuleRootManager.getInstance(ProjectRootManager
-                                                .getInstance(projectOp.get()).getFileIndex()
-                                                .getModuleForFile(PsiDocumentManager.getInstance(projectOp.get())
-                                                        .getPsiFile(editor.getDocument()).getVirtualFile()))
-                                        .getModifiableModel();
-                                ContentEntry contentEntry = MarkRootActionBase.findContentEntry(modifiableModel,
-                                        virtualFileRoot);
-                                if (contentEntry != null) {
-                                    ApiMappingHandler.excludedFilesMap.put(projectOp.get(),
-                                            contentEntry.getExcludeFolderFiles());
-                                }
-                            }
-                        }
-                );
-                virtualFileOP.ifPresent(apiMappingHandler::iterateVfsTreeNode);
-            }
-            List<PsiFile> psiFiles = PsiUtilCore.toPsiFiles(PsiManager.getInstance(projectOp.get()),
-                    apiMappingHandler.getVirtualFileSet());
             ProgressManager.getInstance().run(new Task.Backgroundable(projectOp.get(), "operator scan " +
                     "project-level") {
                 @Override
                 public void run(@NotNull ProgressIndicator indicator) {
+                    Optional<String> projectUrlOp = Optional.ofNullable(projectOp.get().getPresentableUrl());
+                    ApiMappingHandler apiMappingHandler = new ApiMappingHandler(projectOp.get());
+                    Optional<VirtualFile> virtualFileOP =
+                            Optional.ofNullable(StandardFileSystems.local().findFileByPath(projectUrlOp.get()));
+                    virtualFileOP.ifPresent(
+                            virtualFileRoot -> {
+                                Editor editor = e.getData(CommonDataKeys.EDITOR);
+                                if (editor != null) {
+                                    ModifiableRootModel modifiableModel = ModuleRootManager
+                                            .getInstance(ProjectRootManager.getInstance(projectOp.get()).getFileIndex()
+                                                    .getModuleForFile(PsiDocumentManager.getInstance(projectOp.get())
+                                                            .getPsiFile(editor.getDocument()).getVirtualFile()))
+                                            .getModifiableModel();
+                                    ContentEntry contentEntry = MarkRootActionBase.findContentEntry(modifiableModel,
+                                            virtualFileRoot);
+                                    if (contentEntry != null) {
+                                        ApiMappingHandler.excludedFilesMap.put(projectOp.get(),
+                                                contentEntry.getExcludeFolderFiles());
+                                    }
+                                }
+                            }
+                    );
+                    virtualFileOP.ifPresent(apiMappingHandler::iterateVfsTreeNode);
+                    List<PsiFile> psiFiles = PsiUtilCore.toPsiFiles(PsiManager.getInstance(projectOp.get()),
+                            apiMappingHandler.getVirtualFileSet());
                     ApplicationManager.getApplication().invokeLater(() -> ApplicationManager.getApplication()
                             .runReadAction(() -> apiMappingHandler.handleProjectApiMapping(psiFiles)));
                 }

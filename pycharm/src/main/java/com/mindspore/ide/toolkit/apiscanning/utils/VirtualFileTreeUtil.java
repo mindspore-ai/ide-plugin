@@ -7,7 +7,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.newvfs.impl.VirtualDirectoryImpl;
 import com.intellij.openapi.vfs.newvfs.impl.VirtualFileImpl;
 import com.mindspore.ide.toolkit.apiscanning.VirtualFileNode;
-import com.mindspore.ide.toolkit.apiscanning.VirtualFileTreeSelectionListener;
 import com.mindspore.ide.toolkit.apiscanning.handler.ApiMappingHandler;
 
 import java.util.Arrays;
@@ -23,9 +22,12 @@ public class VirtualFileTreeUtil {
                 if (Arrays.asList(excludedFiles).contains(child)) {
                     continue;
                 }
-                if (ProjectFileIndex.SERVICE.getInstance(project).isExcluded(child)) {
-                    continue;
-                }
+            }
+            if (ProjectFileIndex.SERVICE.getInstance(project).isExcluded(child)) {
+                continue;
+            }
+            if (ProjectFileIndex.SERVICE.getInstance(project).isInLibrary(child)) {
+                continue;
             }
             if (child instanceof VirtualDirectoryImpl && child.getChildren().length == 0) {
                 continue;
@@ -64,8 +66,8 @@ public class VirtualFileTreeUtil {
     public static void setNodeRootPy(VirtualFileNode leaf) {
         leaf.setMarkedPy(true);
         while (leaf.getParent() != null && !leaf.getParent().isMarkedPy()) {
-            leaf.setMarkedPy(true);
             leaf = leaf.getParent();
+            leaf.setMarkedPy(true);
         }
     }
 

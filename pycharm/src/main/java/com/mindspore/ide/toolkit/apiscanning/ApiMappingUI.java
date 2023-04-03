@@ -68,6 +68,8 @@ public class ApiMappingUI {
 
     private JTable papiJTable;
 
+    private String fileName;
+
     /**
      * Construction method
      *
@@ -75,12 +77,14 @@ public class ApiMappingUI {
      * @param papi papi
      * @param apiNull apiNull
      * @param project project
+     * @param name trigger file name
      */
-    public ApiMappingUI(Object[][] api, Object[][] papi, Object[][] apiNull, Project project) {
+    public ApiMappingUI(Object[][] api, Object[][] papi, Object[][] apiNull, Project project, String name) {
         this.project = project;
         this.api = api;
         this.papi = papi;
         this.apiNull = apiNull;
+        this.fileName = name;
         addApiPanel();
         addApiNullPanel();
         addPapiPanel();
@@ -94,10 +98,11 @@ public class ApiMappingUI {
      * @param papi papi
      * @param apiNull apiNull
      * @param project project
+     * @param name trigger file name
      * @return JComponent
      */
-    public static JComponent build(Object[][] api, Object[][] papi, Object[][] apiNull, Project project) {
-        return new JScrollPane(new ApiMappingUI(api, papi, apiNull, project).main);
+    public static JComponent build(Object[][] api, Object[][] papi, Object[][] apiNull, Project project, String name) {
+        return new JScrollPane(new ApiMappingUI(api, papi, apiNull, project, name).main);
     }
 
     private void addApiPanel() {
@@ -137,7 +142,7 @@ public class ApiMappingUI {
     private void buttonListener() {
         // 导出事件
         export.addActionListener(e -> {
-            ExportDialog exportListDialog = new ExportDialog(initData().toString());
+            ExportDialog exportListDialog = new ExportDialog(initData().toString(), fileName);
             exportListDialog.setVisible(true);
         });
     }

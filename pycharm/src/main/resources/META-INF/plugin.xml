@@ -15,7 +15,7 @@
                                 implementationClass="com.mindspore.ide.toolkit.services.complete.SmartCompletion"
                                 order="first" />
         <toolWindow id="MindSpore" factoryClass="com.mindspore.ide.toolkit.ui.search.BrowserWindowFactory" canCloseContents="false" anchor="right" icon="MsIcons.MS_ICON_16PXWP"/>
-        <toolWindow id="Robot" factoryClass="com.mindspore.ide.toolkit.ui.robot.BrowserWindowFactory" canCloseContents="false" anchor="right" icon="MsIcons.MS_ICON_16PXWP"/>
+<!--        <toolWindow id="Robot" factoryClass="com.mindspore.ide.toolkit.ui.robot.BrowserWindowFactory" canCloseContents="false" anchor="right" icon="MsIcons.MS_ICON_16PXWP"/>-->
         <searchEverywhereContributor implementation="com.mindspore.ide.toolkit.search.MindSporeSearchEverywhereContributor$Factory"/>
         <directoryProjectGenerator implementation="com.mindspore.ide.toolkit.wizard.MindSporeProjectGenerator" />
 
