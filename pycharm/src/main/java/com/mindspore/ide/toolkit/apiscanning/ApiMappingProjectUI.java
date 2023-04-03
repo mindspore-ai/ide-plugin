@@ -92,12 +92,9 @@ public class ApiMappingProjectUI {
         this.api = api;
         this.papi = papi;
         this.apiNull = apiNull;
-        apiJPanel.remove(apiJTable.getTableHeader());
-        apiJPanel.remove(apiJTable);
-        apiNullJPanel.remove(apiNullJTable.getTableHeader());
-        apiNullJPanel.remove(apiNullJTable);
-        papiJPanel.remove(papiJTable.getTableHeader());
-        papiJPanel.remove(papiJTable);
+        apiJPanel.removeAll();
+        apiNullJPanel.removeAll();
+        papiJPanel.removeAll();
         emptyJLabel.setVisible(false);
         addApiPanel();
         addApiNullPanel();

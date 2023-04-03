@@ -17,6 +17,7 @@ import com.intellij.openapi.roots.ContentEntry;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.roots.ProjectRootManager;
+import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.vfs.StandardFileSystems;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
@@ -47,27 +48,35 @@ public class TransProjectApiAction extends AnAction {
                     ApiMappingHandler apiMappingHandler = new ApiMappingHandler(projectOp.get());
                     Optional<VirtualFile> virtualFileOP =
                             Optional.ofNullable(StandardFileSystems.local().findFileByPath(projectUrlOp.get()));
-                    virtualFileOP.ifPresent(
-                            virtualFileRoot -> {
-                                Editor editor = e.getData(CommonDataKeys.EDITOR);
-                                if (editor != null) {
-                                    ModifiableRootModel modifiableModel = ModuleRootManager
-                                            .getInstance(ProjectRootManager.getInstance(projectOp.get()).getFileIndex()
-                                                    .getModuleForFile(PsiDocumentManager.getInstance(projectOp.get())
-                                                            .getPsiFile(editor.getDocument()).getVirtualFile()))
-                                            .getModifiableModel();
-                                    ContentEntry contentEntry = MarkRootActionBase.findContentEntry(modifiableModel,
-                                            virtualFileRoot);
-                                    if (contentEntry != null) {
-                                        ApiMappingHandler.excludedFilesMap.put(projectOp.get(),
-                                                contentEntry.getExcludeFolderFiles());
-                                    }
-                                }
-                            }
-                    );
-                    virtualFileOP.ifPresent(apiMappingHandler::iterateVfsTreeNode);
-                    List<PsiFile> psiFiles = PsiUtilCore.toPsiFiles(PsiManager.getInstance(projectOp.get()),
-                            apiMappingHandler.getVirtualFileSet());
+
+
+                    List<PsiFile> psiFiles = ApplicationManager.getApplication()
+                            .runReadAction((Computable<List<PsiFile>>) () -> {
+                                virtualFileOP.ifPresent(
+                                        virtualFileRoot -> {
+                                            Editor editor = e.getData(CommonDataKeys.EDITOR);
+                                            if (editor != null) {
+                                                ModifiableRootModel modifiableModel = ModuleRootManager
+                                                        .getInstance(ProjectRootManager
+                                                                .getInstance(projectOp.get()).getFileIndex()
+                                                                .getModuleForFile(PsiDocumentManager
+                                                                        .getInstance(projectOp.get())
+                                                                        .getPsiFile(editor
+                                                                                .getDocument()).getVirtualFile()))
+                                                        .getModifiableModel();
+                                                ContentEntry contentEntry = MarkRootActionBase
+                                                        .findContentEntry(modifiableModel, virtualFileRoot);
+                                                if (contentEntry != null) {
+                                                    ApiMappingHandler.excludedFilesMap.put(projectOp.get(),
+                                                            contentEntry.getExcludeFolderFiles());
+                                                }
+                                            }
+                                        }
+                                );
+                                virtualFileOP.ifPresent(apiMappingHandler::iterateVfsTreeNode);
+                                return PsiUtilCore.toPsiFiles(PsiManager.getInstance(projectOp.get()),
+                                    apiMappingHandler.getVirtualFileSet());
+                            });
                     ApplicationManager.getApplication().invokeLater(() -> ApplicationManager.getApplication()
                             .runReadAction(() -> apiMappingHandler.handleProjectApiMapping(psiFiles)));
                 }

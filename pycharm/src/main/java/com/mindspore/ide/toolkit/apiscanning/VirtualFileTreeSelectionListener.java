@@ -21,6 +21,10 @@ public class VirtualFileTreeSelectionListener implements TreeSelectionListener {
         log.info("tree node selected");
         TreePath virtualFileNodePath = e.getNewLeadSelectionPath();
         VirtualFileNode virtualFileNode = (VirtualFileNode) virtualFileNodePath.getLastPathComponent();
-        new ApiMappingHandler(project).handleTreeNodeSelection(virtualFileNode);
+        try {
+            new ApiMappingHandler(project).handleTreeNodeSelection(virtualFileNode);
+        } catch (Exception ex) {
+            log.info(ex);
+        }
     }
 }

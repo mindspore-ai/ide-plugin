@@ -1,6 +1,10 @@
 package com.mindspore.ide.toolkit.apiscanning.handler;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ContentIterator;
 import com.intellij.openapi.vfs.VfsUtilCore;
@@ -100,40 +104,51 @@ public class ApiMappingHandler {
         fromMap = new HashMap<>();
         fromAsMap = new HashMap<>();
         apiNameList = new LinkedHashSet<>();
-        psiFiles.stream()
-                .filter(psiFile -> psiFile.getName().contains(".py"))
-                .forEach(this::getProjectApiMappingInfoByPsi);
         List<Object[]> apiNameNullList = new LinkedList<>();
         List<Object[]> straightApiMappingList = sortList(apiNameFiltering, apiNameNullList);
         List<Object[]> blurredApiMappingList = sortList(apiBlurredNameFiltering, null);
-        if (straightApiMappingList.size() > 0) {
-            ApiMappingProjectUI projectMap = new ApiMappingProjectUI(trans(straightApiMappingList),
-                    trans(blurredApiMappingList),
-                    trans(apiNameNullList), myProject, root, root);
-            JBScrollPane jbScrollPane = new JBScrollPane(projectMap.splitPane);
-            Content content = ContentFactory.SERVICE.getInstance()
-                    .createContent(jbScrollPane, myProject.getName(), true);
-            contentManager.addContent(content);
-            projectContentMap.put(content, projectMap);
-            contentManager.setSelectedContent(content, false, false);
-        }
+        ApiMappingProjectUI projectMap = new ApiMappingProjectUI(trans(straightApiMappingList),
+                trans(blurredApiMappingList),
+                trans(apiNameNullList), myProject, root, root);
+        JBScrollPane jbScrollPane = new JBScrollPane(projectMap.splitPane);
+        Content content = ContentFactory.SERVICE.getInstance()
+                .createContent(jbScrollPane, myProject.getName(), true);
+        contentManager.addContent(content);
+        projectContentMap.put(content, projectMap);
+        contentManager.setSelectedContent(content, false, false);
         toolWindow.show();
     }
 
-    public void handleTreeNodeSelection(@NotNull VirtualFileNode virtualFileNode) {
+    public void handleTreeNodeSelection(@NotNull VirtualFileNode virtualFileNode) throws Exception {
+        final ApiMappingHandler apiMappingHandler = this;
         VirtualFile chosenFile = virtualFileNode.getVirtualFile();
-        VfsUtilCore.iterateChildrenRecursively(chosenFile, virtualFileFilter, contentIterator);
         long startTime = System.currentTimeMillis();
+
+        Boolean isRun = ProgressManager.getInstance().run(new Task.WithResult<Boolean, Exception>(myProject, "Scanning",
+                false) {
+            @Override
+            public Boolean compute(@NotNull ProgressIndicator indicator) {
+                ApplicationManager.getApplication()
+                        .runReadAction(() -> {
+                            VfsUtilCore.iterateChildrenRecursively(chosenFile, virtualFileFilter, contentIterator);
+                            List<PsiFile> psiFiles = PsiUtilCore.toPsiFiles(
+                                    PsiManager.getInstance(myProject), virtualFileSet);
+                            importMap = new HashMap<>();
+                            fromMap = new HashMap<>();
+                            fromAsMap = new HashMap<>();
+                            apiNameList = new LinkedHashSet<>();
+                            psiFiles.stream()
+                                    .filter(psiFile -> psiFile.getName().contains(".py"))
+                                    .forEach(apiMappingHandler::getProjectApiMappingInfoByPsi);
+                        });
+                return true;
+            }
+        });
+        if (!isRun) {
+            return;
+        }
         ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(myProject);
         ToolWindow toolWindow = toolWindowManager.getToolWindow("MindSporeApiMapping");
-        List<PsiFile> psiFiles = PsiUtilCore.toPsiFiles(PsiManager.getInstance(myProject), virtualFileSet);
-        importMap = new HashMap<>();
-        fromMap = new HashMap<>();
-        fromAsMap = new HashMap<>();
-        apiNameList = new LinkedHashSet<>();
-        psiFiles.stream()
-                .filter(psiFile -> psiFile.getName().contains(".py"))
-                .forEach(this::getProjectApiMappingInfoByPsi);
         List<Object[]> apiNameNullList = new LinkedList<>();
         List<Object[]> straightApiMappingList = sortList(apiNameFiltering, apiNameNullList);
         List<Object[]> blurredApiMappingList = sortList(apiBlurredNameFiltering, null);
@@ -153,6 +168,7 @@ public class ApiMappingHandler {
         toolWindow.show();
         log.info("api mapping for project const" + (System.currentTimeMillis() - startTime) + " ms");
     }
+
     public void getProjectApiMappingInfoByPsi(@NotNull PsiFile psiFile) {
         apiBlurredNameList = new LinkedHashSet<>();
         translateImport(psiFile, importMap, fromMap, fromAsMap);

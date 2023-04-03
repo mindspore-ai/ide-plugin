@@ -36,7 +36,7 @@ public class ExportDialog extends JDialog {
 
     private String fileName;
 
-    private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 
     /**
      * construction method
