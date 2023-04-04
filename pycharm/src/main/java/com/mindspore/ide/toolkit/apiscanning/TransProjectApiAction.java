@@ -9,6 +9,7 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
@@ -56,19 +57,22 @@ public class TransProjectApiAction extends AnAction {
                                         virtualFileRoot -> {
                                             Editor editor = e.getData(CommonDataKeys.EDITOR);
                                             if (editor != null) {
-                                                ModifiableRootModel modifiableModel = ModuleRootManager
-                                                        .getInstance(ProjectRootManager
-                                                                .getInstance(projectOp.get()).getFileIndex()
-                                                                .getModuleForFile(PsiDocumentManager
-                                                                        .getInstance(projectOp.get())
-                                                                        .getPsiFile(editor
-                                                                                .getDocument()).getVirtualFile()))
-                                                        .getModifiableModel();
-                                                ContentEntry contentEntry = MarkRootActionBase
-                                                        .findContentEntry(modifiableModel, virtualFileRoot);
-                                                if (contentEntry != null) {
-                                                    ApiMappingHandler.excludedFilesMap.put(projectOp.get(),
-                                                            contentEntry.getExcludeFolderFiles());
+                                                Module moduleForFile = ProjectRootManager
+                                                        .getInstance(projectOp.get()).getFileIndex()
+                                                        .getModuleForFile(PsiDocumentManager
+                                                                .getInstance(projectOp.get())
+                                                                .getPsiFile(editor
+                                                                        .getDocument()).getVirtualFile());
+                                                if (moduleForFile != null) {
+                                                    ModifiableRootModel modifiableModel = ModuleRootManager
+                                                            .getInstance(moduleForFile)
+                                                            .getModifiableModel();
+                                                    ContentEntry contentEntry = MarkRootActionBase
+                                                            .findContentEntry(modifiableModel, virtualFileRoot);
+                                                    if (contentEntry != null) {
+                                                        ApiMappingHandler.excludedFilesMap.put(projectOp.get(),
+                                                                contentEntry.getExcludeFolderFiles());
+                                                    }
                                                 }
                                             }
                                         }
