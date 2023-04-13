@@ -4,20 +4,19 @@
 <!-- TOC -->
 
 * [MindSpore Dev Toolkit介绍](#mindspore-dev-toolkit介绍)
-
-    * [MindSpore运行管理](#mindspore运行管理)
-    * [对接智能知识搜索](#对接智能知识搜索)
+  
     * [智能代码补全](#智能代码补全)
-    * [算子互搜](#算子互搜)
+    * [算子互搜(仅PyCharm插件)](#算子互搜)
+    * [MindSpore运行管理(仅PyCharm插件)](#mindspore运行管理)
+    * [对接智能知识搜索(仅PyCharm插件)](#对接智能知识搜索)
+
 
 * [安装及快速入门](#安装及快速入门)
 
-    * [系统需求](#系统需求)
-    * [安装](#安装)
-    * [快速入门](#快速入门)
-    * [源码编译安装](#源码编译安装)
+    * [PyCharm 插件安装及快速入门](#pycharm插件安装及快速入门)
+    * [Visual Studio Code 插件安装及快速入门](#visual-studio-code插件安装及快速入门)
 
-* [源码构建](#源码构建)
+* [源码构建(仅PyCharm插件)](#源码构建)
 * [社区](#社区)
 
     * [治理](#治理)
@@ -34,6 +33,16 @@
 MindSpore Dev Toolkit是一款面向MindSpore开发者的开发套件。通过深度学习、智能搜索及智能推荐等技术，打造智能计算最佳体验，致力于全面提升MindSpore框架的易用性，助力MindSpore生态推广。
 MindSpore Dev Toolkit提供如下功能：
 
+### 智能代码补全
+
+* 提供基于MindSpore项目的AI代码补全。
+* 无需安装MindSpore环境，也可轻松开发MindSpore。
+
+### 算子互搜
+
+* 快速搜索MindSpore算子，在侧边栏直接展示算子详情。
+* 为方便其他机器学习框架用户，通过搜索其他主流框架算子，联想匹配对应MindSpore算子。
+
 ### MindSpore运行管理
 
 * 创建conda环境或选择已有conda环境，并安装MindSpore二进制包至conda环境。
@@ -45,49 +54,15 @@ MindSpore Dev Toolkit提供如下功能：
 * 定向推荐：根据用户使用习惯，提供更精准的搜索结果。
 * 沉浸式资料检索体检，避免在IDE和浏览器之间的互相切换。适配侧边栏，提供窄屏适配界面。
 
-### 智能代码补全
-
-* 提供基于MindSpore项目的AI代码补全。
-* 无需安装MindSpore环境，也可轻松开发MindSpore。
-
-### 算子互搜
-
-* 快速搜索MindSpore算子，在侧边栏直接展示算子详情。
-* 为方便其他机器学习框架用户，通过搜索其他主流框架算子，联想匹配对应MindSpore算子。
-
 ## 安装及快速入门
 
-### 系统需求
-
-MindSpore Dev ToolKit 是一款[PyCharm](https://www.jetbrains.com/pycharm/)插件。PyCharm是一款多平台Python IDE。
-
-* 插件支持的操作系统：
-
-    * Windows 10
-    * Linux
-
-* 插件支持的PyCharm版本:
-
-    * 2020.3
-    * 2021.1
-    * 2021.2
-    * 2021.3
-
-### 安装
-
-1. 获取[插件Zip包](https://ms-release.obs.cn-north-4.myhuaweicloud.com/1.8.1/IdePlugin/any/MindSpore_Dev_ToolKit-1.8.1.zip)。
-2. 启动Pycharm单击左上菜单栏，选择File->Settings->Plugins->Install Plugin from Disk。
-   如图：
-   ![image-20211223175637989](./images/clip_image050.jpg)
-3. 选择插件zip包。
-
-### 快速入门
+### PyCharm插件安装及快速入门
 
 请参阅[快速入门](https://gitee.com/mindspore/ide-plugin/blob/master/MindSpore%20Dev%20Toolkit%20快速入门指南.md)。
 
-### 源码编译安装
+### Visual Studio Code插件安装及快速入门
 
-请参阅[源码构建](#源码构建)章节构建源码获取插件zip包，并参照[安装](#安装)章节安装。
+请参阅[快速入门](https://gitee.com/mindspore/ide-plugin/blob/master/MindSpore%20Dev%20Toolkit-vscode%20快速入门指南.md)。
 
 ## 源码构建
 

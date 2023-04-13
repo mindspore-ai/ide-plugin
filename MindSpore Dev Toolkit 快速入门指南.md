@@ -2,7 +2,33 @@
 
 MindSpore Dev Toolkit作为Pycharm插件工具，为用户提供一键安装conda，创建conda环境，并使用conda创建MindSpore项目等功能。本文旨在帮助用户快速了解使用本产品。
 
-## 一、创建MindSpore项目
+## 一、系统需求
+
+MindSpore Dev ToolKit 插件可支持[PyCharm](https://www.jetbrains.com/pycharm/)。PyCharm是一款多平台Python IDE。
+
+* 插件支持的操作系统：
+
+    * Windows 10
+    * Linux
+
+* 插件支持的PyCharm版本:
+
+    * 2020.3
+    * 2021.1
+    * 2021.2
+    * 2021.3
+
+## 二、插件安装
+
+1. 获取[插件Zip包](https://ms-release.obs.cn-north-4.myhuaweicloud.com/1.8.1/IdePlugin/any/MindSpore_Dev_ToolKit-1.8.1.zip)。
+2. 启动Pycharm单击左上菜单栏，选择File->Settings->Plugins->Install Plugin from Disk。
+   如图：
+
+   ![image-20211223175637989](./images/clip_image050.jpg)
+
+3. 选择插件zip包。
+
+## 三、创建MindSpore项目
 
 ### 技术背景
 
@@ -93,7 +119,7 @@ MindSpore Dev Toolkit作为Pycharm插件工具，为用户提供一键安装cond
 
       ![img](./images/clip_image029.jpg)
 
-## 二、算子互搜
+## 四、算子互搜
 
 ### 使用步骤
 
@@ -115,7 +141,7 @@ MindSpore Dev Toolkit作为Pycharm插件工具，为用户提供一键安装cond
 
       ![img](./images/clip_image068.jpg)
 
-## 三、代码补全
+## 五、代码补全
 
 ### 使用步骤
 
@@ -128,3 +154,51 @@ MindSpore Dev Toolkit作为Pycharm插件工具，为用户提供一键安装cond
       ![img](./images/clip_image090.jpg)
 
       ![img](./images/clip_image092.jpg)
+
+## 六、文件级别算子扫描
+
+### 使用步骤
+
+1. 在当前文件任意位置处右键，打开菜单，点击菜单最上方的"operator scan"。
+   
+      ![img](./images/clip_image100.jpg)
+
+2. 右边栏会自动弹出，展示扫描出的算子，并展示包含名称，网址等信息的详细列表。若本文件中未扫描到算子，则不会弹出窗口。
+  
+      ![img](./images/clip_image101.jpg)
+
+3. 蓝色字体的部分均可以点击，会自动在上方再打开一栏，展示网页。
+   
+      ![img](./images/clip_image102.jpg)
+      
+4. 点击右上角"导出"按钮，可将内容导出到csv表格。
+   
+      ![img](./images/clip_image103.jpg)
+
+## 七、项目级别算子扫描
+
+### 使用步骤
+
+1. 在当前文件任意位置处右键，打开菜单，点击菜单上方第二个"operator scan project-level"，或在上方工具栏选择"Tools"，再选择"operator scan project-level"。
+   
+      ![img](./images/clip_image104.jpg)
+
+      ![img](./images/clip_image105.jpg)
+
+2. 右边栏会弹出整个项目中扫描出的算子，并展示包含名称，网址等信息的详细列表。
+   
+      ![img](./images/clip_image106.jpg)
+
+3. 在上方框中可以选择单个文件，下方框中将单独展示此文件中的算子，文件选择可以随意切换。
+   
+      ![img](./images/clip_image107.jpg)
+
+      ![img](./images/clip_image108.jpg)
+
+4. 蓝色字体部分均可以点击，会自动在上方再打开一栏，展示网页。
+   
+      ![img](./images/clip_image109.jpg)
+
+5. 点击”导出“按钮，可将内容导出到csv表格。
+
+      ![img](./images/clip_image110.jpg)
