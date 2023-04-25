@@ -28,7 +28,7 @@
 
 <!-- /TOC -->
 
-## MindSpore Dev ToolKit介绍
+## MindSpore Dev Toolkit介绍
 
 MindSpore Dev Toolkit是一款面向MindSpore开发者的开发套件。通过深度学习、智能搜索及智能推荐等技术，打造智能计算最佳体验，致力于全面提升MindSpore框架的易用性，助力MindSpore生态推广。
 MindSpore Dev Toolkit提供如下功能：
@@ -58,15 +58,15 @@ MindSpore Dev Toolkit提供如下功能：
 
 ### PyCharm插件安装及快速入门
 
-请参阅[快速入门](https://gitee.com/mindspore/ide-plugin/blob/master/MindSpore%20Dev%20Toolkit%20快速入门指南.md)。
+请参阅[快速入门](./MindSpore%20Dev%20Toolkit%20快速入门指南.md)。
 
 ### Visual Studio Code插件安装及快速入门
 
-请参阅[快速入门](https://gitee.com/mindspore/ide-plugin/blob/master/MindSpore%20Dev%20Toolkit-vscode%20快速入门指南.md)。
+请参阅[快速入门](./MindSpore%20Dev%20Toolkit-vscode%20快速入门指南.md)。
 
 ## 源码构建
 
-请参阅[编译指导](https://gitee.com/mindspore/ide-plugin/blob/master/MindSpore%20Dev%20ToolKit%20源码编译指导.md)。
+请参阅[编译指导](./MindSpore%20Dev%20ToolKit%20源码编译指导.md)。
 
 ## 社区
 

@@ -14,13 +14,12 @@ MindSpore Dev ToolKit 插件可支持[PyCharm](https://www.jetbrains.com/pycharm
 * 插件支持的PyCharm版本:
 
     * 2020.3
-    * 2021.1
-    * 2021.2
-    * 2021.3
+    * 2021.x
+    * 2022.x
 
 ## 二、插件安装
 
-1. 获取[插件Zip包](https://ms-release.obs.cn-north-4.myhuaweicloud.com/1.8.1/IdePlugin/any/MindSpore_Dev_ToolKit-1.8.1.zip)。
+1. 获取[插件Zip包](https://ms-release.obs.cn-north-4.myhuaweicloud.com/2.0.0rc1/IdePlugin/any/MindSpore_Dev_ToolKit-2.0.0.zip)。
 2. 启动Pycharm单击左上菜单栏，选择File->Settings->Plugins->Install Plugin from Disk。
    如图：
 
