@@ -41,7 +41,7 @@ public class TransProjectApiAction extends AnAction {
 
         Optional<Project> projectOp = Optional.ofNullable(e.getData(PlatformDataKeys.PROJECT));
         if (projectOp.isPresent()) {
-            ProgressManager.getInstance().run(new Task.Backgroundable(projectOp.get(), "operator scan " +
+            ProgressManager.getInstance().run(new Task.Backgroundable(projectOp.get(), "API Scan " +
                     "project-level") {
                 @Override
                 public void run(@NotNull ProgressIndicator indicator) {
