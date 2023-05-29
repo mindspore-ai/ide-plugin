@@ -158,7 +158,7 @@ MindSpore Dev ToolKit 插件可支持[PyCharm](https://www.jetbrains.com/pycharm
 
 ### 使用步骤
 
-1. 在当前文件任意位置处右键，打开菜单，点击菜单最上方的"operator scan"。
+1. 在当前文件任意位置处右键，打开菜单，点击菜单最上方的"API Scan"。
    
       ![img](./images/clip_image100.jpg)
 
@@ -178,7 +178,7 @@ MindSpore Dev ToolKit 插件可支持[PyCharm](https://www.jetbrains.com/pycharm
 
 ### 使用步骤
 
-1. 在当前文件任意位置处右键，打开菜单，点击菜单上方第二个"operator scan project-level"，或在上方工具栏选择"Tools"，再选择"operator scan project-level"。
+1. 在当前文件任意位置处右键，打开菜单，点击菜单上方第二个"API Scan project-level"，或在上方工具栏选择"Tools"，再选择"API Scan project-level"。
    
       ![img](./images/clip_image104.jpg)
 

@@ -18,7 +18,7 @@ public class NotificationUtils {
         SMART_COMPLETE("SmartComplete", "MindSpore smart complete"),
         NEW_PROJECT("NewProject", "New MindSpore project"),
         SEARCH("Search", "MindSpore search"),
-        API_SCANNING("Operator scan", "MindSpore operator scan");
+        API_SCANNING("API Scan", "MindSpore API Scan");
 
         private String groupId;
 

@@ -10,9 +10,9 @@
 
 - [BETA] Visual Studio Code extension is now available. 
 
-#### Operator scanning
+#### API scanning
 
-- [BETA] A brand-new feature. Operator scanning can scan a file or the whole project to find out all PyTorch operations.
+- [BETA] A brand-new feature. API scanning can scan a file or the whole project to find out all PyTorch operations.
   Then gives a mapping table to suggest how to immigrate to MindSpore.
 
 ## MindSpore Dev Toolkit 1.8.0 Release Notes
