@@ -10,9 +10,9 @@
 
 - [BETA] 提供Visual Studio Code 平台的插件。
 
-#### 算子扫描
+#### API扫描
 
-- [BETA] 新增算子扫描功能。扫描文件或项目中所有的PyTorch算子，并提供对应的MindSpore算子迁移建议。
+- [BETA] 新增API扫描功能。扫描文件或项目中所有的PyTorch API，并提供对应的MindSpore API迁移建议。
 
 ## MindSpore Dev Toolkit 1.8.0 Release Notes
 

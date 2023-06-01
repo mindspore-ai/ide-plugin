@@ -154,7 +154,7 @@ MindSpore Dev ToolKit 插件可支持[PyCharm](https://www.jetbrains.com/pycharm
 
       ![img](./images/clip_image092.jpg)
 
-## 六、文件级别算子扫描
+## 六、文件级别API扫描
 
 ### 使用步骤
 
@@ -174,7 +174,7 @@ MindSpore Dev ToolKit 插件可支持[PyCharm](https://www.jetbrains.com/pycharm
    
       ![img](./images/clip_image103.jpg)
 
-## 七、项目级别算子扫描
+## 七、项目级别API扫描
 
 ### 使用步骤
 
