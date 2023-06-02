@@ -19,8 +19,30 @@
       {
         "command": "mindsporeCompletion.helloWorld",
         "title": "Hello World"
+      },
+      {
+        "command": "extension.openWebviewCommand.openWebview",
+        "title": "Open inner url"
       }
-    ]
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "explorer1",
+          "title": "搜索API",
+          "icon": "dep.svg"
+        }
+      ]
+    },
+    "views": {
+      "explorer1": [
+        {
+          "id": "exampleView",
+          "name": "Enter Keywords to Search",
+          "type": "webview"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",

@@ -7,9 +7,12 @@ import {fsExistsSync} from "./fileUtil";
 import * as fs from "fs";
 import { ADDITIONAL_CHARACTERS, WhitzardProvider } from './provider';
 import { logger } from './log/log4js';
+import { getResult, markdownTableToJson } from './readMD';
+import {OpenWebProvider} from './SearchWebveiwProvider';
 
 
 let whitzardCompletionProvider: WhitzardProvider;
+
 
 function init(){
 	const root = join(homedir(), ".mindspore");
@@ -26,6 +29,9 @@ export async function activate(context: vscode.ExtensionContext) {
 	whitzardCompletionProvider = await WhitzardProvider.getInstance();
 	const pythonProvider = vscode.languages.registerCompletionItemProvider([{language: 'python'}],whitzardCompletionProvider, ...ADDITIONAL_CHARACTERS);
 	context.subscriptions.push(pythonProvider);
+	const provider = new OpenWebProvider(context.extensionUri);
+	context.subscriptions.push(
+		vscode.window.registerWebviewViewProvider(OpenWebProvider.viewType, provider));
 
 }
 
@@ -35,3 +41,4 @@ export function deactivate() {
 	return whitzardCompletionProvider?.decativate();
 	
 }
+
