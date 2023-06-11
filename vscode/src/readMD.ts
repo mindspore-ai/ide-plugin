@@ -77,26 +77,5 @@ export function markdownTableToJson(filePath: string): any[] | null {
   return null;
 }
 
-export function searchJson(jsonData: any[], searchWords: string[]): any[] {
-  const searchRegex = new RegExp(`^\(${searchWords.join('|')})`, 'i');
-  const filteredJson = jsonData.filter((obj) => {
-    for (const key in obj) {
-      if (searchRegex.test(obj[key])) {
-        //obj.key 是header
-        //
-        return true;
-      }
-    }
-    return false;
-  });
-  return filteredJson;
-}
 
-export function getResult(filepath: string, searchWords: string[]){
-  let jsonData = markdownTableToJson(filepath)
-  if (jsonData){
-    const result = searchJson(jsonData, searchWords)
-    return result;
-  }
-  return null;
-}
+

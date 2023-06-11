@@ -7,8 +7,8 @@ import {fsExistsSync} from "./fileUtil";
 import * as fs from "fs";
 import { ADDITIONAL_CHARACTERS, WhitzardProvider } from './provider';
 import { logger } from './log/log4js';
-import { getResult, markdownTableToJson } from './readMD';
-import {OpenWebProvider} from './SearchWebveiwProvider';
+import { getUserFileContent } from './getUserFileContent';
+import { MyTreeData } from './myTreeData';
 
 
 let whitzardCompletionProvider: WhitzardProvider;
@@ -23,16 +23,19 @@ function init(){
 
 export async function activate(context: vscode.ExtensionContext) {
 	init();
+	getUserFileContent(context);
 	let versionNumber = context.extension.packageJSON.version;
 	context.subscriptions.push(vscode.commands.registerCommand('getContext', () => versionNumber));
 
 	whitzardCompletionProvider = await WhitzardProvider.getInstance();
 	const pythonProvider = vscode.languages.registerCompletionItemProvider([{language: 'python'}],whitzardCompletionProvider, ...ADDITIONAL_CHARACTERS);
 	context.subscriptions.push(pythonProvider);
-	const provider = new OpenWebProvider(context.extensionUri);
-	context.subscriptions.push(
-		vscode.window.registerWebviewViewProvider(OpenWebProvider.viewType, provider));
 
+	// register treeview
+	const rootPath = vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0 
+		? vscode.workspace.workspaceFolders[0].uri.fsPath
+		: undefined;
+	vscode.window.registerTreeDataProvider('TreeViewTest_One', new MyTreeData(rootPath)); 
 }
 
 // This method is called when your extension is deactivated
