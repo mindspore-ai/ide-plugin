@@ -11,7 +11,8 @@
     "Other"
   ],
   "activationEvents": [
-    "*"
+    "*",
+    "onView: TreeViewTest"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -19,8 +20,50 @@
       {
         "command": "mindsporeCompletion.helloWorld",
         "title": "Hello World"
+      },
+      {
+        "command": "mindspore.scanLocalFile",
+        "title": "扫描本地文件"
+      },
+      {
+        "command": "TreeViewTest_One.refreshEntry",
+        "title": "Refresh",
+        "icon": "images/refresh.svg"
+        
       }
-    ]
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "TreeViewTest",
+          "title": "Project TreeView",
+          "icon": "images/containerIcon.svg"
+        }
+      ]
+    },
+    "views": {
+      "TreeViewTest": [
+        {
+          "id": "TreeViewTest_One",
+          "name": "File TreeView"
+        }
+      ]
+    },
+    "menus": {
+      "editor/context": [
+        {
+          "command": "mindspore.scanLocalFile",
+          "group": "navigation"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "TreeViewTest_One.refreshEntry",
+          "when": "view == TreeViewTest_One",
+          "grout": "navigation"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
@@ -36,6 +79,7 @@
   "devDependencies": {
     "@types/glob": "^8.0.1",
     "@types/google-protobuf": "^3.15.6",
+    "@types/marked": "^5.0.0",
     "@types/mocha": "^10.0.1",
     "@types/node": "16.x",
     "@types/vscode": "^1.75.0",
@@ -57,6 +101,8 @@
     "compressing": "^1.7.0",
     "google-protobuf": "^3.21.2",
     "js-yaml": "^4.1.0",
-    "log4js": "^6.7.1"
+    "log4js": "^6.7.1",
+    "markdown-table": "^3.0.3",
+    "marked": "^5.0.5"
   }
 }
