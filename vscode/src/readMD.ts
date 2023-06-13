@@ -41,8 +41,9 @@ export function markdownTableToJson(filePath: string): any[] | null {
       tableData.header[9] = "mindspore2word"
       tableData.header[10] = "mindspore3word"
       tableData.header[11] = "mindspore4word"
-      tableData.header[12] = headerDiff
+      tableData.header[12] = "remark"
       tableData.header[13] = "diffURL"
+      tableData.header[14] = "version"
 
     const jsonData = tableData.rows.map((row) => {
       const rowObject: { [key: string]: string } = {};
@@ -67,6 +68,7 @@ export function markdownTableToJson(filePath: string): any[] | null {
         rowObject[tableData.header[(index+1)*6-3]] = tempNameSplit[1];
         rowObject[tableData.header[(index+1)*6-2]] = tempNameSplit[2];
         rowObject[tableData.header[(index+1)*6-1]] = tempNameSplit[3];
+        rowObject[tableData.header[14]] = headerOperator; 
 
       });
       return rowObject;
