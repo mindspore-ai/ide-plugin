@@ -1,15 +1,93 @@
 import { markdownTableToJson } from "./readMD";
 import { markdownTable } from 'markdown-table';
+import { tensorApi } from "./resource/specialTorch";
+let filePath = "../pytorch_api_mapping.md";
+let jsonData = markdownTableToJson(filePath);
+export function scanAPI(apis: string[]){
+    const head = ["PyTorch API","API 版本", "MindSpore API", "说明"];
+    let convertible = new Map<string, string[]>();
+    let inconvertible = new Map<string, string[]>();
+    let chainCall = new Map<string, string[]>();
+    let chainCallInconvertible = new Map<string, string[]>();
 
-export function scanAPI(fileContent: string){
-    let filePath = "D:/MindSporeToolkit/ide-plugin/vscode/test.md"
-    let jsonData = markdownTableToJson(filePath); 
 
-    const table = markdownTable([
-        ['header 1', 'header 2'],
-        ['row 1 cell 1', 'row 1 cell 2'],
-        ['row 2 cell 1', 'row 2 cell 2'],
-    ]);
+    let tempMap = new Map<string, any>();
+    jsonData?.forEach((row) => {
+        tempMap.set(row.operator1word, row);
+    });
+
+    apis.forEach((rawApi) => {
+        let api = rawApi.replace(/([^\w.])/g, "");
+        if (tempMap.has(api)) {
+            let target = tempMap.get(api);
+            let record = [
+                target.operatorURL?`[${target.operator1word}](${target.operatorURL})`:target.operator1word,
+                target.version,
+                target.mindsporeURL?`[${target.mindspore1word}](${target.mindsporeURL})`:target.mindspore1word,
+                target.diffURL?`[${target.remark}](${target.diffURL})`: target.remark];
+            convertible.set(api,record);
+        } else {
+            let apiName = api.split(".").pop()??"";
+            if (tensorApi.indexOf(apiName) > 0) {
+                apiName = "torch.Tensor." + apiName;
+                let target = tempMap.get(apiName);
+                let record = [apiName, "", "", ""];
+                if (target) {
+                    record = [
+                        target.operatorURL?`[${target.operator1word}](${target.operatorURL})`:target.operator1word,
+                        target.version,
+                        target.mindsporeURL?`[${target.mindspore1word}](${target.mindsporeURL})`:target.mindspore1word,
+                        target.diffURL?`[${target.remark}](${target.diffURL})`: target.remark];
+                        chainCall.set(apiName,record);
+                } else {
+                    chainCallInconvertible.set(apiName,record);
+                }
+            } else {
+                if (api.startsWith("torch")) {
+                    inconvertible.set(api, [api,"","",""]);
+                }
+            }
+        }
+
+    });
+    // let table = markdownTable([{
+    //     operatorURL: "https://pytorch.org/docs/1.8.1/generated/torch.argsort.html",
+    //     operator1word: "torch.argsort",
+    //     mindsporeURL: "https://www.mindspore.cn/docs/zh-CN/r2.0/api_python/ops/mindspore.ops.argsort.html",
+    //     mindspore1word: "mindspore.ops.argsort",
+    //     diffURL: "",
+    //   }
+    let convertibleTable = [];
+    if (convertible.size > 0) {
+        convertibleTable.push(head);
+        (new Map([...convertible].sort())).forEach((value) => {
+            convertibleTable.push(value);
+        });
+    } else {
+        convertibleTable.push(["无"]);
+    }
+    let inconvertibleTable = [];
+    if (inconvertible.size > 0) {
+        inconvertibleTable.push(head);
+        (new Map([...inconvertible].sort())).forEach((value) => {
+            inconvertibleTable.push(value);
+        });
+    } else {
+        inconvertibleTable.push(["无"]);
+    }
+    let callChainTable = [];
+    if (chainCall.size > 0 || chainCallInconvertible.size > 0) {
+        callChainTable.push(head);
+        (new Map([...chainCall].sort())).forEach((value) => {
+            callChainTable.push(value);
+        });
+        (new Map([...chainCallInconvertible].sort())).forEach((value) => {
+            callChainTable.push(value);
+        });
+    } else {
+        callChainTable.push(["无"]);
+    }
+    const table = [markdownTable(convertibleTable),markdownTable(callChainTable),markdownTable(inconvertibleTable)];
 
     return table;
 }
