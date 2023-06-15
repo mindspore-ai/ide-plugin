@@ -1,4 +1,4 @@
-import { userInfo } from "os"
+import { userInfo } from "os";
 import * as vscode from "vscode";
 import { logger } from "./log/log4js";
 import fs = require('fs');
@@ -42,7 +42,7 @@ export async function getUid():Promise<string> {
             uid = user.name;
         }
     }
-    logger.info("mindspore plugin curret user:" + uid);
+    logger.info("mindspore plugin current user:" + uid);
     return uid;
 
 }
@@ -55,7 +55,7 @@ export async function getVersion() {
 export async function getDownloadInfo(platform:string) {
     let versionNumber = await getVersion();
     var configFileContents: any;
-    let yamlPath = path.join(__dirname, '..', 'complete.yaml')
+    let yamlPath = path.join(__dirname, '..', 'complete.yaml');
     try {
         configFileContents = fs.readFileSync(yamlPath, "utf8");
     } catch (error: any) {
@@ -75,10 +75,10 @@ export async function getDownloadInfo(platform:string) {
         versionNumber = "default_plugin_version";
     };
 
-    let modelURL = configYmal.modelMap[versionNumber][platform].modelDownloadUrl;
-    let modelZIP = configYmal.modelMap[versionNumber][platform].modelZipName;
-    let modelDIR = configYmal.modelMap[versionNumber][platform].modelUnzipFolderName;
-    let modelPATH = configYmal.modelMap[versionNumber][platform].modelExePath;
+    let modelURL = configYmal.modelMap[versionNumber][platform]?.modelDownloadUrl??"";
+    let modelZIP = configYmal.modelMap[versionNumber][platform]?.modelZipName??"";
+    let modelDIR = configYmal.modelMap[versionNumber][platform]?.modelUnzipFolderName??"";
+    let modelPATH = configYmal.modelMap[versionNumber][platform]?.modelExePath??"";
     return {modelURL, modelZIP, modelDIR, modelPATH};
 
 }

@@ -9,20 +9,22 @@ import { ADDITIONAL_CHARACTERS, WhitzardProvider } from './provider';
 import { logger } from './log/log4js';
 import { getUserFileContent } from './getUserFileContent';
 import { MyTreeData } from './myTreeData';
+import * as scanner from './scanner';
 
 
 let whitzardCompletionProvider: WhitzardProvider;
 
 
-function init(){
+async function init(){
 	const root = join(homedir(), ".mindspore");
 	if (!fsExistsSync(root)){
 		fs.mkdirSync(root);
 	}
+	await scanner.init();
 }
 
 export async function activate(context: vscode.ExtensionContext) {
-	init();
+	await init();
 	getUserFileContent(context);
 	let versionNumber = context.extension.packageJSON.version;
 	context.subscriptions.push(vscode.commands.registerCommand('getContext', () => versionNumber));
@@ -32,16 +34,13 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(pythonProvider);
 
 	// register treeview
-	const rootPath = vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0 
-		? vscode.workspace.workspaceFolders[0].uri.fsPath
-		: undefined;
-	vscode.window.registerTreeDataProvider('TreeViewTest_One', new MyTreeData(rootPath)); 
+	vscode.window.registerTreeDataProvider('MindSporeTreeView', new MyTreeData());
 }
 
 // This method is called when your extension is deactivated
 export function deactivate() {
-	logger.info("decativate start!");
+	logger.info("deativate start!");
 	return whitzardCompletionProvider?.decativate();
-	
+
 }
 

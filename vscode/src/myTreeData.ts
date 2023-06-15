@@ -2,17 +2,22 @@ import { TreeDataProvider, TreeItem, TreeItemCollapsibleState, ProviderResult, w
 import * as vscode from "vscode";
 
 export class MyTreeData implements TreeDataProvider<MyTreeItem> {
-    constructor(private rootPath: string | undefined) {
-        vscode.commands.registerCommand('TreeViewTest_One.refreshEntry', () => this.refresh());
-        vscode.commands.registerCommand('MyTreeItem.content', item => this.onItemClicked(item));
+    constructor() {
+        vscode.commands.registerCommand('mindspore.refreshEntry', () => this.refresh());
+        vscode.commands.registerCommand('mindspore.content', item => this.onItemClicked(item));
+        let fileSystemWatcher = vscode.workspace.createFileSystemWatcher("**/*.py");
+        fileSystemWatcher.onDidCreate(() => (this.refresh()));
+        fileSystemWatcher.onDidDelete(() => (this.refresh()));
     }
 
-    private _onDidChangeTreeData: EventEmitter<MyTreeItem | undefined | null | void> = new EventEmitter<MyTreeItem | undefined | null | void>();
+    private _onDidChangeTreeData = new EventEmitter<MyTreeItem | undefined | null | void>();
 
     // refresh the treeview
     refresh(): void {
         this._onDidChangeTreeData.fire();
     }
+
+    onDidChangeTreeData = this._onDidChangeTreeData.event;
 
     // action after clicking on item
     onItemClicked(item: MyTreeItem): void {
@@ -20,21 +25,34 @@ export class MyTreeData implements TreeDataProvider<MyTreeItem> {
     }
 
     getTreeItem(element: MyTreeItem): MyTreeItem | Thenable<MyTreeItem> {
+        if (element.label.startsWith("(WorkSpace)")) {
+            return element;
+        }
         element.command = { command: 'mindspore.scanLocalFile', title: 'getContent', arguments: [element.getDescendants(), element.label]};
         return element;
     }
 
     getChildren(element?: MyTreeItem | undefined): ProviderResult<MyTreeItem[]> {
-        if (!this.rootPath) {
-            window.showInformationMessage('No file in empty directory');
-            return Promise.resolve([]);
-        }
 
         if (!element) {
-            let newRoot = new MyTreeItem('', vscode.Uri.file(this.rootPath), TreeItemCollapsibleState.Expanded);
-            return Promise.resolve(newRoot.refreshDescendant(this.rootPath));
-        } else {
-            return Promise.resolve(element.getChildren(vscode.Uri.joinPath(element.parentPath, element.label).fsPath));
+            const rootPaths = vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0 
+            ? vscode.workspace.workspaceFolders.flatMap((value) => { return {path: value.uri.fsPath, name: value.name}})
+            : [];
+            const name = vscode.workspace.name??"";
+            if (rootPaths.length <= 0) {
+                window.showInformationMessage('No file in empty directory');
+                return Promise.resolve([]);
+            }    
+            let newRoot = new MyTreeItem("(WorkSpace)" + name, TreeItemCollapsibleState.Expanded);
+            rootPaths.forEach((value) => {
+                let newFolder =new MyTreeItem(value.name, TreeItemCollapsibleState.Expanded, vscode.Uri.file(value.path));
+                newRoot.addChildren(newFolder)});
+            return Promise.resolve([newRoot]);
+        } else if(!element.uri) {
+            return Promise.resolve(element.init());
+        }
+        else {
+            return Promise.resolve(element.children);
         }
     }
 
@@ -42,30 +60,37 @@ export class MyTreeData implements TreeDataProvider<MyTreeItem> {
 
 export class MyTreeItem extends TreeItem {
     children: MyTreeItem[] = [];
-    uri: vscode.Uri;
     constructor(
         public readonly label: string,
-        public readonly parentPath: vscode.Uri,
         public readonly collapsibleState: TreeItemCollapsibleState,
+        public readonly uri?: vscode.Uri,
         public readonly isFile: boolean = false
     ){
         super(label, collapsibleState);
-        this.uri = vscode.Uri.joinPath(parentPath, label);
     }
 
-    async refreshDescendant(itemPath: string) {
-        let itemUri = vscode.Uri.file(itemPath);
+    async init(){
+        for (let child of this.children) {
+            await child.refreshDescendant();
+        }
+        return this.children;
+    }
+    async refreshDescendant() {
+        if (!this.uri) {
+            return [];
+        }
+        let itemUri = this.uri;
         let fsReadDir = await vscode.workspace.fs.readDirectory(itemUri);
         for (const [fileName, type] of fsReadDir) {
-            let filePath = vscode.Uri.joinPath(itemUri,fileName).fsPath;
             if (type === vscode.FileType.Directory) {
-                let child = new MyTreeItem(fileName, itemUri, TreeItemCollapsibleState.Expanded);
-                if((await child.refreshDescendant(filePath)).length > 0) {
+                let child = new MyTreeItem(fileName, TreeItemCollapsibleState.Expanded, vscode.Uri.joinPath(itemUri,fileName));
+                if((await child.refreshDescendant()).length > 0) {
                     this.children.push(child);
                 }
             } else {
-                if (fileName.endsWith(".ts")) {
-                    let child = new MyTreeItem(fileName, itemUri, TreeItemCollapsibleState.None, true);
+                if (fileName.endsWith(".py")) {
+                    let child = new MyTreeItem(fileName, TreeItemCollapsibleState.None, vscode.Uri.joinPath(itemUri,fileName), true);
+                    child.resourceUri= child.uri;
                     this.children.push(child);
                 }
             }
@@ -73,13 +98,20 @@ export class MyTreeItem extends TreeItem {
         return this.children;
     }
 
-    getChildren(itemPath: string): MyTreeItem[] {
+    addChildren(item: MyTreeItem) {
+        this.children.push(item);
+    }
+
+    async getChildren() {
+        if (this.children.length <= 0) {
+            await this.refreshDescendant();
+        }
         return this.children;
     }
 
     getDescendants() {
         let result: vscode.Uri[] = [];
-        if (this.isFile) {
+        if (this.isFile && this.uri) {
             result.push(this.uri);
             return result;
         }
