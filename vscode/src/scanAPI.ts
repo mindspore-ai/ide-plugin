@@ -1,8 +1,19 @@
 import { markdownTableToJson } from "./readMD";
 import { markdownTable } from 'markdown-table';
 import { tensorApi } from "./resource/specialTorch";
-let filePath = "../pytorch_api_mapping.md";
-let jsonData = markdownTableToJson(filePath);
+import { homedir } from 'os';
+import { join } from 'path';
+import { Constants } from "./constants";
+import * as fs from "fs";
+
+let jsonData: any[] | null;
+let filePath = join(homedir(), ".mindspore", Constants.PYTORCH_API_MAPPING_FILENAME);
+if (fs.existsSync(filePath) && fs.statSync(filePath).size > 0) {
+    jsonData = markdownTableToJson(filePath);
+} else {
+    jsonData = markdownTableToJson("../pytorch_api_mapping.md");
+}
+
 export function scanAPI(apis: string[]){
     const head = ["PyTorch API","API 版本", "MindSpore API", "说明"];
     let convertible = new Map<string, string[]>();
