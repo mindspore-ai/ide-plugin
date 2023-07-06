@@ -92,9 +92,11 @@ export class TransformerXLServer{
         let tempDir = new Set<string>();
         fs.readdirSync(tmpdir()).forEach((fileName) => {
             let filePath = join(tmpdir(), fileName);
-            if (fs.statSync(filePath).isDirectory() && fileName.includes('_MEI')) {
-                tempDir.add(fileName);
-            }
+            try {
+                if (fs.statSync(filePath).isDirectory() && fileName.includes('_MEI')) {
+                    tempDir.add(fileName);
+                }
+            } catch (e) {}
         })
 
         return tempDir;

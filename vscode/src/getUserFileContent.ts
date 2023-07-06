@@ -44,6 +44,8 @@ export async function getUserFileContent(context: vscode.ExtensionContext) {
                 <style>
                     table {
                         border-collapse: collapse;
+                        width: 100%;
+                        word-break: break-word;
                     }
                     th, td {
                         border: 1px solid black;
@@ -53,11 +55,13 @@ export async function getUserFileContent(context: vscode.ExtensionContext) {
                 </style>
             </head>
             <body>
+            
                 <h3>可以转化的PyTorch API</h3>
                 ${htmlTable[0]}
                 <h3>可能是torch.Tensor API的结果</h3>
                 ${htmlTable[1]}
                 <h3>暂未提供直接映射关系的PyTorch API</h3>
+                <a style="display: block;margin-bottom: 1rem;" href="https://www.mindspore.cn/docs/zh-CN/master/migration_guide/analysis_and_preparation.html#%E7%BC%BA%E5%A4%B1api%E5%A4%84%E7%90%86%E7%AD%96%E7%95%A5">请阅：缺失API处理策略</a>
                 ${htmlTable[2]}
             </body>
             </html>
@@ -73,7 +77,7 @@ async function scanContentToWebview(apiList: string[]){
     let apiTables = scanAPI(apiList);
     let htmlTable:string[] = [];
     for (let element of apiTables){
-        htmlTable.push(await marked(element));
+        htmlTable.push(marked(element));
     };
 
     return htmlTable;    

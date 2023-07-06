@@ -37,9 +37,39 @@ MindSpore Dev ToolKit 插件可支持[Visual Studio Code](https://code.visualstu
 
    ![img](./images/clip_image097.jpg)
 
-2. 编码时，补全会自动生效。有MindSpore Dev Toolkit后缀名称的为此插件智能补全提供的代码。
+3. 编码时，补全会自动生效。有MindSpore Dev Toolkit后缀名称的为此插件智能补全提供的代码。
 
    ![img](./images/clip_image094.jpg)
+
+## 四、torch.tensor接口分析
+
+### 单文件分析
+
+1. 在打开的python文件编辑界面点击右键，选择“扫描本地文件”。
+
+   ![img](./images/clip_image116.jpg)
+
+2. 扫描后，生成该文件中torch.tensor接口使用分析结果，包括“可以转化的PyTorch API”、“可能是torch.Tensor API的结果”、
+   “暂未提供直接映射关系的PyTorch API”三种分析结果。
+
+   ![img](./images/clip_image117.jpg)
+
+### 多文件分析
+1. 点击左侧边栏mindSpore Dev Toolkit图标。
+
+   ![img](./images/clip_image118.jpg)
+
+2. 在左侧生成当前IDE工程中仅含python文件的工程树视图。
+
+   ![img](./images/clip_image119.jpg)
+
+3. 若选中python文件，可获取该文件的接口分析结果。
+
+   ![img](./images/clip_image120.jpg)
+
+4. 若选中文件目录，可获取该目录下所有python文件的接口分析结果。
+
+   ![img](./images/clip_image121.jpg)
 
 
 
