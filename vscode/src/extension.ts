@@ -10,9 +10,6 @@ import { logger } from './log/log4js';
 import { getUserFileContent } from './getUserFileContent';
 import { MyTreeData } from './myTreeData';
 import * as scanner from './scanner';
-import { downloadFile } from './download';
-import { Constants } from './constants';
-
 
 let whitzardCompletionProvider: WhitzardProvider;
 
@@ -28,7 +25,6 @@ async function init(){
 export async function activate(context: vscode.ExtensionContext) {
 	await init();
 	getUserFileContent(context);
-	await downloadFile(Constants.PYTORCH_API_MAPPING_DOWNLOAD_URL, Constants.PYTORCH_API_MAPPING_FILENAME, join(homedir(), ".mindspore"));
 	let versionNumber = context.extension.packageJSON.version;
 	context.subscriptions.push(vscode.commands.registerCommand('getContext', () => versionNumber));
 

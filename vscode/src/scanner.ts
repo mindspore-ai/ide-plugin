@@ -1,5 +1,10 @@
 import * as TreeSitter from "web-tree-sitter";
 import * as path from "path";
+import { downloadFile } from "./download";
+import * as scanAPI from "./scanAPI";
+import { Constants } from "./constants";
+import { homedir } from "os";
+import { join } from "path";
 let parser: TreeSitter;
 export async function init() {
     await TreeSitter.init({
@@ -10,6 +15,8 @@ export async function init() {
     parser = new TreeSitter();
     const python = await TreeSitter.Language.load(path.resolve(__dirname, `../tree-sitter-python.wasm`));
     parser.setLanguage(python);
+    let downloadFlag = await downloadFile(Constants.PYTORCH_API_MAPPING_DOWNLOAD_URL, Constants.PYTORCH_API_MAPPING_FILENAME, join(homedir(), ".mindspore"), 2000);
+	scanAPI.initApiMap(downloadFlag);
 }
 
 

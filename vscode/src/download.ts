@@ -7,7 +7,7 @@ import { logger } from "./log/log4js"
 import { fsExistsSync } from "./fileUtil"
 import * as fsPromises from "fs/promises"
 
-export async function downloadFile(url: string, fileName: string, destination: string){
+export async function downloadFile(url: string, fileName: string, destination: string, timeout: number){
 	if (!fsExistsSync(destination)){
 		fs.mkdirSync(destination);
 	}
@@ -19,7 +19,7 @@ export async function downloadFile(url: string, fileName: string, destination: s
             url,
             method: 'GET',
             responseType: 'stream',
-            timeout: 5000
+            timeout: timeout
         }).then(responses => {
             responses.data.on('close', () => {
                 throw new Error("network interupt!")
@@ -34,10 +34,12 @@ export async function downloadFile(url: string, fileName: string, destination: s
             writer.on('error', reject);
             response.data.on('error', reject);
         });
+        return true;
     } catch (error) {
         writer.close();
         logger.warn(error);
         await fsPromises.rm(filePath);
+        return false;
     }
 }
 
@@ -51,7 +53,7 @@ export async function unzipSync(fileName: string, destination: string) {
 }
 
 export async function download(fileName: string, url: string, destination: string) {
-    await downloadFile(url, fileName, destination);
+    await downloadFile(url, fileName, destination, 1800000);
     const fineNameArr = fileName.split('.');
     const suffix = fineNameArr[fineNameArr.length - 1];
     switch (suffix) {

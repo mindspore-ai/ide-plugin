@@ -8,14 +8,17 @@ import * as fs from "fs";
 
 let jsonData: any[] | null;
 let filePath = join(homedir(), ".mindspore", Constants.PYTORCH_API_MAPPING_FILENAME);
-if (fs.existsSync(filePath) && fs.statSync(filePath).size > 0) {
-    jsonData = markdownTableToJson(filePath);
-} else {
-    jsonData = markdownTableToJson("../pytorch_api_mapping.md");
+export function initApiMap(downloadFlag: boolean) {
+    if (downloadFlag && fs.existsSync(filePath) && fs.statSync(filePath).size > 0) {
+        jsonData = markdownTableToJson(filePath);
+    } else {
+        jsonData = markdownTableToJson("../pytorch_api_mapping.md");
+    }
 }
 
 export function scanAPI(apis: string[]){
     const head = ["PyTorch API","API 版本", "MindSpore API", "说明"];
+    const headInconvertible = ["PyTorch API", "说明"];
     let convertible = new Map<string, string[]>();
     let inconvertible = new Map<string, string[]>();
     let chainCall = new Map<string, string[]>();
@@ -38,24 +41,24 @@ export function scanAPI(apis: string[]){
                 target.diffURL?`[${target.remark}](${target.diffURL})`: target.remark];
             convertible.set(api,record);
         } else {
-            let apiName = api.split(".").pop()??"";
-            if (tensorApi.indexOf(apiName) > 0) {
-                apiName = "torch.Tensor." + apiName;
-                let target = tempMap.get(apiName);
-                let record = [apiName, "", "", ""];
-                if (target) {
-                    record = [
-                        target.operatorURL?`[${target.operator1word}](${target.operatorURL})`:target.operator1word,
-                        target.version,
-                        target.mindsporeURL?`[${target.mindspore1word}](${target.mindsporeURL})`:target.mindspore1word,
-                        target.diffURL?`[${target.remark}](${target.diffURL})`: target.remark];
-                        chainCall.set(apiName,record);
-                } else {
-                    chainCallInconvertible.set(apiName,record);
-                }
+            if (api.startsWith("torch")) {
+                inconvertible.set(api, [api,""]);
             } else {
-                if (api.startsWith("torch")) {
-                    inconvertible.set(api, [api,"","",""]);
+                let apiName = api.split(".").pop()??"";
+                if (tensorApi.indexOf(apiName) > 0) {
+                    apiName = "torch.Tensor." + apiName;
+                    let target = tempMap.get(apiName);
+                    let record = [apiName, "可能为torch.Tensor的API"];
+                    if (target) {
+                        record = [
+                            target.operatorURL?`[${target.operator1word}](${target.operatorURL})`:target.operator1word,
+                            target.version,
+                            target.mindsporeURL?`[${target.mindspore1word}](${target.mindsporeURL})`:target.mindspore1word,
+                            target.diffURL?`[${target.remark}](${target.diffURL})`: target.remark];
+                            chainCall.set(apiName,record);
+                    } else {
+                        chainCallInconvertible.set(apiName,record);
+                    }
                 }
             }
         }
@@ -79,7 +82,7 @@ export function scanAPI(apis: string[]){
     }
     let inconvertibleTable = [];
     if (inconvertible.size > 0) {
-        inconvertibleTable.push(head);
+        inconvertibleTable.push(headInconvertible);
         (new Map([...inconvertible].sort())).forEach((value) => {
             inconvertibleTable.push(value);
         });
@@ -93,7 +96,7 @@ export function scanAPI(apis: string[]){
             callChainTable.push(value);
         });
         (new Map([...chainCallInconvertible].sort())).forEach((value) => {
-            callChainTable.push(value);
+            inconvertibleTable.push(value);
         });
     } else {
         callChainTable.push(["无"]);
