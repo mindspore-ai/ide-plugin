@@ -41,35 +41,42 @@ MindSpore Dev ToolKit 插件可支持[Visual Studio Code](https://code.visualstu
 
    ![img](./images/clip_image094.jpg)
 
-## 四、torch.tensor接口分析
+## 四、API扫描
 
-### 单文件分析
+### 文件级API扫描
 
-1. 在打开的python文件编辑界面点击右键，选择“扫描本地文件”。
+1. 在当前文件任意位置处右键，打开菜单，选择“扫描本地文件”。
 
    ![img](./images/clip_image116.jpg)
 
-2. 扫描后，生成该文件中torch.tensor接口使用分析结果，包括“可以转化的PyTorch API”、“可能是torch.Tensor API的结果”、
-   “暂未提供直接映射关系的PyTorch API”三种分析结果。
+2. 右边栏会弹出当前文件中扫描出的算子，包括“可以转化的PyTorch API”、“可能是torch.Tensor API的结果”、
+   “暂未提供直接映射关系的PyTorch API”三种扫描结果列表。
 
    ![img](./images/clip_image117.jpg)
 
-### 多文件分析
-1. 点击左侧边栏mindSpore Dev Toolkit图标。
+### 项目级API扫描
+
+1. 点击Visual Studio Code左侧边栏MindSpore Dev Toolkit图标。
 
    ![img](./images/clip_image118.jpg)
 
-2. 在左侧生成当前IDE工程中仅含python文件的工程树视图。
+2. 左边栏会生成当前IDE工程中仅含Python文件的工程树视图。
 
    ![img](./images/clip_image119.jpg)
 
-3. 若选中python文件，可获取该文件的接口分析结果。
+3. 若选择视图中单个Python文件，可获取该文件的算子扫描结果列表。
 
    ![img](./images/clip_image120.jpg)
 
-4. 若选中文件目录，可获取该目录下所有python文件的接口分析结果。
+4. 若选择视图中文件目录，可获取该目录下所有Python文件的算子扫描结果列表。
 
    ![img](./images/clip_image121.jpg)
+
+5. 蓝色字体部分均可以点击，会自动在用户默认浏览器中打开网页
+
+   ![img](./images/clip_image122.jpg)
+
+   ![img](./images/clip_image123.jpg)
 
 
 
