@@ -23,7 +23,7 @@
       },
       {
         "command": "mindspore.scanLocalFile",
-        "title": "扫描本地文件"
+        "title": "API Scan"
       },
       {
         "command": "mindspore.refreshEntry",
@@ -35,7 +35,7 @@
       "activitybar": [
         {
           "id": "MindSporeActivityBar",
-          "title": "MindSpore Dev Toolkit",
+          "title": "API Scan",
           "icon": "icon.svg"
         }
       ]
