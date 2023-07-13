@@ -81,22 +81,22 @@ export function scanAPI(apis: string[]){
         convertibleTable.push(["无"]);
     }
     let inconvertibleTable = [];
-    if (inconvertible.size > 0) {
+    if (inconvertible.size > 0 || chainCallInconvertible.size > 0) {
         inconvertibleTable.push(headInconvertible);
         (new Map([...inconvertible].sort())).forEach((value) => {
+            inconvertibleTable.push(value);
+        });
+        (new Map([...chainCallInconvertible].sort())).forEach((value) => {
             inconvertibleTable.push(value);
         });
     } else {
         inconvertibleTable.push(["无"]);
     }
     let callChainTable = [];
-    if (chainCall.size > 0 || chainCallInconvertible.size > 0) {
+    if (chainCall.size > 0) {
         callChainTable.push(head);
         (new Map([...chainCall].sort())).forEach((value) => {
             callChainTable.push(value);
-        });
-        (new Map([...chainCallInconvertible].sort())).forEach((value) => {
-            inconvertibleTable.push(value);
         });
     } else {
         callChainTable.push(["无"]);
