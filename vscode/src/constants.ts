@@ -10,7 +10,7 @@ import yaml = require('js-yaml');
 export class Constants{
     public static readonly X86_PYTHON_PORT = 50053;
     public static readonly LINUX_PYTHON_PORT = 50055;
-    public static readonly PYTORCH_API_MAPPING_DOWNLOAD_URL = "https://gitee.com/mindspore/docs/raw/r2.0/docs/mindspore/source_zh_cn/note/api_mapping/pytorch_api_mapping.md";
+    public static readonly PYTORCH_API_MAPPING_DOWNLOAD_URL = "https://gitee.com/mindspore/docs/raw/r2.1/docs/mindspore/source_zh_cn/note/api_mapping/pytorch_api_mapping.md";
     public static readonly PYTORCH_API_MAPPING_FILENAME = "pytorch_api_mapping.md";
 }
 
