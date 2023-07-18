@@ -10,7 +10,6 @@ import { logger } from './log/log4js';
 import { getUserFileContent } from './getUserFileContent';
 import { MyTreeData } from './myTreeData';
 import * as scanner from './scanner';
-
 let whitzardCompletionProvider: WhitzardProvider;
 
 
@@ -32,7 +31,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		whitzardCompletionProvider = result;
 		const pythonProvider = vscode.languages.registerCompletionItemProvider([{language: 'python'}],whitzardCompletionProvider, ...ADDITIONAL_CHARACTERS);
 		context.subscriptions.push(pythonProvider);
-		window.showInformationMessage("MindSpore Dev Toolkit智能补全启动成功！")
+		vscode.window.showInformationMessage("MindSpore Dev Toolkit智能补全启动成功！")
 
 	});
 
