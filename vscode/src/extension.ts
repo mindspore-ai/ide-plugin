@@ -28,9 +28,13 @@ export async function activate(context: vscode.ExtensionContext) {
 	let versionNumber = context.extension.packageJSON.version;
 	context.subscriptions.push(vscode.commands.registerCommand('getContext', () => versionNumber));
 
-	whitzardCompletionProvider = await WhitzardProvider.getInstance();
-	const pythonProvider = vscode.languages.registerCompletionItemProvider([{language: 'python'}],whitzardCompletionProvider, ...ADDITIONAL_CHARACTERS);
-	context.subscriptions.push(pythonProvider);
+	WhitzardProvider.getInstance().then(result => {
+		whitzardCompletionProvider = result;
+		const pythonProvider = vscode.languages.registerCompletionItemProvider([{language: 'python'}],whitzardCompletionProvider, ...ADDITIONAL_CHARACTERS);
+		context.subscriptions.push(pythonProvider);
+		window.showInformationMessage("MindSpore Dev Toolkit智能补全启动成功！")
+
+	});
 
 	// register treeview
 	vscode.window.registerTreeDataProvider('MindSporeTreeView', new MyTreeData());
