@@ -51,7 +51,11 @@ MindSpore Dev ToolKit 插件可支持[Visual Studio Code](https://code.visualstu
 
 2. 右边栏会弹出当前文件中扫描出的算子，包括“可以转化的PyTorch API”、“可能是torch.Tensor API的结果”、
    “暂未提供直接映射关系的PyTorch API”三种扫描结果列表。
-
+   其中：
+   - "可以转换的PyTorch API"指在文件中被使用的且可以转换为MindSpore API的PyTorch API
+   - "可能是torch.Tensor API"指名字和torch.Tensor的API名字相同，可能是torch.Tensor的API且可以转换为MindSpore API的API
+   - "暂未提供直接映射关系的PyTorch API"指虽然是PyTorch API或可能是torch.Tensor的API，但是暂时没有直接对应为MindSpore API的API
+   
    ![img](./images/clip_image117.jpg)
 
 ### 项目级API扫描
