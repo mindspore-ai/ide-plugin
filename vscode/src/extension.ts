@@ -7,31 +7,42 @@ import {fsExistsSync} from "./fileUtil";
 import * as fs from "fs";
 import { ADDITIONAL_CHARACTERS, WhitzardProvider } from './provider';
 import { logger } from './log/log4js';
-
-
+import { getUserFileContent } from './getUserFileContent';
+import { MyTreeData } from './myTreeData';
+import * as scanner from './scanner';
 let whitzardCompletionProvider: WhitzardProvider;
 
-function init(){
+
+async function init(){
 	const root = join(homedir(), ".mindspore");
 	if (!fsExistsSync(root)){
 		fs.mkdirSync(root);
 	}
+	await scanner.init();
 }
 
 export async function activate(context: vscode.ExtensionContext) {
-	init();
+	await init();
+	getUserFileContent(context);
 	let versionNumber = context.extension.packageJSON.version;
 	context.subscriptions.push(vscode.commands.registerCommand('getContext', () => versionNumber));
 
-	whitzardCompletionProvider = await WhitzardProvider.getInstance();
-	const pythonProvider = vscode.languages.registerCompletionItemProvider([{language: 'python'}],whitzardCompletionProvider, ...ADDITIONAL_CHARACTERS);
-	context.subscriptions.push(pythonProvider);
+	WhitzardProvider.getInstance().then(result => {
+		whitzardCompletionProvider = result;
+		const pythonProvider = vscode.languages.registerCompletionItemProvider([{language: 'python'}],whitzardCompletionProvider, ...ADDITIONAL_CHARACTERS);
+		context.subscriptions.push(pythonProvider);
+		vscode.window.showInformationMessage("MindSpore Dev Toolkit智能补全启动成功！")
 
+	});
+
+	// register treeview
+	vscode.window.registerTreeDataProvider('MindSporeTreeView', new MyTreeData());
 }
 
 // This method is called when your extension is deactivated
 export function deactivate() {
-	logger.info("decativate start!");
+	logger.info("deativate start!");
 	return whitzardCompletionProvider?.decativate();
-	
+
 }
+

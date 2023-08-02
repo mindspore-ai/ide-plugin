@@ -1,28 +1,46 @@
-import fs = require("fs")
-import path = require("path")
+import * as fs from "fs"
+import * as path from "path"
 import axios from 'axios'
-import compressing = require('compressing')
+import * as compressing from "compressing"
 import { window } from "vscode"
 import { logger } from "./log/log4js"
 import { fsExistsSync } from "./fileUtil"
+import * as fsPromises from "fs/promises"
 
-export async function downloadFile(url: string, fileName: string, destination: string){
+export async function downloadFile(url: string, fileName: string, destination: string, timeout: number){
 	if (!fsExistsSync(destination)){
 		fs.mkdirSync(destination);
 	}
-    const writer = fs.createWriteStream(path.join(destination, fileName))
-    const response = await axios({
-        url,
-        method: 'GET',
-        responseType: 'stream'
-    });
+    let filePath = path.join(destination, fileName);
+    const writer = fs.createWriteStream(filePath);
 
-    response.data.pipe(writer);
+    try{
+        const response = await axios({
+            url,
+            method: 'GET',
+            responseType: 'stream',
+            timeout: timeout
+        }).then(responses => {
+            responses.data.on('close', () => {
+                throw new Error("network interupt!")
+            })
+            return responses
+        });
+        
+        response.data.pipe(writer);
 
-    return new Promise((resolve, reject) => {
-        writer.on('finish', resolve);
-        writer.on('error', reject);
-    });
+        await new Promise((resolve, reject) => {
+            writer.on('finish', resolve);
+            writer.on('error', reject);
+            response.data.on('error', reject);
+        });
+        return true;
+    } catch (error) {
+        writer.close();
+        logger.warn(error);
+        await fsPromises.rm(filePath);
+        return false;
+    }
 }
 
 export async function unzipSync(fileName: string, destination: string) {
@@ -35,7 +53,7 @@ export async function unzipSync(fileName: string, destination: string) {
 }
 
 export async function download(fileName: string, url: string, destination: string) {
-    await downloadFile(url, fileName, destination);
+    await downloadFile(url, fileName, destination, 1800000);
     const fineNameArr = fileName.split('.');
     const suffix = fineNameArr[fineNameArr.length - 1];
     switch (suffix) {

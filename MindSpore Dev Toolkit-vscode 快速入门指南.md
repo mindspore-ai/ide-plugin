@@ -37,9 +37,51 @@ MindSpore Dev ToolKit 插件可支持[Visual Studio Code](https://code.visualstu
 
    ![img](./images/clip_image097.jpg)
 
-2. 编码时，补全会自动生效。有MindSpore Dev Toolkit后缀名称的为此插件智能补全提供的代码。
+3. 编码时，补全会自动生效。有MindSpore Dev Toolkit后缀名称的为此插件智能补全提供的代码。
 
    ![img](./images/clip_image094.jpg)
+
+## 四、API扫描
+
+### 文件级API扫描
+
+1. 在当前文件任意位置处右键，打开菜单，选择“扫描本地文件”。
+
+   ![img](./images/clip_image116.jpg)
+
+2. 右边栏会弹出当前文件中扫描出的算子，包括“可以转化的PyTorch API”、“可能是torch.Tensor API的结果”、
+   “暂未提供直接映射关系的PyTorch API”三种扫描结果列表。
+   其中：
+
+   - "可以转换的PyTorch API"指在文件中被使用的且可以转换为MindSpore API的PyTorch API
+   - "可能是torch.Tensor API"指名字和torch.Tensor的API名字相同，可能是torch.Tensor的API且可以转换为MindSpore API的API
+   - "暂未提供直接映射关系的PyTorch API"指虽然是PyTorch API或可能是torch.Tensor的API，但是暂时没有直接对应为MindSpore API的API
+
+   ![img](./images/clip_image117.jpg)
+
+### 项目级API扫描
+
+1. 点击Visual Studio Code左侧边栏MindSpore Dev Toolkit图标。
+
+   ![img](./images/clip_image118.jpg)
+
+2. 左边栏会生成当前IDE工程中仅含Python文件的工程树视图。
+
+   ![img](./images/clip_image119.jpg)
+
+3. 若选择视图中单个Python文件，可获取该文件的算子扫描结果列表。
+
+   ![img](./images/clip_image120.jpg)
+
+4. 若选择视图中文件目录，可获取该目录下所有Python文件的算子扫描结果列表。
+
+   ![img](./images/clip_image121.jpg)
+
+5. 蓝色字体部分均可以点击，会自动在用户默认浏览器中打开网页
+
+   ![img](./images/clip_image122.jpg)
+
+   ![img](./images/clip_image123.jpg)
 
 
 

@@ -2,13 +2,21 @@
 
 [查看中文](./RELEASE_CN.md)
 
+## MindSpore Dev Toolkit 2.1.0 Release Notes
+
+### Major Features and Improvement
+
+#### API scanning
+
+- [BETA] API scanning is now available on Visual Studio Code extension.
+
 ## MindSpore Dev Toolkit 2.0.0 Release Notes
 
 ### Major Features and Improvement
 
 #### Smart code completion
 
-- [BETA] Visual Studio Code extension is now available. 
+- [BETA] Visual Studio Code extension is now available.
 
 #### API scanning
 
