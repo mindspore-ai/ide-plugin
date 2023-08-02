@@ -2,6 +2,14 @@
 
 [View English](./RELEASE.md)
 
+## MindSpore Dev Toolkit 2.1.0 Release Notes
+
+### 主要特性及增强
+
+#### API扫描
+
+- [BETA] 在Visual Studio Code 的插件上提供API扫描功能。
+
 ## MindSpore Dev Toolkit 2.0.0 Release Notes
 
 ### 主要特性及增强
