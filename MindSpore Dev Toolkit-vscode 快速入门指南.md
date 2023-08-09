@@ -12,7 +12,7 @@ MindSpore Dev ToolKit 插件可支持[Visual Studio Code](https://code.visualstu
 
 ## 二、插件安装
 
-1. 获取[插件vsix包](https://ms-release.obs.cn-north-4.myhuaweicloud.com/2.0.0rc1/IdePlugin/any/mindspore-dev-toolkit-2.0.0.vsix)。
+1. 获取[插件vsix包](https://ms-release.obs.cn-north-4.myhuaweicloud.com/2.1.0/IdePlugin/any/mindspore-dev-toolkit-2.1.0.vsix)。
 2. 点击左侧第五个按钮“Extensions”，点击右上角三个点，再点击“Install from VSIX...”
 
    ![img](./images/clip_image093.jpg)
