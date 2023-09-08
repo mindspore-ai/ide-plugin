@@ -23,6 +23,9 @@
                            order="first"/>
 
         <toolWindow id="MindSporeApiMapping" factoryClass="com.mindspore.ide.toolkit.apiscanning.MappingWindowFactory" canCloseContents="true" anchor="right" secondary="true" doNotActivateOnStart="true" icon="MsIcons.MS_ICON_16PXWP"/>
+        
+        <statusBarWidgetFactory implementation="com.mindspore.ide.toolkit.statusbar.MindSporeStatusBarFactory"/>
+        <applicationService serviceImplementation="com.mindspore.ide.toolkit.statusbar.service.MindSporeStatusBarServiceImpl"/>
     </extensions>
 
     <actions>
@@ -49,6 +52,9 @@
         <action class="com.mindspore.ide.toolkit.apiscanning.TransApiAction" text="API Scan" id="PythonTfAction" icon="MsIcons.MS_ICON_16PXWP">
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
         </action>
+
+        <action id = "otherVersion" class="com.mindspore.ide.toolkit.statusbar.ChangeMindSporeVersionAction" text="other version"/>
+
     </actions>
     <projectListeners>
         <listener class="com.mindspore.ide.toolkit.services.OpenCloseListener" topic="com.intellij.openapi.project.ProjectManagerListener"/>
