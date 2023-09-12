@@ -1,7 +1,6 @@
 package com.mindspore.ide.toolkit.search;
 
 import com.mindspore.ide.toolkit.common.utils.HttpUtils;
-
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

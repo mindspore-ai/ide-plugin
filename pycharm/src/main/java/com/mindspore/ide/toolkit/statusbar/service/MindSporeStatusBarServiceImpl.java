@@ -10,7 +10,9 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.util.NlsSafe;
 import com.intellij.util.ui.EmptyIcon;
+import com.mindspore.ide.toolkit.search.OperatorSearchService;
 import com.mindspore.ide.toolkit.statusbar.MindSporeStatusBarWidget;
+import com.mindspore.ide.toolkit.statusbar.utils.MindSporeVersionUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -19,12 +21,9 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 @Slf4j
 public class MindSporeStatusBarServiceImpl implements MindSporeStatusBarService {
-    private static final List<String> VERSION = new CopyOnWriteArrayList<>();
-
     private String selectedVersion;
 
     public MindSporeStatusBarServiceImpl() {
@@ -59,14 +58,6 @@ public class MindSporeStatusBarServiceImpl implements MindSporeStatusBarService 
         this.selectedVersion = version;
     }
 
-    public static void addVersion(String version) {
-        VERSION.add(version);
-    }
-
-    public static List<String> getVersions() {
-        return VERSION;
-    }
-
     @Override
     public void mindSporeVersionChanged(String version) {
         if (StringUtils.isEmpty(version)) {
@@ -87,7 +78,7 @@ public class MindSporeStatusBarServiceImpl implements MindSporeStatusBarService 
 
     public static DefaultActionGroup createVersionActionsGroup() {
         String selectedVersion = getCurrentSelectedVersion();
-        List<String> versions = new ArrayList<>(getVersions());
+        List<String> versions = new ArrayList<>(MindSporeVersionUtils.VERSION_MARKDOWN_MAP.keySet());
         Collections.sort(versions);
         versions.remove(selectedVersion);
         DefaultActionGroup group = new DefaultActionGroup();
@@ -96,6 +87,7 @@ public class MindSporeStatusBarServiceImpl implements MindSporeStatusBarService 
                 @Override
                 public void actionPerformed(@NotNull AnActionEvent e) {
                     log.debug("choose version:{} to mapping", version);
+                    OperatorSearchService.INSTANCE.reset(version);
                     notifyApp(version);
                 }
 
