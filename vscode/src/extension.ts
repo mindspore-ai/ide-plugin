@@ -10,6 +10,7 @@ import { logger } from './log/log4js';
 import { getUserFileContent } from './getUserFileContent';
 import { MyTreeData } from './myTreeData';
 import * as scanner from './scanner';
+import { OpenWebProvider } from './SearchWebveiwProvider';
 let whitzardCompletionProvider: WhitzardProvider;
 
 
@@ -34,6 +35,10 @@ export async function activate(context: vscode.ExtensionContext) {
 		vscode.window.showInformationMessage("MindSpore Dev Toolkit智能补全启动成功！")
 
 	});
+
+	const provider = new OpenWebProvider(context.extensionUri);
+	context.subscriptions.push(
+		vscode.window.registerWebviewViewProvider(OpenWebProvider.viewType, provider));
 
 	// register treeview
 	vscode.window.registerTreeDataProvider('MindSporeTreeView', new MyTreeData());

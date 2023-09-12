@@ -1,5 +1,6 @@
 import fs = require("fs");
 import path = require("path");
+import * as scanPlatform from './scanPlatform';
 interface TableData {
     header: string[];
     rows: string[][];
@@ -44,6 +45,7 @@ export function markdownTableToJson(filePath: string): any[] | null {
             tableData.header[12] = "remark";
             tableData.header[13] = "diffURL";
             tableData.header[14] = "version";
+            tableData.header[15] = "platform";
 
             const jsonData = tableData.rows.map((row) => {
                 const rowObject: { [key: string]: string } = {};
@@ -75,6 +77,10 @@ export function markdownTableToJson(filePath: string): any[] | null {
             });
             resultJson.push(...jsonData);
         }
+
+        // 获取platform信息
+        let pyJsonData = resultJson;
+        scanPlatform.addPlatformMap(pyJsonData);
         return resultJson;
     }
     return null;
@@ -109,3 +115,27 @@ function parseTable(table: string[]): TableData {
     const rows = table.slice(2).map(row => row.split('|').filter(cell => cell.trim() !== '').map(cell => cell.trim()));  // 获取表格内容
     return { header, rows };
 }
+
+export function searchJson(jsonData: any[], searchWords: string[]): any[] {
+    const searchRegex = new RegExp(`^\(${searchWords.join('|')})`, 'i');
+    const filteredJson = jsonData.filter((obj) => {
+      for (const key in obj) {
+        if (searchRegex.test(obj[key])) {
+          //obj.key 是header
+          //
+          return true;
+        }
+      }
+      return false;
+    });
+    return filteredJson;
+  }
+  
+export function getResult(filepath: string, searchWords: string[]){
+    let jsonData = markdownTableToJson(filepath)
+    if (jsonData){
+      const result = searchJson(jsonData, searchWords)
+      return result;
+    }
+    return null;
+  }
