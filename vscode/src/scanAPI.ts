@@ -14,10 +14,11 @@ export function initApiMap(downloadFlag: boolean) {
     } else {
         jsonData = markdownTableToJson("../pytorch_api_mapping.md");
     }
+    return jsonData;
 }
 
 export function scanAPI(apis: string[]){
-    const head = ["PyTorch API","API 版本", "MindSpore API", "说明"];
+    const head = ["PyTorch API","API 版本", "MindSpore API", "说明", "支持的后端"];
     const headInconvertible = ["PyTorch API", "说明"];
     let convertible = new Map<string, string[]>();
     let inconvertible = new Map<string, string[]>();
@@ -38,7 +39,8 @@ export function scanAPI(apis: string[]){
                 target.operatorURL?`[${target.operator1word}](${target.operatorURL})`:target.operator1word,
                 target.version,
                 target.mindsporeURL?`[${target.mindspore1word}](${target.mindsporeURL})`:target.mindspore1word,
-                target.diffURL?`[${target.remark}](${target.diffURL})`: target.remark];
+                target.diffURL?`[${target.remark}](${target.diffURL})`: target.remark,
+                target.platform];
             convertible.set(api,record);
         } else {
             if (api.startsWith("torch")) {
@@ -54,7 +56,8 @@ export function scanAPI(apis: string[]){
                             target.operatorURL?`[${target.operator1word}](${target.operatorURL})`:target.operator1word,
                             target.version,
                             target.mindsporeURL?`[${target.mindspore1word}](${target.mindsporeURL})`:target.mindspore1word,
-                            target.diffURL?`[${target.remark}](${target.diffURL})`: target.remark];
+                            target.diffURL?`[${target.remark}](${target.diffURL})`: target.remark,
+                            target.platform],
                             chainCall.set(apiName,record);
                     } else {
                         chainCallInconvertible.set(apiName,record);
