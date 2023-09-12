@@ -77,10 +77,6 @@ export function markdownTableToJson(filePath: string): any[] | null {
             });
             resultJson.push(...jsonData);
         }
-
-        // 获取platform信息
-        let pyJsonData = resultJson;
-        scanPlatform.addPlatformMap(pyJsonData);
         return resultJson;
     }
     return null;
