@@ -4,12 +4,12 @@ import { join } from "path";
 import * as fs from "fs";
 import * as fsPromises from "fs/promises";
 import { window } from "vscode";
-import { download } from "./download";
-import { logger } from "./log/log4js";
-import { Constants, getDownloadInfo, getVersion, system_kernel } from "./constants";
+import { download } from "../utils/download";
+import { logger } from "../log/log4js";
+import { getDownloadInfo, getSystemKernel } from "../utils/constants";
 
 export async function getTransformerXLServer(port: number) {
-    let modelInfo = await getDownloadInfo(system_kernel)
+    let modelInfo = await getDownloadInfo(getSystemKernel());
     return await TransformerXLServer.getInstance(modelInfo.modelURL, modelInfo.modelZIP, modelInfo.modelDIR, modelInfo.modelPATH, port);
 }
 
@@ -63,10 +63,10 @@ export class TransformerXLServer{
                 throw error;
             }
             logger.info("python_completion download success");
-            window.showInformationMessage("下载 Model 成功")
+            window.showInformationMessage("下载 Model 成功");
         }
 
-        if (process.platform == 'linux'){
+        if (process.platform === 'linux'){
             await fsPromises.stat(this.modelPath).then(res =>{
                 if (res.mode !== 0o777){
                     fsPromises.chmod(this.modelPath, 0o777);
@@ -85,7 +85,7 @@ export class TransformerXLServer{
                 this.removeMEIDir(tempDir);
                 this.isRemoved = true;
             }
-        })
+        });
     }
 
     private getTempDirSet(): Set<string> {
@@ -97,7 +97,7 @@ export class TransformerXLServer{
                     tempDir.add(fileName);
                 }
             } catch (e) {}
-        })
+        });
 
         return tempDir;
     }
@@ -108,9 +108,9 @@ export class TransformerXLServer{
         if (!fs.existsSync(meiDirPath)) {
             fs.appendFileSync(meiDirPath, 'utf-8');
         } else {
-            let readf = fs.readFileSync(meiDirPath, 'utf-8').split(',');
+            let readFile = fs.readFileSync(meiDirPath, 'utf-8').split(',');
             let deleteFlags : Promise<string>[] = [];
-            readf.forEach((fileName) => {
+            readFile.forEach((fileName) => {
                 let filePath = join(tmpdir(), fileName);
                 let promise = new Promise<string> ((resolve, reject) => {
                     fsPromises.rmdir(filePath, { recursive : true})
@@ -121,11 +121,11 @@ export class TransformerXLServer{
                     .catch(() => reject('fail'));
                 });
                 deleteFlags.push(promise);
-            })
+            });
 
             Promise.allSettled(deleteFlags).then(() => {
                 fs.writeFileSync(meiDirPath, Array.from(tempDir).join(','));
-            })
+            });
         }
     }
 }

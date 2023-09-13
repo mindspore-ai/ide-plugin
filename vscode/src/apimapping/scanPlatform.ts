@@ -1,10 +1,10 @@
 import axios from "axios";
-import { logger } from './log/log4js';
+import { logger } from '../log/log4js';
 
 const platform: string[] = ['Ascend', 'GPU', 'CPU'];
 
-export async function addPlatform(pyJsonData: any[] | null) {
-    if (pyJsonData === null) {
+export async function addPlatform(pyJsonData: any[] | undefined) {
+    if (pyJsonData === null || pyJsonData === undefined) {
         return;
     }
     let dataPromiseList: Promise<void>[] = [];
@@ -37,8 +37,8 @@ export async function addPlatform(pyJsonData: any[] | null) {
                 resolve();
             }).catch((error: any) => {
                 logger.warn(`get ${apiName} html content msg: ${error}`);
-            })
-        })
+            });
+        });
         dataPromiseList.push(promise);
     }
     return Promise.allSettled(dataPromiseList);

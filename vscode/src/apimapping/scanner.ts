@@ -1,29 +1,19 @@
 import * as TreeSitter from "web-tree-sitter";
 import * as path from "path";
-import { downloadFile } from "./download";
-import * as scanAPI from "./scanAPI";
-import * as scanPlatform from "./scanPlatform";
-import { Constants } from "./constants";
-import { homedir } from "os";
-import { join } from "path";
 let parser: TreeSitter;
-let jsonData: any[] | null;
 export async function init() {
     await TreeSitter.init({
         locateFile(scriptName: string, scriptDirectory: string) {
             return path.resolve(__dirname, `../tree-sitter.wasm`);
         }
     });
-    parser = new TreeSitter();
     const python = await TreeSitter.Language.load(path.resolve(__dirname, `../tree-sitter-python.wasm`));
+    parser = new TreeSitter();
     parser.setLanguage(python);
-    let downloadFlag = await downloadFile(Constants.PYTORCH_API_MAPPING_DOWNLOAD_URL, Constants.PYTORCH_API_MAPPING_FILENAME, join(homedir(), ".mindspore"), 2000);
-    jsonData = scanAPI.initApiMap(downloadFlag);
-    setTimeout(() => scanPlatform.addPlatform(jsonData), 10000);
 }
 
 
-export function apiScan(data:string) {
+export function scanAPI(data:string) {
     const tree = parser?.parse(data);
     let scanner = new APIScanner();
     scanner.iter(tree.rootNode);
@@ -65,9 +55,6 @@ class APIScanner{
 
             this.apiList.push(result);
         }
-        // if ("attribute" == node.type) {
-        //     apiList.push(node.text);
-        // }
         if ("import_statement" === node.type) {
             node.children.forEach(element => {
                 if ("dotted_name" === element.type) {

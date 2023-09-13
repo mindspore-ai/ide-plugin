@@ -1,7 +1,7 @@
 import { TreeDataProvider, TreeItem, TreeItemCollapsibleState, ProviderResult, window, EventEmitter, Event } from "vscode";
 import * as vscode from "vscode";
 
-export class MyTreeData implements TreeDataProvider<MyTreeItem> {
+export class ProjectTreeData implements TreeDataProvider<MyTreeItem> {
     constructor() {
         vscode.commands.registerCommand('mindspore.refreshEntry', () => this.refresh());
         vscode.commands.registerCommand('mindspore.content', item => this.onItemClicked(item));
@@ -12,7 +12,7 @@ export class MyTreeData implements TreeDataProvider<MyTreeItem> {
 
     private _onDidChangeTreeData = new EventEmitter<MyTreeItem | undefined | null | void>();
 
-    // refresh the treeview
+    // refresh the tree view
     refresh(): void {
         this._onDidChangeTreeData.fire();
     }
@@ -36,7 +36,7 @@ export class MyTreeData implements TreeDataProvider<MyTreeItem> {
 
         if (!element) {
             const rootPaths = vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0 
-            ? vscode.workspace.workspaceFolders.flatMap((value) => { return {path: value.uri.fsPath, name: value.name}})
+            ? vscode.workspace.workspaceFolders.flatMap((value) => { return {path: value.uri.fsPath, name: value.name};})
             : [];
             const name = vscode.workspace.name??"";
             if (rootPaths.length <= 0) {
@@ -46,7 +46,7 @@ export class MyTreeData implements TreeDataProvider<MyTreeItem> {
             let newRoot = new MyTreeItem("(WorkSpace)" + name, TreeItemCollapsibleState.Expanded);
             rootPaths.forEach((value) => {
                 let newFolder =new MyTreeItem(value.name, TreeItemCollapsibleState.Expanded, vscode.Uri.file(value.path));
-                newRoot.addChildren(newFolder)});
+                newRoot.addChildren(newFolder);});
             return Promise.resolve([newRoot]);
         } else if(!element.uri) {
             return Promise.resolve(element.init());
