@@ -3,14 +3,14 @@
 import { homedir } from 'os';
 import { join } from 'path';
 import * as vscode from 'vscode';
-import {fsExistsSync} from "./fileUtil";
+import {fsExistsSync} from "./utils/fileUtil";
 import * as fs from "fs";
-import { ADDITIONAL_CHARACTERS, WhitzardProvider } from './provider';
+import { ADDITIONAL_CHARACTERS, WhitzardProvider } from './completion/provider';
 import { logger } from './log/log4js';
-import { getUserFileContent } from './getUserFileContent';
-import { MyTreeData } from './myTreeData';
-import * as scanner from './scanner';
-import { OpenWebProvider } from './SearchWebveiwProvider';
+import * as apiScanService from './apimapping/apiScanService';
+import { ProjectTreeData } from './apimapping/projectTreeView';
+import * as scanner from './apimapping/scanner';
+import { OpenWebProvider } from './apimapping/SearchWebviewProvider';
 let whitzardCompletionProvider: WhitzardProvider;
 
 
@@ -24,7 +24,7 @@ async function init(){
 
 export async function activate(context: vscode.ExtensionContext) {
 	await init();
-	getUserFileContent(context);
+	apiScanService.init();
 	let versionNumber = context.extension.packageJSON.version;
 	context.subscriptions.push(vscode.commands.registerCommand('getContext', () => versionNumber));
 
@@ -32,7 +32,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		whitzardCompletionProvider = result;
 		const pythonProvider = vscode.languages.registerCompletionItemProvider([{language: 'python'}],whitzardCompletionProvider, ...ADDITIONAL_CHARACTERS);
 		context.subscriptions.push(pythonProvider);
-		vscode.window.showInformationMessage("MindSpore Dev Toolkit智能补全启动成功！")
+		vscode.window.showInformationMessage("MindSpore Dev Toolkit智能补全启动成功！");
 
 	});
 
@@ -40,14 +40,13 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		vscode.window.registerWebviewViewProvider(OpenWebProvider.viewType, provider));
 
-	// register treeview
-	vscode.window.registerTreeDataProvider('MindSporeTreeView', new MyTreeData());
+	// register tree view
+	vscode.window.registerTreeDataProvider('MindSporeTreeView', new ProjectTreeData());
 }
 
 // This method is called when your extension is deactivated
 export function deactivate() {
-	logger.info("deativate start!");
-	return whitzardCompletionProvider?.decativate();
-
+	logger.info("deactivate start!");
+	return whitzardCompletionProvider?.deactivate();
 }
 

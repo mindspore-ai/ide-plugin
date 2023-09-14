@@ -1,35 +1,41 @@
 import { userInfo } from "os";
 import * as vscode from "vscode";
-import { logger } from "./log/log4js";
+import { logger } from "../log/log4js";
 import fs = require('fs');
 import path = require("path");
 import { window } from "vscode";
 import yaml = require('js-yaml');
 
 
-export class Constants{
-    public static readonly X86_PYTHON_PORT = 50053;
-    public static readonly LINUX_PYTHON_PORT = 50055;
-    public static readonly PYTORCH_API_MAPPING_DOWNLOAD_URL = "https://gitee.com/mindspore/docs/raw/r2.1/docs/mindspore/source_zh_cn/note/api_mapping/pytorch_api_mapping.md";
-    public static readonly PYTORCH_API_MAPPING_FILENAME = "pytorch_api_mapping.md";
+export const X86_PYTHON_PORT = 50053;
+export const LINUX_PYTHON_PORT = 50055;
+export const PYTORCH_API_MAPPING_DOWNLOAD_URL_PREFIX = "https://gitee.com/mindspore/docs/raw/r";
+export const PYTORCH_API_MAPPING_DOWNLOAD_URL_VERSION = "2.1";
+export const PYTORCH_API_MAPPING_DOWNLOAD_URL_SUFFIX = "/docs/mindspore/source_zh_cn/note/api_mapping/pytorch_api_mapping.md";
+export const PYTORCH_API_MAPPING_FILENAME = "pytorch_api_mapping.md";
+
+export function generateApiMappingUrl(version?: string) {
+    return PYTORCH_API_MAPPING_DOWNLOAD_URL_PREFIX + (version ?? PYTORCH_API_MAPPING_DOWNLOAD_URL_VERSION) + PYTORCH_API_MAPPING_DOWNLOAD_URL_SUFFIX;
 }
 
-export enum osInfo{
-    WINDOWS = "windows",
-    LINUX_X86 = "Linux x86_64",
-    LINUX_AARCH = "Linux aarch64",
-    LINUX = "linux",
-    MAC = "mac"
+export enum OsInfo{
+    windows = "windows",
+    linuxX86 = "Linux x86_64",
+    linuxAArch = "Linux aarch64",
+    linux = "linux",
+    mac = "mac"
 }
 
-export let system_kernel = "windows";
+let systemKernel = "windows";
 if (process.platform === "win32"){
-    system_kernel = osInfo.WINDOWS;
+    systemKernel = OsInfo.windows;
 } else if (process.platform === "linux"){
-    system_kernel = osInfo.LINUX;
+    systemKernel = OsInfo.linux;
 } else if (process.platform === "darwin"){
-    system_kernel = osInfo.MAC;
+    systemKernel = OsInfo.mac;
 }
+export let getSystemKernel = () => systemKernel;
+
 
 let uid: string;
 
@@ -70,17 +76,17 @@ export async function getDownloadInfo(platform:string) {
         }
     }
     let result = yaml.load(configFileContents);
-    const jsonstr = JSON.stringify(result);
-    const configYmal = JSON.parse(jsonstr);
+    const jsonString = JSON.stringify(result);
+    const configYaml = JSON.parse(jsonString);
 
-    if (!configYmal.modelMap.hasOwnProperty(versionNumber)){
+    if (!configYaml.modelMap.hasOwnProperty(versionNumber)){
         versionNumber = "default_plugin_version";
     };
 
-    let modelURL = configYmal.modelMap[versionNumber][platform]?.modelDownloadUrl??"";
-    let modelZIP = configYmal.modelMap[versionNumber][platform]?.modelZipName??"";
-    let modelDIR = configYmal.modelMap[versionNumber][platform]?.modelUnzipFolderName??"";
-    let modelPATH = configYmal.modelMap[versionNumber][platform]?.modelExePath??"";
+    let modelURL = configYaml.modelMap[versionNumber][platform]?.modelDownloadUrl??"";
+    let modelZIP = configYaml.modelMap[versionNumber][platform]?.modelZipName??"";
+    let modelDIR = configYaml.modelMap[versionNumber][platform]?.modelUnzipFolderName??"";
+    let modelPATH = configYaml.modelMap[versionNumber][platform]?.modelExePath??"";
     return {modelURL, modelZIP, modelDIR, modelPATH};
 
 }

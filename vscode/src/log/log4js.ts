@@ -38,8 +38,8 @@ const config = {
             level: 'error'
         },
     }
-}
+};
 
 configure(config);
-export var logger = getLogger("default")
+export var logger = getLogger("default");
 

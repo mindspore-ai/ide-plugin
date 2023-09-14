@@ -1,23 +1,8 @@
-import { markdownTableToJson } from "./readMD";
 import { markdownTable } from 'markdown-table';
-import { tensorApi } from "./resource/specialTorch";
-import { homedir } from 'os';
-import { join } from 'path';
-import { Constants } from "./constants";
-import * as fs from "fs";
+import { tensorApi } from "../resource/specialTorch";
+import * as apiMappingDataSource from "./apiMappingData";
 
-let jsonData: any[] | null;
-let filePath = join(homedir(), ".mindspore", Constants.PYTORCH_API_MAPPING_FILENAME);
-export function initApiMap(downloadFlag: boolean) {
-    if (downloadFlag && fs.existsSync(filePath) && fs.statSync(filePath).size > 0) {
-        jsonData = markdownTableToJson(filePath);
-    } else {
-        jsonData = markdownTableToJson("../pytorch_api_mapping.md");
-    }
-    return jsonData;
-}
-
-export function scanAPI(apis: string[]){
+export function mapAPI(apis: string[]){
     const head = ["PyTorch API","API 版本", "MindSpore API", "说明", "支持的后端"];
     const headInconvertible = ["PyTorch API", "说明"];
     let convertible = new Map<string, string[]>();
@@ -27,7 +12,7 @@ export function scanAPI(apis: string[]){
 
 
     let tempMap = new Map<string, any>();
-    jsonData?.forEach((row) => {
+    apiMappingDataSource.getJsonData()?.forEach((row) => {
         tempMap.set(row.operator1word, row);
     });
 
@@ -67,13 +52,7 @@ export function scanAPI(apis: string[]){
         }
 
     });
-    // let table = markdownTable([{
-    //     operatorURL: "https://pytorch.org/docs/1.8.1/generated/torch.argsort.html",
-    //     operator1word: "torch.argsort",
-    //     mindsporeURL: "https://www.mindspore.cn/docs/zh-CN/r2.0/api_python/ops/mindspore.ops.argsort.html",
-    //     mindspore1word: "mindspore.ops.argsort",
-    //     diffURL: "",
-    //   }
+    
     let convertibleTable = [];
     if (convertible.size > 0) {
         convertibleTable.push(head);

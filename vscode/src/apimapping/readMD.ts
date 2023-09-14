@@ -1,6 +1,6 @@
 import fs = require("fs");
 import path = require("path");
-import * as scanPlatform from './scanPlatform';
+
 interface TableData {
     header: string[];
     rows: string[][];
@@ -20,35 +20,37 @@ function readMarkdownTable(filePath: string) {
   }
 }
 
-export function markdownTableToJson(filePath: string): any[] | null {
-    let tableDatas = readMarkdownTable(filePath);
+export function markdownTableToJson(filePath: string): any[] | undefined {
+    let tableData = readMarkdownTable(filePath);
 
     let resultJson: any[] = [];
-    if (tableDatas){
-        tableDatas = tableDatas.slice(1);
-        for (let tableData of tableDatas) {
-            const headerOperator = tableData.header[0];
-            const headerMindspore = tableData.header[1];
-            const headerDiff = tableData.header[2];
-            tableData.header[0] = headerOperator;
-            tableData.header[1] = "operatorURL";
-            tableData.header[2] = "operator1word";
-            tableData.header[3] = "operator2word";
-            tableData.header[4] = "operator3word";
-            tableData.header[5] = "operator4word";
-            tableData.header[6] = headerMindspore;
-            tableData.header[7] = "mindsporeURL";
-            tableData.header[8] = "mindspore1word";
-            tableData.header[9] = "mindspore2word";
-            tableData.header[10] = "mindspore3word";
-            tableData.header[11] = "mindspore4word";
-            tableData.header[12] = "remark";
-            tableData.header[13] = "diffURL";
-            tableData.header[14] = "version";
-            tableData.header[15] = "platform";
+    if (tableData){
+        tableData = tableData.slice(1);
+        for (let record of tableData) {
+            const headerOperator = record.header[0];
+            const headerMindspore = record.header[1];
+            const headerDiff = record.header[2];
+            record.header[0] = headerOperator;
+            record.header[1] = "operatorURL";
+            record.header[2] = "operator1word";
+            record.header[3] = "operator2word";
+            record.header[4] = "operator3word";
+            record.header[5] = "operator4word";
+            record.header[6] = headerMindspore;
+            record.header[7] = "mindsporeURL";
+            record.header[8] = "mindspore1word";
+            record.header[9] = "mindspore2word";
+            record.header[10] = "mindspore3word";
+            record.header[11] = "mindspore4word";
+            record.header[12] = "remark";
+            record.header[13] = "diffURL";
+            record.header[14] = "version";
+            record.header[15] = "platform";
 
-            const jsonData = tableData.rows.map((row) => {
+            const jsonData = record.rows.map((row) => {
+                
                 const rowObject: { [key: string]: string } = {};
+                // const rowObject2: apiRecord = {}
                 row.forEach((cell, index) => {
                     const pattern = /\[(.*?)\]/g;
                     const tempNameMatch = pattern.exec(cell);
@@ -64,13 +66,13 @@ export function markdownTableToJson(filePath: string): any[] | null {
                     const patternURL = /\((.*?)\)/g;
                     const tempURLMatch = patternURL.exec(cell);
                     const tempURL = (tempURLMatch)? tempURLMatch[1] : "";
-                    rowObject[tableData.header[(index+1)*6-6]] = tempName;
-                    rowObject[tableData.header[(index+1)*6-5]] = tempURL;
-                    rowObject[tableData.header[(index+1)*6-4]] = tempNameSplit[0];
-                    rowObject[tableData.header[(index+1)*6-3]] = tempNameSplit[1];
-                    rowObject[tableData.header[(index+1)*6-2]] = tempNameSplit[2];
-                    rowObject[tableData.header[(index+1)*6-1]] = tempNameSplit[3];
-                    rowObject[tableData.header[14]] = headerOperator;
+                    rowObject[record.header[(index+1)*6-6]] = tempName;
+                    rowObject[record.header[(index+1)*6-5]] = tempURL;
+                    rowObject[record.header[(index+1)*6-4]] = tempNameSplit[0];
+                    rowObject[record.header[(index+1)*6-3]] = tempNameSplit[1];
+                    rowObject[record.header[(index+1)*6-2]] = tempNameSplit[2];
+                    rowObject[record.header[(index+1)*6-1]] = tempNameSplit[3];
+                    rowObject[record.header[14]] = headerOperator;
 
                 });
                 return rowObject;
@@ -79,7 +81,7 @@ export function markdownTableToJson(filePath: string): any[] | null {
         }
         return resultJson;
     }
-    return null;
+    return undefined;
 }
 
 function extractTables(fileContent: string): string[][] {
@@ -128,9 +130,9 @@ export function searchJson(jsonData: any[], searchWords: string[]): any[] {
   }
   
 export function getResult(filepath: string, searchWords: string[]){
-    let jsonData = markdownTableToJson(filepath)
+    let jsonData = markdownTableToJson(filepath);
     if (jsonData){
-      const result = searchJson(jsonData, searchWords)
+      const result = searchJson(jsonData, searchWords);
       return result;
     }
     return null;

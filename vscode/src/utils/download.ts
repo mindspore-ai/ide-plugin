@@ -1,11 +1,11 @@
-import * as fs from "fs"
-import * as path from "path"
-import axios from 'axios'
-import * as compressing from "compressing"
-import { window } from "vscode"
-import { logger } from "./log/log4js"
-import { fsExistsSync } from "./fileUtil"
-import * as fsPromises from "fs/promises"
+import * as fs from "fs";
+import * as path from "path";
+import axios from 'axios';
+import * as compressing from "compressing";
+import { window } from "vscode";
+import { logger } from "../log/log4js";
+import { fsExistsSync } from "./fileUtil";
+import * as fsPromises from "fs/promises";
 
 export async function downloadFile(url: string, fileName: string, destination: string, timeout: number){
 	if (!fsExistsSync(destination)){
@@ -22,9 +22,9 @@ export async function downloadFile(url: string, fileName: string, destination: s
             timeout: timeout
         }).then(responses => {
             responses.data.on('close', () => {
-                throw new Error("network interupt!")
-            })
-            return responses
+                throw new Error("network interrupt!");
+            });
+            return responses;
         });
         
         response.data.pipe(writer);
@@ -49,7 +49,7 @@ export async function unzipSync(fileName: string, destination: string) {
     }).catch((err: any) =>{
         logger.error('decompression failed');
         throw err;
-    })
+    });
 }
 
 export async function download(fileName: string, url: string, destination: string) {

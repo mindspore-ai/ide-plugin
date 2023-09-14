@@ -1,4 +1,4 @@
-import { Constants } from "./constants";
+import * as Constants from "./constants";
 import * as net from "net";
 
 let transformerXLPort : number|undefined;
