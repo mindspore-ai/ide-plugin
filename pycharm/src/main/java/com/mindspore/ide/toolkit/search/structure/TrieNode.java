@@ -190,4 +190,13 @@ public class TrieNode {
         }
         return stringBuilder.toString();
     }
+
+    public void reset() {
+        lastWord = null;
+        isWord = false;
+        lastNode = Optional.empty();
+        parent = null;
+        content = null;
+        children = new TreeMap<>(Character::compare);
+    }
 }

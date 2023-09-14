@@ -15,12 +15,17 @@ import com.intellij.openapi.wm.StatusBarWidget;
 import com.intellij.openapi.wm.WindowManager;
 import com.intellij.openapi.wm.impl.status.EditorBasedStatusBarPopup;
 import com.mindspore.ide.toolkit.statusbar.service.MindSporeStatusBarServiceImpl;
+import com.mindspore.ide.toolkit.statusbar.utils.MindSporeVersionUtils;
 import icons.MsIcons;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 public class MindSporeStatusBarWidget extends EditorBasedStatusBarPopup {
@@ -60,11 +65,12 @@ public class MindSporeStatusBarWidget extends EditorBasedStatusBarPopup {
         String version = MindSporeStatusBarServiceImpl.getCurrentSelectedVersion();
         if (StringUtils.isEmpty(version)) {
             version = PluginManagerCore.getPlugin(PluginId.getId("com.mindspore")).getVersion();
-            MindSporeStatusBarServiceImpl.setCurrentSelectedVersion(version);
-            if (!MindSporeStatusBarServiceImpl.getVersions().contains(version)) {
-                MindSporeStatusBarServiceImpl.addVersion(version);
+            List<String> versions = Arrays.asList(version.split("\\."));
+            if (versions.size() >= 2) {
+                version = versions.stream().limit(2).collect(Collectors.joining("."));
             }
-
+            MindSporeStatusBarServiceImpl.setCurrentSelectedVersion(version);
+            MindSporeVersionUtils.initVersionMarkdownMap(version);
         }
         EditorBasedStatusBarPopup.WidgetState state = new EditorBasedStatusBarPopup.WidgetState("", "mindspore " + version, true);
         state.setIcon(MsIcons.MS_ICON_12PX);
