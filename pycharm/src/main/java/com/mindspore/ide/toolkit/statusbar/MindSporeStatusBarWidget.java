@@ -70,7 +70,7 @@ public class MindSporeStatusBarWidget extends EditorBasedStatusBarPopup {
                 version = versions.stream().limit(2).collect(Collectors.joining("."));
             }
             MindSporeStatusBarServiceImpl.setCurrentSelectedVersion(version);
-            MindSporeVersionUtils.initVersionMarkdownMap(version);
+            MindSporeVersionUtils.initVersionMap(version);
         }
         EditorBasedStatusBarPopup.WidgetState state = new EditorBasedStatusBarPopup.WidgetState("", "mindspore " + version, true);
         state.setIcon(MsIcons.MS_ICON_12PX);

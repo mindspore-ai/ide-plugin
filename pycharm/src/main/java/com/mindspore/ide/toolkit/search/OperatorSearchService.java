@@ -71,10 +71,4 @@ public enum OperatorSearchService {
     public List<OperatorRecord> searchFullMatch(String inputString) {
         return mdFile2Map.fetchAllMatch(inputString);
     }
-
-    public void reset(String version) {
-        root.reset();
-        mdFile2Map.reset(version);
-        mdFile2Map.searchable().forEach(root::addWord);
-    }
 }

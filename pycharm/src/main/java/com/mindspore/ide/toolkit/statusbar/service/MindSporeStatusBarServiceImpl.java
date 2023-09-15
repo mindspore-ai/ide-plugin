@@ -5,12 +5,14 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.DumbAwareAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.util.NlsSafe;
 import com.intellij.util.ui.EmptyIcon;
-import com.mindspore.ide.toolkit.search.OperatorSearchService;
 import com.mindspore.ide.toolkit.statusbar.MindSporeStatusBarWidget;
 import com.mindspore.ide.toolkit.statusbar.utils.MindSporeVersionUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -78,7 +80,7 @@ public class MindSporeStatusBarServiceImpl implements MindSporeStatusBarService 
 
     public static DefaultActionGroup createVersionActionsGroup() {
         String selectedVersion = getCurrentSelectedVersion();
-        List<String> versions = new ArrayList<>(MindSporeVersionUtils.VERSION_MARKDOWN_MAP.keySet());
+        List<String> versions = new ArrayList<>(MindSporeVersionUtils.VERSION_LIST);
         Collections.sort(versions);
         versions.remove(selectedVersion);
         DefaultActionGroup group = new DefaultActionGroup();
@@ -87,8 +89,16 @@ public class MindSporeStatusBarServiceImpl implements MindSporeStatusBarService 
                 @Override
                 public void actionPerformed(@NotNull AnActionEvent e) {
                     log.debug("choose version:{} to mapping", version);
-                    OperatorSearchService.INSTANCE.reset(version);
-                    notifyApp(version);
+                    Task.Backgroundable task = new Task.Backgroundable(e.getProject(), "Loading mindSpore version mapping relationships") {
+                        @Override
+                        public void run(@NotNull ProgressIndicator indicator) {
+                            indicator.isRunning();
+                            notifyApp(version);
+                            indicator.stop();
+                        }
+                    };
+
+                    ProgressManager.getInstance().run(task);
                 }
 
                 @Override
