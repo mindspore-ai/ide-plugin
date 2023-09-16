@@ -53,8 +53,6 @@ public interface SearchEveryWhereDataHub<K, V> {
      */
     List<V> fetchAllMatch(String input);
 
-    void reset(String version);
-
     /**
      * get operator data hub by this interface
      *

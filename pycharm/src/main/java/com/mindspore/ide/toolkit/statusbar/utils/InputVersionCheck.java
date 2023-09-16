@@ -4,7 +4,6 @@ import com.intellij.openapi.ui.InputValidator;
 import com.intellij.openapi.util.NlsSafe;
 import org.apache.commons.lang.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class InputVersionCheck implements InputValidator {
@@ -21,7 +20,7 @@ public class InputVersionCheck implements InputValidator {
             return false;
         }
 
-        List<String> versions = new ArrayList<>(MindSporeVersionUtils.VERSION_MARKDOWN_MAP.keySet());
+        List<String> versions = MindSporeVersionUtils.VERSION_LIST;
         if (versions.contains(inputString)) {
             return false;
         }
