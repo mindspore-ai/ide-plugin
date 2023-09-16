@@ -24,7 +24,7 @@ async function init(){
 
 export async function activate(context: vscode.ExtensionContext) {
 	await init();
-	apiScanService.init();
+	apiScanService.init(context);
 	let versionNumber = context.extension.packageJSON.version;
 	context.subscriptions.push(vscode.commands.registerCommand('getContext', () => versionNumber));
 
