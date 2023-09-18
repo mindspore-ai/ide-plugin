@@ -8,9 +8,11 @@ import * as fs from "fs";
 import { ADDITIONAL_CHARACTERS, WhitzardProvider } from './completion/provider';
 import { logger } from './log/log4js';
 import * as apiScanService from './apimapping/apiScanService';
+import * as changeVersionInteractive from './apimapping/changeVersionInteractive';
 import { ProjectTreeData } from './apimapping/projectTreeView';
 import * as scanner from './apimapping/scanner';
 import { OpenWebProvider } from './apimapping/SearchWebviewProvider';
+import { changeVersion } from './apimapping/apiMappingData';
 let whitzardCompletionProvider: WhitzardProvider;
 
 
@@ -24,6 +26,7 @@ async function init(){
 
 export async function activate(context: vscode.ExtensionContext) {
 	await init();
+	changeVersionInteractive.init(context);
 	apiScanService.init(context);
 	let versionNumber = context.extension.packageJSON.version;
 	context.subscriptions.push(vscode.commands.registerCommand('getContext', () => versionNumber));
