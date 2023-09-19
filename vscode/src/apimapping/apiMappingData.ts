@@ -13,7 +13,6 @@ let jsonData: Map<string, any[]> = new Map<string, any[]>();
 let filePath = join(homedir(), ".mindspore", Constants.PYTORCH_API_MAPPING_FILENAME);
 export async function init() {
     await initApiMap();
-    await scanPlatform.addPlatform(getJsonData());
     window.showInformationMessage("API Mapping Data init end");
 }
 export async function initApiMap() {
@@ -25,6 +24,7 @@ export async function initApiMap() {
         json = markdownTableToJson("../pytorch_api_mapping.md");
     }
     if (json) {
+        await scanPlatform.addPlatform(getJsonData());
         jsonData.set(version, json);
         return true;
     } else {
@@ -39,13 +39,14 @@ export async function addApiMap(newVersion: string) {
         json = markdownTableToJson(filePath);
     }
     if (json) {
+        await scanPlatform.addPlatform(json);
         jsonData.set(newVersion, json);
+
         return true;
     } else {
         return false;
     }
 }
-
 
 export function getJsonData() {
     return jsonData.get(version);

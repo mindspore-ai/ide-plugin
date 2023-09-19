@@ -17,7 +17,7 @@ export function openInputOptions() {
     vscode.window.showQuickPick(versionOptions.concat('自定义输入...'), {
         placeHolder: '请选择一个版本或输入自定义版本'
     }).then((selection) => {
-        if (!selection) return;
+        if (!selection) {return;};
 
         // 如果用户选择了'自定义输入...'，那么展示输入框
         if (selection === '自定义输入...') {
