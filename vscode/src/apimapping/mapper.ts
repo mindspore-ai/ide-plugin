@@ -1,8 +1,9 @@
 import { markdownTable } from 'markdown-table';
 import { tensorApi } from "../resource/specialTorch";
 import * as apiMappingDataSource from "./apiMappingData";
+import { addSinglePlatform } from './scanPlatform';
 
-export function mapAPI(apis: string[]){
+export async function mapAPI(apis: string[]){
     const head = ["PyTorch API","API 版本", "MindSpore API", "说明", "支持的后端"];
     const headInconvertible = ["PyTorch API", "说明"];
     let convertible = new Map<string, string[]>();
@@ -15,11 +16,14 @@ export function mapAPI(apis: string[]){
     apiMappingDataSource.getJsonData()?.forEach((row) => {
         tempMap.set(row.operator1word, row);
     });
-
-    apis.forEach((rawApi) => {
+    try {
+    for (let rawApi of apis) {
         let api = rawApi.replace(/([^\w.])/g, "");
         if (tempMap.has(api)) {
             let target = tempMap.get(api);
+            if (target.platform  === undefined || target.platform === ""){
+                await addSinglePlatform(target);
+            }
             let record = [
                 target.operatorURL?`[${target.operator1word}](${target.operatorURL})`:target.operator1word,
                 target.version,
@@ -37,6 +41,9 @@ export function mapAPI(apis: string[]){
                     let target = tempMap.get(apiName);
                     let record = [apiName, "可能为torch.Tensor的API"];
                     if (target) {
+                        if (target.platform  === undefined || target.platform === ""){
+                            await addSinglePlatform(target);
+                        }
                         record = [
                             target.operatorURL?`[${target.operator1word}](${target.operatorURL})`:target.operator1word,
                             target.version,
@@ -51,7 +58,10 @@ export function mapAPI(apis: string[]){
             }
         }
 
-    });
+    }
+} catch (error) {
+    console.log(error);
+}
     
     let convertibleTable = [];
     if (convertible.size > 0) {

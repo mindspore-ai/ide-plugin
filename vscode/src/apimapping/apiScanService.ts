@@ -7,12 +7,15 @@ import path = require('path');
 import { homedir } from 'os';
 import { join } from 'path';
 import * as fs from 'fs';
+import * as ApiScanMapping from './apiMappingData';
 
 let panelList: vscode.WebviewPanel[] = [];
 let extensionContext : vscode.ExtensionContext;
 export async function init(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand('mindspore.scanLocalFile', apiScanHandler);
     extensionContext = context;
+    ApiScanMapping.init();
+    
 }
 async function apiScanHandler(uris: vscode.Uri | vscode.Uri[], label?: string, ) {
     let showName: string | undefined;
@@ -102,7 +105,7 @@ async function apiScanHandler(uris: vscode.Uri | vscode.Uri[], label?: string, )
 }
 //扫描文本信息，转化为MarkDown Table
 async function scanContentToWebview(apiList: string[]){
-    let apiTables = mapAPI(apiList);
+    let apiTables = await mapAPI(apiList);
     let htmlTable:string[] = [];
     for (let element of apiTables){
         htmlTable.push(marked(element));

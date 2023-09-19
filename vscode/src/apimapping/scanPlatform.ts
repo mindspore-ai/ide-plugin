@@ -2,12 +2,13 @@ import axios from "axios";
 import { logger } from '../log/log4js';
 
 const platform: string[] = ['Ascend', 'GPU', 'CPU'];
-let platformMap: Map<string, string> = new Map();
+
 
 export async function addPlatform(pyJsonData: any[] | undefined) {
     if (pyJsonData === null || pyJsonData === undefined) {
         return;
     }
+    let platformMap: Map<string, string> = new Map();
     for (let i = 0; i < 5; i++) {
         let dataPromiseList: Promise<void>[] = [];
         for (let data of pyJsonData) {
@@ -15,10 +16,14 @@ export async function addPlatform(pyJsonData: any[] | undefined) {
             if (platformMap.has((apiName))) {
                 continue;
             }
+            if (data.mindsporeURL === undefined || data.mindsporeURL === null || data.mindsporeURL === "") {
+                data.platform = '--'; 
+            }
             let promise = new Promise<void>(resolve => {
                 axios({
                     url: data.mindsporeURL,
-                    method: 'get'
+                    method: 'get',
+                    timeout: 5000
                 }).then((response: any) => {
                     let htmlText = response.data as string;
                     //apiName位置
@@ -43,24 +48,29 @@ export async function addPlatform(pyJsonData: any[] | undefined) {
                     resolve();
                 }).catch((error: any) => {
                     logger.warn(`get ${apiName} html content msg: ${error}`);
-                })
-            })
+                    resolve();
+                });
+            });
             dataPromiseList.push(promise);
         }
-        Promise.allSettled(dataPromiseList);
+        await Promise.allSettled(dataPromiseList);
     }
 }
 
 export async function addSinglePlatform(data: any) {
     for (let i = 0; i < 5; i++) {
         let apiName = data.mindspore1word;
-        if (platformMap.has((apiName))) {
+        if (data.platform !== "") {
             return ;
+        }
+        if (data.mindsporeURL === undefined || data.mindsporeURL === null || data.mindsporeURL === "") {
+            data.platform = '--'; 
         }
         return new Promise<void>(resolve => {
             axios({
                 url: data.mindsporeURL,
-                method: 'get'
+                method: 'get',
+                timeout: 1000
             }).then((response: any) => {
                 let htmlText = response.data as string;
                 //apiName位置
@@ -81,10 +91,10 @@ export async function addSinglePlatform(data: any) {
                 } else {
                     data.platform = '暂无数据';
                 }
-                platformMap.set(apiName, data.platform);
                 resolve();
             }).catch((error: any) => {
                 logger.warn(`get ${apiName} html content msg: ${error}`);
+                resolve();
             })
         })
     }
