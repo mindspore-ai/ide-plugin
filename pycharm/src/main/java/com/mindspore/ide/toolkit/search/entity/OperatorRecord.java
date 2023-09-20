@@ -17,6 +17,11 @@ public class OperatorRecord {
     private String mindSporeLink;
 
     /**
+     * mindspore platform
+     */
+    private String platform;
+
+    /**
      * 版本号
      */
     private String versionText;
@@ -96,6 +101,11 @@ public class OperatorRecord {
         return this;
     }
 
+    public OperatorRecord setPlatform(String platform) {
+        this.platform = platform;
+        return this;
+    }
+
     public String getMindSporeOperator() {
         return mindSporeOperator;
     }
@@ -131,4 +141,6 @@ public class OperatorRecord {
     public String getShowText() {
         return originalOperator + " -> " + mindSporeOperator;
     }
+
+    public String getPlatform() {return platform;}
 }
