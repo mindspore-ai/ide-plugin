@@ -29,7 +29,7 @@ export async function addPlatform(pyJsonData: any[] | undefined) {
                     //apiName位置
                     let apiNameIndex = htmlText.indexOf('<dt class="sig sig-object py" id="' + apiName);
                     let platformIndex = htmlText.indexOf('支持平台', apiNameIndex);
-                    if (!htmlText.substring(apiNameIndex, platformIndex).includes('class="py ')) {
+                    if (apiNameIndex > 0 && platformIndex > 0 && !htmlText.substring(apiNameIndex, platformIndex).includes('class="py ')) {
                         let platformString = htmlText.substring(platformIndex, htmlText.indexOf('</dd>', platformIndex));
                         let platformList: string[] = [];
                         platform.forEach(type => {
