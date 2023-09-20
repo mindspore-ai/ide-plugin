@@ -4,7 +4,7 @@ import * as apiMappingDataSource from "./apiMappingData";
 import { addSinglePlatform } from './scanPlatform';
 
 export async function mapAPI(apis: string[]){
-    const head = ["PyTorch API","API 版本", "MindSpore API", "说明", "支持的后端"];
+    const head = ["PyTorch API","API 版本", "MindSpore API", "支持的后端", "说明"];
     const headInconvertible = ["PyTorch API", "说明"];
     let convertible = new Map<string, string[]>();
     let inconvertible = new Map<string, string[]>();
@@ -16,21 +16,30 @@ export async function mapAPI(apis: string[]){
     apiMappingDataSource.getJsonData()?.forEach((row) => {
         tempMap.set(row.operator1word, row);
     });
-    try {
+    let promiseList: Promise<void>[] = [];
     for (let rawApi of apis) {
         let api = rawApi.replace(/([^\w.])/g, "");
         if (tempMap.has(api)) {
             let target = tempMap.get(api);
             if (target.platform  === undefined || target.platform === ""){
-                await addSinglePlatform(target);
+                promiseList.push(addSinglePlatform(target).then(() => {
+                    let record = [
+                        target.operatorURL?`[${target.operator1word}](${target.operatorURL})`:target.operator1word,
+                        target.version,
+                        target.mindsporeURL?`[${target.mindspore1word}](${target.mindsporeURL})`:target.mindspore1word,
+                        target.platform,
+                        target.diffURL?`[${target.remark}](${target.diffURL})`: target.remark];
+                    convertible.set(api,record);
+                }));
+            } else {
+                let record = [
+                    target.operatorURL?`[${target.operator1word}](${target.operatorURL})`:target.operator1word,
+                    target.version,
+                    target.mindsporeURL?`[${target.mindspore1word}](${target.mindsporeURL})`:target.mindspore1word,
+                    target.platform,
+                    target.diffURL?`[${target.remark}](${target.diffURL})`: target.remark];
+                convertible.set(api,record);
             }
-            let record = [
-                target.operatorURL?`[${target.operator1word}](${target.operatorURL})`:target.operator1word,
-                target.version,
-                target.mindsporeURL?`[${target.mindspore1word}](${target.mindsporeURL})`:target.mindspore1word,
-                target.diffURL?`[${target.remark}](${target.diffURL})`: target.remark,
-                target.platform];
-            convertible.set(api,record);
         } else {
             if (api.startsWith("torch")) {
                 inconvertible.set(api, [api,""]);
@@ -42,15 +51,24 @@ export async function mapAPI(apis: string[]){
                     let record = [apiName, "可能为torch.Tensor的API"];
                     if (target) {
                         if (target.platform  === undefined || target.platform === ""){
-                            await addSinglePlatform(target);
-                        }
-                        record = [
-                            target.operatorURL?`[${target.operator1word}](${target.operatorURL})`:target.operator1word,
-                            target.version,
-                            target.mindsporeURL?`[${target.mindspore1word}](${target.mindsporeURL})`:target.mindspore1word,
-                            target.diffURL?`[${target.remark}](${target.diffURL})`: target.remark,
-                            target.platform],
+                            promiseList.push(addSinglePlatform(target).then(() => {
+                                record = [
+                                    target.operatorURL?`[${target.operator1word}](${target.operatorURL})`:target.operator1word,
+                                    target.version,
+                                    target.mindsporeURL?`[${target.mindspore1word}](${target.mindsporeURL})`:target.mindspore1word,
+                                    target.platform,
+                                    target.diffURL?`[${target.remark}](${target.diffURL})`: target.remark],
+                                chainCall.set(apiName,record);
+                            }));
+                        } else {
+                            record = [
+                                target.operatorURL?`[${target.operator1word}](${target.operatorURL})`:target.operator1word,
+                                target.version,
+                                target.mindsporeURL?`[${target.mindspore1word}](${target.mindsporeURL})`:target.mindspore1word,
+                                target.platform,
+                                target.diffURL?`[${target.remark}](${target.diffURL})`: target.remark],
                             chainCall.set(apiName,record);
+                        }
                     } else {
                         chainCallInconvertible.set(apiName,record);
                     }
@@ -59,10 +77,8 @@ export async function mapAPI(apis: string[]){
         }
 
     }
-} catch (error) {
-    console.log(error);
-}
-    
+
+    await Promise.allSettled(promiseList);
     let convertibleTable = [];
     if (convertible.size > 0) {
         convertibleTable.push(head);
