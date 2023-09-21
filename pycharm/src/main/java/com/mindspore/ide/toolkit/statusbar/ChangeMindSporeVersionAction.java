@@ -8,6 +8,7 @@ import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.ui.Messages;
+import com.mindspore.ide.toolkit.search.OperatorSearchService;
 import com.mindspore.ide.toolkit.statusbar.service.MindSporeStatusBarServiceImpl;
 import com.mindspore.ide.toolkit.statusbar.utils.InputVersionCheck;
 import com.mindspore.ide.toolkit.statusbar.utils.MindSporeVersionUtils;
@@ -36,6 +37,7 @@ public class ChangeMindSporeVersionAction extends AnAction implements DumbAware,
                     indicator.isRunning();
                     MindSporeVersionUtils.addVersion(input);
                     MindSporeStatusBarServiceImpl.notifyApp(input);
+                    OperatorSearchService.INSTANCE.changeSearchDataHub(input);
                     indicator.stop();
                 }
             };

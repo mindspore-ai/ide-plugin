@@ -277,8 +277,8 @@ public class TransApiAction extends AnAction {
                 } else {
                     cells[3] =
                             new LinkInfo(record.getDescription(), record.getDescriptionLink(), !record.isInWhiteList());
-                    cells[4] = record.getPlatform();
                 }
+                cells[4] = record.getPlatform();
                 apiList.add(cells);
             }
             if (records.isEmpty()) {
