@@ -259,7 +259,7 @@ public class TransApiAction extends AnAction {
             }
             List<OperatorRecord> records = OperatorSearchService.INSTANCE.searchFullMatch(str);
             for (OperatorRecord record : records) {
-                Object[] cells = new Object[4];
+                Object[] cells = new Object[5];
                 if (Strings.isEmpty(record.getOriginalLink())) {
                     cells[0] = record.getOriginalLink();
                 } else {
@@ -277,6 +277,7 @@ public class TransApiAction extends AnAction {
                 } else {
                     cells[3] =
                             new LinkInfo(record.getDescription(), record.getDescriptionLink(), !record.isInWhiteList());
+                    cells[4] = record.getPlatform();
                 }
                 apiList.add(cells);
             }

@@ -24,7 +24,7 @@ import javax.swing.JTable;
  */
 public class ApiMappingUI {
     private static final String[] API_COLUMNS =
-            {"Original Api", "Original Api Version", "MindSpore Api", "Description"};
+            {"Original Api", "Original Api Version", "MindSpore Api", "Description", "Platform"};
 
     private static final String[] API_NULL_COLUMNS=
             {"Original Api", "Original Api Version", "MindSpore Api", "Description"};

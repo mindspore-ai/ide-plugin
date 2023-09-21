@@ -16,6 +16,8 @@
 
 package com.mindspore.ide.toolkit.search;
 
+import com.intellij.openapi.util.text.StringUtil;
+import com.mindspore.ide.toolkit.common.utils.HttpUtils;
 import com.mindspore.ide.toolkit.search.entity.ApiType;
 import com.mindspore.ide.toolkit.search.entity.LinkInfo;
 import com.mindspore.ide.toolkit.search.entity.OperatorRecord;
@@ -30,7 +32,11 @@ import com.vladsch.flexmark.parser.ParserEmulationProfile;
 import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.data.MutableDataSet;
 import com.vladsch.flexmark.util.sequence.BasedSequence;
+import org.apache.commons.httpclient.util.HttpURLConnection;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.util.EntityUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -49,6 +55,11 @@ import java.util.stream.Collectors;
  */
 public enum OperatorMapDataHub implements SearchEveryWhereDataHub<String, OperatorRecord> {
     INSTANCE;
+    /**
+     *
+     * api支持平台类型
+     */
+    private String[] PLATFORM = {"Ascend", "GPU", "CPU"};
 
     /**
      * node数据
@@ -218,7 +229,8 @@ public enum OperatorMapDataHub implements SearchEveryWhereDataHub<String, Operat
                         .setMindSporeOperator(linkInfo1.getText())
                         .setMindSporeLink(linkInfo1.getUrl())
                         .setDescription(linkInfoDescription.getText())
-                        .setDescriptionLink(linkInfoDescription.getUrl());
+                        .setDescriptionLink(linkInfoDescription.getUrl())
+                        .setPlatform(getPlatformInfo(linkInfo1));
                 operatorMap.computeIfAbsent(linkInfo.getText(), (key) -> new ArrayList<>()).add(operatorRecord);
             });
         });
@@ -227,5 +239,35 @@ public enum OperatorMapDataHub implements SearchEveryWhereDataHub<String, Operat
     @Override
     public List<OperatorRecord> fetchAllMatch(String input) {
         return operatorMap.getOrDefault(input, new ArrayList<>());
+    }
+
+    private String getPlatformInfo(LinkInfo linkInfo) {
+        String apiName = linkInfo.getText();
+        List platformList = new ArrayList();
+        if (!apiName.startsWith("mindspore.") || linkInfo.getUrl() == "") {
+            return "";
+        }
+        try (CloseableHttpResponse response = HttpUtils.doGet(linkInfo.getUrl(), new HashMap<>(), 1000)) {
+            if (response.getStatusLine().getStatusCode() == HttpURLConnection.HTTP_OK) {
+                String htmlText = EntityUtils.toString(response.getEntity());
+                int apiNameIndex = htmlText.indexOf("<dt class=\"sig sig-object py\" id=\"" + apiName);
+                int platformIndex = htmlText.indexOf("支持平台", apiNameIndex);
+                // md与html源码中得apiName不一致时，apiNameIndex为-1
+                if (apiNameIndex > 0 && platformIndex > 0 && !htmlText.substring(apiNameIndex, platformIndex).contains("class=\"py ")) {
+                    String platformString = htmlText.substring(platformIndex, htmlText.indexOf("</dd>", platformIndex));
+                    for (String type : PLATFORM) {
+                        if (platformString.contains(type)) {
+                            platformList.add(type);
+                        }
+                    }
+                    if (platformList.size() > 0) {
+                        return StringUtil.join(platformList, ",");
+                    }
+                } else {
+                    return "暂无数据";
+                }
+            }
+        } catch (IOException ioException) {}
+        return "";
     }
 }
