@@ -13,6 +13,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.util.NlsSafe;
 import com.intellij.util.ui.EmptyIcon;
+import com.mindspore.ide.toolkit.search.OperatorSearchService;
 import com.mindspore.ide.toolkit.statusbar.MindSporeStatusBarWidget;
 import com.mindspore.ide.toolkit.statusbar.utils.MindSporeVersionUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -72,6 +73,7 @@ public class MindSporeStatusBarServiceImpl implements MindSporeStatusBarService 
         if (shouldNotify) {
             for(Project project : ProjectManager.getInstance().getOpenProjects()) {
                 if (!project.isDisposed()) {
+                    OperatorSearchService.INSTANCE.changeSearchDataHub(version);
                     MindSporeStatusBarWidget.update(project);
                 }
             }

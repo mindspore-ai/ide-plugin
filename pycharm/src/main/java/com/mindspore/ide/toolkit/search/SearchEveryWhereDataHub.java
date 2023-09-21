@@ -16,8 +16,6 @@
 
 package com.mindspore.ide.toolkit.search;
 
-import com.mindspore.ide.toolkit.search.entity.OperatorRecord;
-
 import java.util.List;
 import java.util.Set;
 
@@ -58,7 +56,4 @@ public interface SearchEveryWhereDataHub<K, V> {
      *
      * @return operator data hub
      */
-    static SearchEveryWhereDataHub<String, OperatorRecord> getOperatorDataHub() {
-        return OperatorMapDataHub.INSTANCE;
-    }
 }

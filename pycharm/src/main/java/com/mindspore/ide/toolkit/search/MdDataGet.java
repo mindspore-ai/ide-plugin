@@ -21,32 +21,15 @@ import java.util.stream.Collectors;
 public class MdDataGet {
     private static final String NEW_LINE = "\n";
 
-    public static String pytorchMdStr = "";
-
-    public static String tensorflowMdStr = "";
-
     private static final Logger LOG = LoggerFactory.getLogger(MdDataGet.class);
 
-    private static String mdVersion = "";
+    private String mdVersion = "";
 
-    private MdDataGet() {
-    }
+    public String pytorchMdStr = "";
 
-    /**
-     * 获取单例
-     *
-     * @return MdDataGet
-     */
-    public static MdDataGet getInstance() {
-        return SingleMdDataGet.INSTANCE;
-    }
+    public String tensorflowMdStr = "";
 
-    /**
-     * 获取网络请求md内容
-     *
-     * @param msVersionData msVersionData
-     */
-    public void getMdStr(MsVersionDataConfig.MsVersionData msVersionData) {
+    public MdDataGet(MsVersionDataConfig.MsVersionData msVersionData) {
         mdVersion = msVersionData.getMdVersion();
         pytorchMdStr = getPytorchMdStr(msVersionData.getPytorchMdUrl());
         tensorflowMdStr = getTensorflowMdStr(msVersionData.getTensorflowMdUrl());
@@ -94,9 +77,5 @@ public class MdDataGet {
             LOG.warn("get md data failed: {}", ioException.toString());
         }
         return mdData;
-    }
-
-    private static class SingleMdDataGet {
-        private static final MdDataGet INSTANCE = new MdDataGet();
     }
 }
