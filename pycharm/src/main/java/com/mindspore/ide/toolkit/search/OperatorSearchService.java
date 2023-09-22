@@ -16,6 +16,8 @@
 
 package com.mindspore.ide.toolkit.search;
 
+import com.intellij.notification.NotificationType;
+import com.mindspore.ide.toolkit.common.utils.NotificationUtils;
 import com.mindspore.ide.toolkit.search.entity.OperatorRecord;
 import com.mindspore.ide.toolkit.search.structure.TrieNode;
 
@@ -33,24 +35,37 @@ public enum OperatorSearchService {
     INSTANCE;
 
     private TrieNode root = new TrieNode();
-    private Map<String, SearchEveryWhereDataHub<String, OperatorRecord>> mdFile2Map = new ConcurrentHashMap<>();
+    private final Map<String, SearchEveryWhereDataHub<String, OperatorRecord>> mdFile2Map = new ConcurrentHashMap<>();
     private SearchEveryWhereDataHub<String, OperatorRecord> recentHub;
 
     OperatorSearchService() {
     }
 
     public boolean changeSearchDataHub(String version) {
+        return changeSearchDataHub(version, false);
+    }
+
+    public boolean changeSearchDataHub(String version, boolean isInit) {
         MsVersionDataConfig.MsVersionData msVersionData = MsVersionDataConfig.newVersionData(version);
-        SearchEveryWhereDataHub<String, OperatorRecord> tempHub =
-                mdFile2Map.getOrDefault(msVersionData.getMdVersion(), new OperatorMapDataHub(msVersionData));
-        if (tempHub != null) {
-            this.recentHub = tempHub;
-            root = new TrieNode();
-            recentHub.searchable().forEach(root::addWord);
-            return true;
+        SearchEveryWhereDataHub<String, OperatorRecord> tempHub;
+        if (mdFile2Map.containsKey(msVersionData.getMdVersion())) {
+            tempHub = mdFile2Map.get(msVersionData.getMdVersion());
         } else {
-            return false;
+            MdDataGet mdDataGet = new MdDataGet(msVersionData);
+            if (!isInit && mdDataGet.pytorchMdStr.isEmpty()) {
+                NotificationUtils.notify(NotificationUtils.NotifyGroup.SEARCH,
+                        NotificationType.ERROR,
+                        "Unable to get api-mapping about mindspore " + version);
+                return false;
+            }
+            tempHub = new OperatorMapDataHub(mdDataGet);
         }
+
+        this.recentHub = tempHub;
+        root = new TrieNode();
+        recentHub.searchable().forEach(root::addWord);
+        mdFile2Map.putIfAbsent(msVersionData.getMdVersion(), tempHub);
+        return true;
     }
 
     /**

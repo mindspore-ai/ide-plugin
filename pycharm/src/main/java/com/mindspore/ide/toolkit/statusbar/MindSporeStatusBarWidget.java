@@ -1,11 +1,9 @@
 package com.mindspore.ide.toolkit.statusbar;
 
-import com.intellij.ide.plugins.PluginManagerCore;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
-import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.ListPopup;
@@ -14,6 +12,7 @@ import com.intellij.openapi.wm.StatusBar;
 import com.intellij.openapi.wm.StatusBarWidget;
 import com.intellij.openapi.wm.WindowManager;
 import com.intellij.openapi.wm.impl.status.EditorBasedStatusBarPopup;
+import com.mindspore.ide.toolkit.smartcomplete.CompleteConfig;
 import com.mindspore.ide.toolkit.statusbar.service.MindSporeStatusBarServiceImpl;
 import com.mindspore.ide.toolkit.statusbar.utils.MindSporeVersionUtils;
 import icons.MsIcons;
@@ -22,10 +21,6 @@ import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class MindSporeStatusBarWidget extends EditorBasedStatusBarPopup {
@@ -64,11 +59,7 @@ public class MindSporeStatusBarWidget extends EditorBasedStatusBarPopup {
     protected WidgetState getWidgetState(@Nullable VirtualFile file) {
         String version = MindSporeStatusBarServiceImpl.getCurrentSelectedVersion();
         if (StringUtils.isEmpty(version)) {
-            version = PluginManagerCore.getPlugin(PluginId.getId("com.mindspore")).getVersion();
-            List<String> versions = Arrays.asList(version.split("\\."));
-            if (versions.size() >= 2) {
-                version = versions.stream().limit(2).collect(Collectors.joining("."));
-            }
+            version = MindSporeVersionUtils.getBigVersion(CompleteConfig.PLUGIN_VERSION);
             MindSporeStatusBarServiceImpl.setCurrentSelectedVersion(version);
             MindSporeVersionUtils.initVersionMap(version);
         }
