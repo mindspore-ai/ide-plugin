@@ -17,9 +17,9 @@ public class ApiMappingUiUtil {
 
     private static final String API = "可以转换为MindSpore API的PyTorch/TensorFlow API";
 
-    private static final String API_NULL = "暂时不能转换的API";
+    private static final String API_NULL = "暂未提供直接映射关系的PyTorch API";
 
-    private static final String PAPI = "可能是PyTorch/TensorFlow API的情况";
+    private static final String PAPI = "可能是torch.Tensor API的结果";
 
     public static void buttonListener(JButton export, ActionListener actionListener) {
         // 导出事件

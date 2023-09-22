@@ -35,6 +35,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -56,6 +57,11 @@ import javax.swing.JComponent;
 public class TransApiAction extends AnAction {
     private static final String NO_PACKAGE_PLACEHOLDER = "<no package>";
 
+    private static final List<String> TORCH_TENSOR = Arrays.asList("new_tensor", "new_full", "new_empty",
+            "new_ones", "new_zeros", "is_cuda", "is_quantized", "is_meta", "device", "grad", "ndim", "T", "real", "imag", "abs",
+            "abs_", "absolute", "absolute_", "acos", "acos_", "arccos", "arccos_", "add", "add_", "addbmm", "addbmm_", "addcdiv"
+            , "addcdiv_", "addcmul", "addcmul_", "addmm", "addmm_", "sspaddmm", "addmv", "addmv_", "addr", "addr_", "allclose", "amax", "amin", "angle", "apply_", "argmax", "argmin", "argsort", "asin", "asin_", "arcsin", "arcsin_", "as_strided", "atan", "atan_", "arctan", "arctan_", "atan2", "atan2_", "all", "any", "backward", "baddbmm", "baddbmm_", "bernoulli", "bernoulli_", "bfloat16", "bincount", "bitwise_not", "bitwise_not_", "bitwise_and", "bitwise_and_", "bitwise_or", "bitwise_or_", "bitwise_xor", "bitwise_xor_", "bmm", "bool", "byte", "broadcast_to", "cauchy_", "ceil", "ceil_", "char", "cholesky", "cholesky_inverse", "cholesky_solve", "chunk", "clamp", "clamp_", "clip", "clip_", "clone", "contiguous", "copy_", "conj", "copysign", "copysign_", "cos", "cos_", "cosh", "cosh_", "count_nonzero", "acosh", "acosh_", "arccosh", "arccosh_", "cpu", "cross", "cuda", "logcumsumexp", "cummax", "cummin", "cumprod", "cumprod_", "cumsum", "cumsum_", "data_ptr", "deg2rad", "dequantize", "det", "dense_dim", "detach", "detach_", "diag", "diag_embed", "diagflat", "diagonal", "fill_diagonal_", "fmax", "fmin", "diff", "digamma", "digamma_", "dim", "dist", "div", "div_", "divide", "divide_", "dot", "double", "eig", "element_size", "eq", "eq_", "equal", "erf", "erf_", "erfc", "erfc_", "erfinv", "erfinv_", "exp", "exp_", "expm1", "expm1_", "expand", "expand_as", "exponential_", "fix", "fix_", "fill_", "flatten", "flip", "fliplr", "flipud", "float", "float_power", "float_power_", "floor", "floor_", "floor_divide", "floor_divide_", "fmod", "fmod_", "frac", "frac_", "gather", "gcd", "gcd_", "ge", "ge_", "greater_equal", "greater_equal_", "geometric_", "geqrf", "ger", "get_device", "gt", "gt_", "greater", "greater_", "half", "hardshrink", "heaviside", "histc", "hypot", "hypot_", "i0", "i0_", "igamma", "igamma_", "igammac", "igammac_", "index_add_", "index_add", "index_copy_", "index_copy", "index_fill_", "index_fill", "index_put_", "index_put", "index_select", "indices", "inner", "int", "int_repr", "inverse", "isclose", "isfinite", "isinf", "isposinf", "isneginf", "isnan", "is_contiguous", "is_complex", "is_floating_point", "is_leaf", "is_pinned", "is_set_to", "is_shared", "is_signed", "is_sparse", "istft", "isreal", "item", "kthvalue", "lcm", "lcm_", "ldexp", "ldexp_", "le", "le_", "less_equal", "less_equal_", "lerp", "lerp_", "lgamma", "lgamma_", "log", "log_", "logdet", "log10", "log10_", "log1p", "log1p_", "log2", "log2_", "log_normal_", "logaddexp", "logaddexp2", "logsumexp", "logical_and", "logical_and_", "logical_not", "logical_not_", "logical_or", "logical_or_", "logical_xor", "logical_xor_", "logit", "logit_", "long", "lstsq", "lt", "lt_", "less", "less_", "lu", "lu_solve", "as_subclass", "map_", "masked_scatter_", "masked_scatter", "masked_fill_", "masked_fill", "masked_select", "matmul", "matrix_power", "matrix_exp", "max", "maximum", "mean", "median", "nanmedian", "min", "minimum", "mm", "smm", "mode", "movedim", "moveaxis", "msort", "mul", "mul_", "multiply", "multiply_", "multinomial", "mv", "mvlgamma", "mvlgamma_", "nansum", "narrow", "narrow_copy", "ndimension", "nan_to_num", "nan_to_num_", "ne", "ne_", "not_equal", "not_equal_", "neg", "neg_", "negative", "negative_", "nelement", "nextafter", "nextafter_", "nonzero", "norm", "normal_", "numel", "numpy", "orgqr", "ormqr", "outer", "permute", "pin_memory", "pinverse", "polygamma", "polygamma_", "pow", "pow_", "prod", "put_", "qr", "qscheme", "quantile", "nanquantile", "q_scale", "q_zero_point", "q_per_channel_scales", "q_per_channel_zero_points", "q_per_channel_axis", "rad2deg", "random_", "ravel", "reciprocal", "reciprocal_", "record_stream", "register_hook", "remainder", "remainder_", "renorm", "renorm_", "repeat", "repeat_interleave", "requires_grad", "requires_grad_", "reshape", "reshape_as", "resize_", "resize_as_", "retain_grad", "roll", "rot90", "round", "round_", "rsqrt", "rsqrt_", "scatter", "scatter_", "scatter_add_", "scatter_add", "select", "set_", "share_memory_", "short", "sigmoid", "sigmoid_", "sign", "sign_", "signbit", "sgn", "sgn_", "sin", "sin_", "sinc", "sinc_", "sinh", "sinh_", "asinh", "asinh_", "arcsinh", "arcsinh_", "size", "slogdet", "solve", "sort", "split", "sparse_mask", "sparse_dim", "sqrt", "sqrt_", "square", "square_", "squeeze", "squeeze_", "std", "stft", "storage", "storage_offset", "storage_type", "stride", "sub", "sub_", "subtract", "subtract_", "sum", "sum_to_size", "svd", "swapaxes", "swapdims", "symeig", "t", "t_", "tensor_split", "tile", "to", "to_mkldnn", "take", "tan", "tan_", "tanh", "tanh_", "atanh", "atanh_", "arctanh", "arctanh_", "tolist", "topk", "to_sparse", "trace", "transpose", "transpose_", "triangular_solve", "tril", "tril_", "triu", "triu_", "true_divide", "true_divide_", "trunc", "trunc_", "type", "type_as", "unbind", "unfold", "uniform_", "unique", "unique_consecutive", "unsqueeze", "unsqueeze_", "values", "var", "vdot", "view", "view_as", "where", "xlogy", "xlogy_", "zero_");
+
     private final Map<String, Content> contentMap = new HashMap<>();
 
     private Map<String, String> importMap = new LinkedHashMap<>();
@@ -66,8 +72,6 @@ public class TransApiAction extends AnAction {
 
     private Set<String> apiNameList;
 
-    private Set<String> apiBlurredNameList;
-
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         DataContext dataContext = e.getDataContext();
@@ -76,7 +80,6 @@ public class TransApiAction extends AnAction {
         fromMap = new HashMap<>();
         fromAsMap = new HashMap<>();
         apiNameList = new LinkedHashSet<>();
-        apiBlurredNameList = new LinkedHashSet<>();
         // 保存import或from映射
         translateImport(psiFile, importMap, fromMap, fromAsMap);
         // 获取apiName
@@ -84,14 +87,15 @@ public class TransApiAction extends AnAction {
 
         // 过滤无效api，只含有字母数字点和下划线的认为是有效api
         Set<String> apiNameFiltering = filteringApi(apiNameList);
-        Set<String> apiBlurredNameFiltering = filteringApi(apiBlurredNameList);
+        Set<String> apiBlurredNameFiltering = filteringApi(apiNameList);
 
         // 对api和import进行拼接，并搜索内容
         List<Object[]> apiNameNullList = new LinkedList<>();
         List<Object[]> straightApiMappingList = sortList(apiNameFiltering, apiNameNullList);
-        List<Object[]> blurredApiMappingList = sortList(apiBlurredNameFiltering, null);
+        List<Object[]> blurredApiMappingList = sortListAnti(apiBlurredNameFiltering, null);
 
-        if (straightApiMappingList.size() > 0) {
+
+        if (straightApiMappingList.size() > 0 || blurredApiMappingList.size() > 0 || apiNameNullList.size() > 0) {
             Project project1 = e.getProject();
             ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project1);
             ToolWindow toolWindow = toolWindowManager.getToolWindow("MindSporeApiMapping");
@@ -144,6 +148,22 @@ public class TransApiAction extends AnAction {
         fromMapDataSort(apiString, apiNameList);
         fromAsMapDataSort(apiString, apiNameList);
         return searchData(filteringData(apiString), apiNameNullList);
+    }
+
+    private List<Object[]> sortListAnti(Set<String> apiNameList, List<Object[]> apiNameNullList) {
+        Set<String> apiString = filteringDataReverse(apiNameList);
+        apiString = blurSort(apiString, apiNameList);
+        return searchData(filteringDataReverse(apiString), apiNameNullList);
+    }
+
+    private Set<String>  blurSort(Set<String> apiString, Set<String> apiNameList) {
+        Set<String> result = new LinkedHashSet<>();
+        apiString.forEach((value) -> {
+            String[] split = value.split("\\.");
+            String last = split[split.length-1];
+                result.add(last);
+        });
+        return result;
     }
 
     private void importMapDataSort(Set<String> apiString, Set<String> apiNameList) {
@@ -233,7 +253,6 @@ public class TransApiAction extends AnAction {
     public static Set<String> filteringData(Set<String> apiNameList) {
         Set<String> apiString = new LinkedHashSet<>();
         Iterator<String> it = apiNameList.iterator();
-
         while (it.hasNext()) {
             String str = it.next();
             String[] api = str.split("\\.");
@@ -249,6 +268,27 @@ public class TransApiAction extends AnAction {
         return apiString;
     }
 
+    public static Set<String> filteringDataReverse(Set<String> apiNameList) {
+        Set<String> apiString = new LinkedHashSet<>();
+        Iterator<String> it = apiNameList.iterator();
+        while (it.hasNext()) {
+            String str = it.next();
+            String[] api = str.split("\\.");
+            if (api.length > 0 && "tensorflow".equals(api[0])) {
+                str = str.replaceFirst("tensorflow", "tf");
+            }
+            String[] apiNew = str.split("\\.");
+            if (!("tf".equals(apiNew[0]) || "torch".equals(apiNew[0]) || "torchtext".equals(apiNew[0]) ||
+                    "torchvision".equals(apiNew[0]))) {
+                apiString.add(str);
+                it.remove();
+            }
+        }
+        return apiString;
+    }
+
+
+
     public static List<Object[]> searchData(Set<String> apiStringSet, List<Object[]> apiNameNullList) {
         List<Object[]> apiList = new LinkedList<>();
         List<Object[]> nonMatchApiList = new LinkedList<>();
@@ -256,6 +296,13 @@ public class TransApiAction extends AnAction {
             String[] api = str.split("\\.");
             if (api.length > 0 && "tensorflow".equals(api[0])) {
                 str = str.replaceFirst("tensorflow", "tf");
+            }
+            if (apiNameNullList == null){ //blur
+                if (TORCH_TENSOR.contains(str)) {
+                    str = "torch.Tensor." + str;
+                } else {
+                    continue;
+                }
             }
             List<OperatorRecord> records = OperatorSearchService.INSTANCE.searchFullMatch(str);
             for (OperatorRecord record : records) {
@@ -322,18 +369,10 @@ public class TransApiAction extends AnAction {
             int last = formerFunction.size() - 1;
             String lastKey = formerFunction.get(last)[0];
             formerFunction.forEach(record -> {
-                if (record[0].equals(lastKey)) {
-                    if (NO_PACKAGE_PLACEHOLDER.equals(record[1])) {
-                        apiNameList.add(lastKey);
-                    } else {
-                        apiNameList.add(lastKey + "." + record[1]);
-                    }
+                if (NO_PACKAGE_PLACEHOLDER.equals(record[1])) {
+                    apiNameList.add(lastKey);
                 } else {
-                    if (NO_PACKAGE_PLACEHOLDER.equals(record[1])) {
-                        apiBlurredNameList.add(lastKey);
-                    } else {
-                        apiBlurredNameList.add(lastKey + "." + record[1]);
-                    }
+                    apiNameList.add(lastKey + "." + record[1]);
                 }
             });
         }
@@ -413,3 +452,4 @@ public class TransApiAction extends AnAction {
         }
     }
 }
+

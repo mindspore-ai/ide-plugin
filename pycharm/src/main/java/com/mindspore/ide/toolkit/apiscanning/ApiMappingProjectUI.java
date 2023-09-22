@@ -27,7 +27,7 @@ public class ApiMappingProjectUI {
             {"Original Api", "Original Api Version", "MindSpore Api", "Description"};
 
     private static final String[] PAPI_COLUMNS =
-            {"Original Api", "Original Api Version", "MindSpore Api", "Description"};
+            {"Original Api", "Original Api Version", "MindSpore Api", "Description","Platform"};
 
     private Project project;
 
