@@ -30,15 +30,15 @@ public class ApiMappingUI {
             {"Original Api", "Original Api Version", "MindSpore Api", "Description"};
 
     private static final String[] PAPI_COLUMNS=
-            {"Original Api", "Original Api Version", "MindSpore Api", "Description"};
+            {"Original Api", "Original Api Version", "MindSpore Api", "Description","Platform"};
 
     private static final String NEW_LINE = "\n";
 
     private static final String API = "可以转换为MindSpore API的PyTorch/TensorFlow API";
 
-    private static final String API_NULL = "暂时不能转换的API";
+    private static final String API_NULL = "暂未提供直接映射关系的PyTorch API";
 
-    private static final String PAPI = "可能是PyTorch/TensorFlow API的情况";
+    private static final String PAPI = "可能是torch.Tensor API的结果";
 
     private Project project;
 

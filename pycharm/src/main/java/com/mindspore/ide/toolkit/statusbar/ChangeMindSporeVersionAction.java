@@ -16,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 @Slf4j
 public class ChangeMindSporeVersionAction extends AnAction implements DumbAware, LightEditCompatible {
     @Override
@@ -25,8 +27,8 @@ public class ChangeMindSporeVersionAction extends AnAction implements DumbAware,
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent event) {
-        String input = Messages.showInputDialog("Please input mindSpore version:",
-                "Api Mapping", null, null, new InputVersionCheck());
+        String input = Messages.showInputDialog(event.getProject(), "Please input mindSpore version:",
+                "Api Mapping", null, null, new InputVersionCheck(),null, "input should be like 2.1 or 2.1.0");
         if (StringUtils.isEmpty(input)) {
             log.debug("cancel input version");
         } else {
@@ -35,9 +37,14 @@ public class ChangeMindSporeVersionAction extends AnAction implements DumbAware,
                 @Override
                 public void run(@NotNull ProgressIndicator indicator) {
                     indicator.isRunning();
-                    MindSporeVersionUtils.addVersion(input);
-                    MindSporeStatusBarServiceImpl.notifyApp(input);
-                    OperatorSearchService.INSTANCE.changeSearchDataHub(input);
+                    String versionString = input;
+                    String[] versionArray = input.split("\\.");
+                    if (versionArray.length == 3) {
+                        versionString = String.join(".", versionArray);
+                    }
+                    MindSporeVersionUtils.addVersion(versionString);
+                    MindSporeStatusBarServiceImpl.notifyApp(versionString);
+                    OperatorSearchService.INSTANCE.changeSearchDataHub(versionString);
                     indicator.stop();
                 }
             };
