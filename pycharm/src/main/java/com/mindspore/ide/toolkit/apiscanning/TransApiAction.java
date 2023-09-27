@@ -329,7 +329,7 @@ public class TransApiAction extends AnAction {
                 apiList.add(cells);
             }
             if (records.isEmpty()) {
-                nonMatchApiList.add(new Object[]{str, "", "", new LinkInfo("缺失api处理策略",
+                nonMatchApiList.add(new Object[]{str, "", "", "", new LinkInfo("缺失api处理策略",
                         "https://www.mindspore.cn/docs/zh-CN/master/migration_guide/analysis_and_preparation.html" +
                                 "#%E7%BC%BA%E5%A4%B1api%E5%A4%84%E7%90%86%E7%AD%96%E7%95%A5")});
             }
