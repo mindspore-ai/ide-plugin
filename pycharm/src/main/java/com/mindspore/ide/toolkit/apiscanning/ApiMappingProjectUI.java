@@ -21,13 +21,13 @@ public class ApiMappingProjectUI {
     public JSplitPane splitPane;
 
     private static final String[] API_COLUMNS =
-            {"Original Api", "Original Api Version", "MindSpore Api", "Description", "Platform"};
+            {"Original Api", "Original Api Version", "MindSpore Api", "Platform", "Description"};
 
     private static final String[] API_NULL_COLUMNS =
-            {"Original Api", "Original Api Version", "MindSpore Api", "Description"};
+            {"Original Api", "Description"};
 
     private static final String[] PAPI_COLUMNS =
-            {"Original Api", "Original Api Version", "MindSpore Api", "Description","Platform"};
+            {"Original Api", "Original Api Version", "MindSpore Api", "Platform", "Description"};
 
     private Project project;
 

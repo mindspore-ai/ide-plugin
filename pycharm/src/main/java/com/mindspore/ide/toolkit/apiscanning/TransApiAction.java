@@ -318,14 +318,14 @@ public class TransApiAction extends AnAction {
                 } else {
                     cells[2] = new LinkInfo(record.getMindSporeOperator(), record.getMindSporeLink());
                 }
+                cells[3] = record.getPlatform();
                 if (Strings.isEmpty(record.getDescriptionLink())) { // 注释
-                    cells[3] =
+                    cells[4] =
                             record.getDescription() + (record.isInWhiteList() ? "" : "（仅支持2.0及以上版本MindSpore）");
                 } else {
-                    cells[3] =
+                    cells[4] =
                             new LinkInfo(record.getDescription(), record.getDescriptionLink(), !record.isInWhiteList());
                 }
-                cells[4] = record.getPlatform();
                 apiList.add(cells);
             }
             if (records.isEmpty()) {
