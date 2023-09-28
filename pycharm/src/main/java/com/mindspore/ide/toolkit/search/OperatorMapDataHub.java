@@ -36,7 +36,6 @@ import org.apache.commons.httpclient.util.HttpURLConnection;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -48,12 +47,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 /**
@@ -78,8 +73,7 @@ public class OperatorMapDataHub implements SearchEveryWhereDataHub<String, Opera
      */
     private Map<String, List<OperatorRecord>> operatorMap = new LinkedHashMap<>();
 
-    public OperatorMapDataHub(MsVersionDataConfig.MsVersionData msVersionData) {
-        MdDataGet mdDataGet = new MdDataGet(msVersionData);
+    public OperatorMapDataHub(MdDataGet mdDataGet) {
         if (mdDataGet.pytorchMdStr.isEmpty()) {
             mdStringList(MdPathString.PYTORCH_MD_STR, ApiType.PyTorch);
         } else {

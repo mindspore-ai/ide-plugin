@@ -16,8 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
 @Slf4j
 public class ChangeMindSporeVersionAction extends AnAction implements DumbAware, LightEditCompatible {
     @Override
@@ -33,18 +31,21 @@ public class ChangeMindSporeVersionAction extends AnAction implements DumbAware,
             log.debug("cancel input version");
         } else {
             log.debug("input version is {}", input);
-            Task.Backgroundable task = new Task.Backgroundable(event.getProject(), "Loading mindSpore version mapping relationships") {
+            String versionString = MindSporeVersionUtils.getBigVersion(input);
+            Task.Backgroundable task = new Task.Backgroundable(event.getProject(), "Changing to mindspore " + versionString) {
                 @Override
                 public void run(@NotNull ProgressIndicator indicator) {
                     indicator.isRunning();
-                    String versionString = input;
-                    String[] versionArray = input.split("\\.");
-                    if (versionArray.length == 3) {
-                        versionString = String.join(".", versionArray);
+                    boolean checkResult = true;
+                    if (!versionString.equals(MindSporeStatusBarServiceImpl.getCurrentSelectedVersion())) {
+                        checkResult = OperatorSearchService.INSTANCE.changeSearchDataHub(versionString);
                     }
-                    MindSporeVersionUtils.addVersion(versionString);
-                    MindSporeStatusBarServiceImpl.notifyApp(versionString);
-                    OperatorSearchService.INSTANCE.changeSearchDataHub(versionString);
+
+                    if (checkResult) {
+                        MindSporeVersionUtils.addVersion(versionString);
+                        MindSporeStatusBarServiceImpl.notifyApp(versionString);
+                    }
+
                     indicator.stop();
                 }
             };

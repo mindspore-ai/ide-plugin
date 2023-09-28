@@ -13,7 +13,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.util.NlsSafe;
 import com.intellij.util.ui.EmptyIcon;
-import com.mindspore.ide.toolkit.search.MsVersionDataConfig;
 import com.mindspore.ide.toolkit.search.OperatorSearchService;
 import com.mindspore.ide.toolkit.statusbar.MindSporeStatusBarWidget;
 import com.mindspore.ide.toolkit.statusbar.utils.MindSporeVersionUtils;
@@ -74,7 +73,6 @@ public class MindSporeStatusBarServiceImpl implements MindSporeStatusBarService 
         if (shouldNotify) {
             for(Project project : ProjectManager.getInstance().getOpenProjects()) {
                 if (!project.isDisposed()) {
-                    OperatorSearchService.INSTANCE.changeSearchDataHub(version);
                     MindSporeStatusBarWidget.update(project);
                 }
             }
@@ -92,11 +90,14 @@ public class MindSporeStatusBarServiceImpl implements MindSporeStatusBarService 
                 @Override
                 public void actionPerformed(@NotNull AnActionEvent e) {
                     log.debug("choose version:{} to mapping", version);
-                    Task.Backgroundable task = new Task.Backgroundable(e.getProject(), "Loading mindSpore version mapping relationships") {
+                    Task.Backgroundable task = new Task.Backgroundable(e.getProject(), "Changing to mindspore " + version) {
                         @Override
                         public void run(@NotNull ProgressIndicator indicator) {
                             indicator.isRunning();
-                            notifyApp(version);
+                            boolean checkResult = OperatorSearchService.INSTANCE.changeSearchDataHub(version);
+                            if (checkResult) {
+                                notifyApp(version);
+                            }
                             indicator.stop();
                         }
                     };
