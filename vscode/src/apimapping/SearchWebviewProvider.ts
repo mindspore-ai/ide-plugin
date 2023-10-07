@@ -131,7 +131,7 @@ export class OpenWebProvider implements vscode.WebviewViewProvider {
 
 export function search(keyword: string): Array<SearchResult> {
     const results: Array<SearchResult> = [];
-    const resultJson = getResult("../pytorch_api_mapping.md", [keyword]);
+    const resultJson = getResult([keyword]);
 
     resultJson?.forEach(resultOneJson => {
         results.push({

@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
-import { changeVersion, getVersion } from './apiMappingData';
+import {changeVersion, getVersion} from './apiMappingData';
 
-export enum StatusBarInput{
+export enum StatusBarInput {
     good,       //表示不在切换版本
     waiting,     //表示正在切换版本
 }
@@ -15,7 +15,7 @@ let major: number;
 let minor: number;
 
 export async function init(context: vscode.ExtensionContext) {
-    if (!extension){
+    if (!extension) {
         currentVersion = '未获取到版本信息';
     } else {
         let getVersion = extension.packageJSON.version.split('.');
@@ -66,15 +66,30 @@ export function openInputOptions() {
 
 export function showCustomInputBox() {
     vscode.window.showInputBox({
-        prompt: '请输入自定义内容'
+        prompt: '请输入自定义内容',
+        validateInput: (value) => {
+            if (/^\d+(\.\d+){1,2}$/.test(value)) {
+                return null
+            } else {
+                return "格式错误，格式应为2.1或2.1.0"
+            }
+        }
     }).then(async (inputValue) => {
         if (inputValue) {
+            if (/^\d+(\.\d+){2}$/.test(inputValue)) {
+                let inputSplit = inputValue.split('.');
+                let one = parseInt(inputSplit[0]);
+                let two = parseInt(inputSplit[1]);
+                inputValue = `${one}.${two}`
+            }
             updateStatusBarItem(StatusBarInput.waiting, inputValue);
-            await changeVersion(inputValue);
+            let isChangeSuccess = await changeVersion(inputValue);
             let currentValue = getVersion();
             updateStatusBarItem(StatusBarInput.good, currentValue);
-            versions.push(+inputValue);
-            sortVersion(versions);
+            if (isChangeSuccess && !versions.some(v => v === inputValue)) {
+                versions.push(+inputValue);
+                sortVersion(versions);
+            }
         }
     });
 }
@@ -97,7 +112,7 @@ function updateStatusBarItem(statusBarInputValue: StatusBarInput, selection: str
 }
 
 function sortVersion(version: any[]) {
-    versions = version.sort((a,b) => b - a);
+    versions = version.sort((a, b) => b - a);
     versionString = versions.map(String);
 }
 

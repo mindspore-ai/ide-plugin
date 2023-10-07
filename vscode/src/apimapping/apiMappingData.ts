@@ -63,6 +63,7 @@ export async function changeVersion(newVersion: string) {
     } else {
         window.showInformationMessage("API Mapping Data change fail, please check");
     }
+    return isInit;
 }
 
 export function getVersion(){
