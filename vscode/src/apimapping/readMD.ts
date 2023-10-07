@@ -1,5 +1,6 @@
 import fs = require("fs");
 import path = require("path");
+import { getJsonData } from "./apiMappingData";
 
 interface TableData {
     header: string[];
@@ -129,8 +130,8 @@ export function searchJson(jsonData: any[], searchWords: string[]): any[] {
     return filteredJson;
   }
   
-export function getResult(filepath: string, searchWords: string[]){
-    let jsonData = markdownTableToJson(filepath);
+export function getResult(searchWords: string[]){
+    let jsonData = getJsonData();
     if (jsonData){
       const result = searchJson(jsonData, searchWords);
       return result;

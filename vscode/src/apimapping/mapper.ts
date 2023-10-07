@@ -85,8 +85,6 @@ export async function mapAPI(apis: string[]){
         (new Map([...convertible].sort())).forEach((value) => {
             convertibleTable.push(value);
         });
-    } else {
-        convertibleTable.push(["无"]);
     }
     let inconvertibleTable = [];
     if (inconvertible.size > 0 || chainCallInconvertible.size > 0) {
@@ -97,8 +95,6 @@ export async function mapAPI(apis: string[]){
         (new Map([...chainCallInconvertible].sort())).forEach((value) => {
             inconvertibleTable.push(value);
         });
-    } else {
-        inconvertibleTable.push(["无"]);
     }
     let callChainTable = [];
     if (chainCall.size > 0) {
@@ -106,8 +102,6 @@ export async function mapAPI(apis: string[]){
         (new Map([...chainCall].sort())).forEach((value) => {
             callChainTable.push(value);
         });
-    } else {
-        callChainTable.push(["无"]);
     }
     const table = [markdownTable(convertibleTable),markdownTable(callChainTable),markdownTable(inconvertibleTable)];
 
