@@ -87,7 +87,7 @@ export function showCustomInputBox() {
             let currentValue = getVersion();
             updateStatusBarItem(StatusBarInput.good, currentValue);
             if (isChangeSuccess && !versions.some(v => v === inputValue)) {
-                versions.push(+inputValue);
+                versions.push(inputValue);
                 sortVersion(versions);
             }
         }
@@ -112,7 +112,27 @@ function updateStatusBarItem(statusBarInputValue: StatusBarInput, selection: str
 }
 
 function sortVersion(version: any[]) {
-    versions = version.sort((a, b) => b - a);
+    versions = version.sort(compareStringsAsNumbers);
     versionString = versions.map(String);
 }
 
+function compareStringsAsNumbers(a: string, b: string): number {
+    const [majorA, minorA] = a.split('.').map(part => parseInt(part, 10));
+    const [majorB, minorB] = b.split('.').map(part => parseInt(part, 10));
+
+    // 比较主版本
+    if (majorA < majorB) {
+        return 1;
+    } else if (majorA > majorB) {
+        return -1;
+    }
+
+    // 如果主版本相同，比较子版本
+    if (minorA < minorB) {
+        return 1;
+    } else if (minorA > minorB) {
+        return -1;
+    }
+
+    return 0;
+}
