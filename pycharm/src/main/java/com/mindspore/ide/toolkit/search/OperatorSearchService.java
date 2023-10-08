@@ -102,4 +102,11 @@ public enum OperatorSearchService {
     public List<OperatorRecord> searchFullMatch(String inputString) {
         return recentHub.fetchAllMatch(inputString);
     }
+
+    public boolean isInit() {
+        if (recentHub == null) {
+            return false;
+        }
+        return true;
+    }
 }

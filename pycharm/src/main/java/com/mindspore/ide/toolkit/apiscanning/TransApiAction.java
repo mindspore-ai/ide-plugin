@@ -74,6 +74,11 @@ public class TransApiAction extends AnAction {
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
+        if (!OperatorSearchService.INSTANCE.isInit()) {
+            NotificationUtils.notify(NotificationUtils.NotifyGroup.SEARCH, NotificationType.WARNING,
+                    "Api Mapping resource is still loading, please try later!");
+            return;
+        }
         DataContext dataContext = e.getDataContext();
         PsiFile psiFile = CommonDataKeys.PSI_FILE.getData(dataContext);
         importMap = new HashMap<>();
@@ -116,7 +121,7 @@ public class TransApiAction extends AnAction {
             toolWindow.show();
         } else {
             NotificationUtils.notify(
-                    NotificationUtils.NotifyGroup.API_SCANNING, NotificationType.INFORMATION, "无相关API");
+                    NotificationUtils.NotifyGroup.SEARCH, NotificationType.INFORMATION, "没有相关的API");
         }
         EventCenter.INSTANCE.publish(new CommonEvent());
     }
