@@ -1,6 +1,7 @@
 package com.mindspore.ide.toolkit.apiscanning;
 
 import com.intellij.ide.projectView.actions.MarkRootActionBase;
+import com.intellij.notification.NotificationType;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -26,6 +27,8 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.util.PsiUtilCore;
 import com.mindspore.ide.toolkit.apiscanning.handler.ApiMappingHandler;
+import com.mindspore.ide.toolkit.common.utils.NotificationUtils;
+import com.mindspore.ide.toolkit.search.OperatorSearchService;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -37,7 +40,11 @@ public class TransProjectApiAction extends AnAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         long startTime = System.currentTimeMillis();
-
+        if (!OperatorSearchService.INSTANCE.isInit()) {
+            NotificationUtils.notify(NotificationUtils.NotifyGroup.SEARCH, NotificationType.WARNING,
+                    "Api Mapping resource is still loading, please try later!");
+            return;
+        }
 
         Optional<Project> projectOp = Optional.ofNullable(e.getData(PlatformDataKeys.PROJECT));
         if (projectOp.isPresent()) {
