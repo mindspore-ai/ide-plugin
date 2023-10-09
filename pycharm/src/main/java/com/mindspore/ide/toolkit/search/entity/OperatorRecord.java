@@ -51,7 +51,7 @@ public class OperatorRecord {
      */
     private ApiType apiType;
 
-    private boolean inWhiteList;
+    private boolean inWhiteList = false;
 
     public boolean isInWhiteList() {
         return inWhiteList;
