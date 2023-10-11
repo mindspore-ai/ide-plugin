@@ -32,7 +32,7 @@ public class ChangeMindSporeVersionAction extends AnAction implements DumbAware,
         } else {
             log.debug("input version is {}", input);
             String versionString = MindSporeVersionUtils.getBigVersion(input);
-            Task.Backgroundable task = new Task.Backgroundable(event.getProject(), "Changing to mindspore " + versionString) {
+            Task.Backgroundable task = new Task.Backgroundable(event.getProject(), "Changing to mindspore " + versionString, false) {
                 @Override
                 public void run(@NotNull ProgressIndicator indicator) {
                     indicator.isRunning();
