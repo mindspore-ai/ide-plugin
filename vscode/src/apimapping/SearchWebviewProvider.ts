@@ -76,7 +76,7 @@ export class OpenWebProvider implements vscode.WebviewViewProvider {
 			  //color: #ffffff;
 			}
 			.search-results li {
-			  margin-bottom: 0px;
+			  margin-bottom: 10px;
 			  cursor: pointer;
 			  //background-color: #000000;
 			  padding: 0px;

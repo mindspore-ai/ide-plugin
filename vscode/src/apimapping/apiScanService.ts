@@ -29,13 +29,13 @@ async function apiScanHandler(uris: vscode.Uri | vscode.Uri[], label?: string, )
         showName = label;
     }
 
-    let apiList :string[] = [];
+    let apiSet :Set<string> = new Set();
     for (let uri of uris) {
         let codeFile = await processUriList(uri);
-        apiList.push(...scanAPI(codeFile));
+        apiSet = new Set([...apiSet,...scanAPI(codeFile)]);
     }
     
-    let htmlTable = await scanContentToWebview(apiList);
+    let htmlTable = await scanContentToWebview(Array.from(apiSet.values()));
     if (htmlTable[0] != ''){
         convertiableTable = `
         <h3>可以转化的PyTorch API</h3>
@@ -93,11 +93,12 @@ async function apiScanHandler(uris: vscode.Uri | vscode.Uri[], label?: string, )
             </style>
         </head>
         <body>
+            <button id="button">导出成CSV</button>
             ${convertiableTable}
             ${inconvertiableTable}
             ${callChainTable}
             
-            <button id="button">导出成CSV</button>
+            
 
             <script>
                 const vscode = acquireVsCodeApi();
