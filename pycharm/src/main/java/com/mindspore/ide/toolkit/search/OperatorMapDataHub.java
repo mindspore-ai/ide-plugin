@@ -17,7 +17,7 @@
 package com.mindspore.ide.toolkit.search;
 
 import com.intellij.openapi.util.text.StringUtil;
-import com.mindspore.ide.toolkit.common.utils.HttpUtils;
+import com.intellij.util.io.HttpRequests;
 import com.mindspore.ide.toolkit.search.entity.ApiType;
 import com.mindspore.ide.toolkit.search.entity.LinkInfo;
 import com.mindspore.ide.toolkit.search.entity.OperatorRecord;
@@ -32,9 +32,6 @@ import com.vladsch.flexmark.parser.ParserEmulationProfile;
 import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.data.MutableDataSet;
 import com.vladsch.flexmark.util.sequence.BasedSequence;
-import org.apache.commons.httpclient.util.HttpURLConnection;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.util.EntityUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -268,25 +265,23 @@ public class OperatorMapDataHub implements SearchEveryWhereDataHub<String, Opera
         if (!apiName.startsWith("mindspore.") || linkInfo.getUrl() == "") {
             return "";
         }
-        try (CloseableHttpResponse response = HttpUtils.doGet(linkInfo.getUrl(), new HashMap<>(), 5000)) {
-            if (response.getStatusLine().getStatusCode() == HttpURLConnection.HTTP_OK) {
-                String htmlText = EntityUtils.toString(response.getEntity());
-                int apiNameIndex = htmlText.indexOf("<dt class=\"sig sig-object py\" id=\"" + apiName);
-                int platformIndex = htmlText.indexOf("支持平台", apiNameIndex);
-                // md与html源码中得apiName不一致时，apiNameIndex为-1
-                if (apiNameIndex > 0 && platformIndex > 0 && !htmlText.substring(apiNameIndex, platformIndex).contains("class=\"py ")) {
-                    String platformString = htmlText.substring(platformIndex, htmlText.indexOf("</dd>", platformIndex));
-                    for (String type : PLATFORM) {
-                        if (platformString.contains(type)) {
-                            platformList.add(type);
-                        }
+        try {
+            String htmlText = HttpRequests.request(linkInfo.getUrl()).connectTimeout(5000).readString();
+            int apiNameIndex = htmlText.indexOf("<dt class=\"sig sig-object py\" id=\"" + apiName);
+            int platformIndex = htmlText.indexOf("支持平台", apiNameIndex);
+            // md与html源码中得apiName不一致时，apiNameIndex为-1
+            if (apiNameIndex > 0 && platformIndex > 0 && !htmlText.substring(apiNameIndex, platformIndex).contains("class=\"py ")) {
+                String platformString = htmlText.substring(platformIndex, htmlText.indexOf("</dd>", platformIndex));
+                for (String type : PLATFORM) {
+                    if (platformString.contains(type)) {
+                        platformList.add(type);
                     }
-                    if (platformList.size() > 0) {
-                        return StringUtil.join(platformList, ",");
-                    }
-                } else {
-                    return "暂无数据";
                 }
+                if (platformList.size() > 0) {
+                    return StringUtil.join(platformList, ",");
+                }
+            } else {
+                return "暂无数据";
             }
         } catch (Throwable ioException) {
         }

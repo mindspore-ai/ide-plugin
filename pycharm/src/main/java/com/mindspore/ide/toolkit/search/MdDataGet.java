@@ -1,17 +1,10 @@
 package com.mindspore.ide.toolkit.search;
 
-import com.mindspore.ide.toolkit.common.utils.HttpUtils;
-import org.apache.http.client.methods.CloseableHttpResponse;
+import com.intellij.util.io.HttpRequests;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.stream.Collectors;
 
 /**
  * 获取md数据
@@ -64,14 +57,8 @@ public class MdDataGet {
      */
     private String getMdData(String url, int timeout) {
         String mdData;
-        try (CloseableHttpResponse response = HttpUtils.doGet(url, new HashMap<>(), timeout)) {
-            if (response == null) {
-                mdData = "";
-            } else if (response.getStatusLine().getStatusCode() == HttpURLConnection.HTTP_OK) {
-                mdData = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), StandardCharsets.UTF_8)).lines().collect(Collectors.joining(NEW_LINE));
-            } else {
-                mdData = "";
-            }
+        try {
+            mdData = HttpRequests.request(url).connectTimeout(timeout).readString();
         } catch (IOException ioException) {
             mdData = "";
             LOG.warn("get md data failed: {}", ioException.toString());
