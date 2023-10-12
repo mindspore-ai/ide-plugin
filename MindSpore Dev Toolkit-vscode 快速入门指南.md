@@ -87,29 +87,53 @@ MindSpore Dev ToolKit 插件可支持[Visual Studio Code](https://code.visualstu
 
 1. 点击Visual Studio Code左侧边栏API Search图标。
 
+   ![img](./images/clip_image124.jpg)
+
 2. 左侧边栏会生成一个输入框。
+
+   ![img](./images/clip_image125.jpg)
 
 3. 在输入框中输入任意单词，下方会展示出当前关键词的搜索结果，且搜索结果根据输入内容实时更新。
 
+   ![img](./images/clip_image126.jpg)
+
 4. 点击任意搜索结果，会在用户默认浏览器中打开网页。
+
+   ![img](./images/clip_image127.jpg)
+
+   ![img](./images/clip_image128.jpg)
 
 ## 六、MindSpore版本切换
 
 1. 插件运行时，左下角有一个状态栏展示MindSpore版本信息。
 
+   ![img](./images/clip_image129.jpg)
+
 2. 点击此状态栏，页面上方会弹出下拉框，包含了默认可以切换的版本号选项，以及”自定义输入“的选项。
+
+   ![img](./images/clip_image130.jpg)
 
 3. 点击任意版本号，开始切换版本，左下角状态栏提示版本切换中的状态
 
+   ![img](./images/clip_image131.jpg)
+
 4. 若想自定义输入版本号，在下拉框时点击自定义输入的选项，下拉框转变为输入框，按照2.1或2.1.0的格式输入版本号，按回车键开始切换版本，左下角状态栏提示切换中的状态
+
+   ![img](./images/clip_image132.jpg)
+
+   ![img](./images/clip_image133.jpg)
 
 5. 若切换成功，右下角信息提示切换成功，左下角状态栏展示切换后的MindSpore版本信息。
 
+   ![img](./images/clip_image134.jpg)
+
 6. 若切换失败，右下角信息提示切换失败，左下角状态栏展示切换前的MindSpore版本信息。
+
+   ![img](./images/clip_image135.jpg)
 
 7. 当自定义输入的版本号切换成功后，此版本号会加入到下拉框中直接展示。
 
-
+   ![img](./images/clip_image136.jpg)
 
 
 
