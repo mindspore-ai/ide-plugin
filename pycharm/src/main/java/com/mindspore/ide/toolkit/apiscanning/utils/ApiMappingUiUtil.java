@@ -15,7 +15,7 @@ import java.awt.event.MouseEvent;
 public class ApiMappingUiUtil {
     private static final String NEW_LINE = "\n";
 
-    private static final String API = "可以转换为MindSpore API的PyTorch/TensorFlow API";
+    private static final String API = "可以转换为MindSpore API的PyTorch API";
 
     private static final String API_NULL = "暂未提供直接映射关系的PyTorch API";
 
@@ -29,15 +29,17 @@ public class ApiMappingUiUtil {
 
     public static StringBuilder initData(Object[][] api, Object[][] apiNull, Object[][] papi) {
         StringBuilder str = new StringBuilder();
-        str.append(API).append(",").append(NEW_LINE);
-        append(str, api);
-        if (apiNull.length > 0) {
-            str.append(",").append(NEW_LINE).append(API_NULL).append(",").append(NEW_LINE);
-            append(str, apiNull);
+        if (api.length > 0) {
+            str.append(API).append(",").append(NEW_LINE);
+            append(str, api);
         }
         if (papi.length > 0) {
             str.append(",").append(NEW_LINE).append(PAPI).append(",").append(NEW_LINE);
             append(str, papi);
+        }
+        if (apiNull.length > 0) {
+            str.append(",").append(NEW_LINE).append(API_NULL).append(",").append(NEW_LINE);
+            append(str, apiNull);
         }
         return str;
     }

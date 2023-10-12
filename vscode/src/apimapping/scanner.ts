@@ -22,7 +22,7 @@ export function scanAPI(data:string) {
 
 class APIScanner{
     importMap = new Map<string, string>();
-    apiList : string[] = [];
+    apiList = new Set<string>();
 
     getApiList() {
         return this.apiList;
@@ -53,7 +53,7 @@ class APIScanner{
             }
 
 
-            this.apiList.push(result);
+            this.apiList.add(result);
         }
         if ("import_statement" === node.type) {
             node.children.forEach(element => {
