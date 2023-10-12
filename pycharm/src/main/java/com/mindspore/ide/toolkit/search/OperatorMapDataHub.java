@@ -142,7 +142,7 @@ public class OperatorMapDataHub implements SearchEveryWhereDataHub<String, Opera
         options.set(Parser.EXTENSIONS, Arrays.asList(TablesExtension.create()));
         Parser parser = Parser.builder(options).build();
         Node document = parser.parse(mdString);
-        ExecutorService executorService = Executors.newFixedThreadPool(8);
+        ExecutorService executorService = Executors.newFixedThreadPool(64);
         List<CompletableFuture<Void>> futures = new ArrayList<>();
         document.getChildIterator().forEachRemaining(paragraphNode -> {
             if (!(paragraphNode instanceof TableBlock)) {

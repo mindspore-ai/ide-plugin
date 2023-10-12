@@ -32,6 +32,8 @@ export async function init(context: vscode.ExtensionContext) {
     }
 
     versions.push('1.9');
+    versions.push('master');
+
     versionString = versions.map(String);
 
     vscode.commands.registerCommand('extension.openInputOptions', openInputOptions);
@@ -71,7 +73,7 @@ export function showCustomInputBox() {
             if (/^\d+(\.\d+){1,2}$/.test(value)) {
                 return null
             } else {
-                return "格式错误，格式应为2.1或2.1.0"
+                return "格式错误，格式应形如2.1或2.1.0"
             }
         }
     }).then(async (inputValue) => {

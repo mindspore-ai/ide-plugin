@@ -79,7 +79,7 @@ public class MsVersionDataConfig {
     }
 
     public static MsVersionData newVersionData(String version) {
-        String mdVersion = "r" + version;
+        String mdVersion = version.equals("master")?"":"r" + version;
         String pytorchMdUrl = "https://gitee.com/mindspore/docs/raw/" + mdVersion + "/docs/mindspore/source_zh_cn/note" +
                 "/api_mapping/pytorch_api_mapping.md";
         String tensorflowMdUrl = "https://gitee.com/mindspore/docs/raw/" + mdVersion + "/docs/mindspore/source_zh_cn" +
