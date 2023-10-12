@@ -13,7 +13,7 @@ let jsonData: Map<string, any[]> = new Map<string, any[]>();
 let filePath = join(homedir(), ".mindspore", Constants.PYTORCH_API_MAPPING_FILENAME);
 export async function init() {
     await initApiMap();
-    window.showInformationMessage("API Mapping Data init end");
+    window.showInformationMessage("API映射数据初始化成功");
 }
 export async function initApiMap() {
     let downloadFlag = await downloadFile(generateApiMappingUrl(version), Constants.PYTORCH_API_MAPPING_FILENAME, join(homedir(), ".mindspore"), 2000);
@@ -59,9 +59,9 @@ export async function changeVersion(newVersion: string) {
     }
     if (isInit) {
         version = newVersion;
-        window.showInformationMessage("API Mapping Data change end");
+        window.showInformationMessage("API映射数据版本切换成功");
     } else {
-        window.showInformationMessage("API Mapping Data change fail, please check");
+        window.showInformationMessage("API映射数据版本切换失败。请检查网络是否畅通或输入版本号是否存在。可以选择master版本获取最新的API映射数据!");
     }
     return isInit;
 }

@@ -9,13 +9,13 @@ import yaml = require('js-yaml');
 
 export const X86_PYTHON_PORT = 50053;
 export const LINUX_PYTHON_PORT = 50055;
-export const PYTORCH_API_MAPPING_DOWNLOAD_URL_PREFIX = "https://gitee.com/mindspore/docs/raw/r";
+export const PYTORCH_API_MAPPING_DOWNLOAD_URL_PREFIX = "https://gitee.com/mindspore/docs/raw/";
 export const PYTORCH_API_MAPPING_DOWNLOAD_URL_VERSION = "2.1";
 export const PYTORCH_API_MAPPING_DOWNLOAD_URL_SUFFIX = "/docs/mindspore/source_zh_cn/note/api_mapping/pytorch_api_mapping.md";
 export const PYTORCH_API_MAPPING_FILENAME = "pytorch_api_mapping.md";
 
 export function generateApiMappingUrl(version?: string) {
-    return PYTORCH_API_MAPPING_DOWNLOAD_URL_PREFIX + (version ?? PYTORCH_API_MAPPING_DOWNLOAD_URL_VERSION) + PYTORCH_API_MAPPING_DOWNLOAD_URL_SUFFIX;
+    return PYTORCH_API_MAPPING_DOWNLOAD_URL_PREFIX + (version === "master"?"":"r") + (version ?? PYTORCH_API_MAPPING_DOWNLOAD_URL_VERSION) + PYTORCH_API_MAPPING_DOWNLOAD_URL_SUFFIX;
 }
 
 export enum OsInfo{
