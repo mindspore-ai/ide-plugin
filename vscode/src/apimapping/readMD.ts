@@ -7,26 +7,32 @@ interface TableData {
     rows: string[][];
   }
   
-function readMarkdownTable(filePath: string) {
+function readMarkdownTable(filePath: string):[TableData[], boolean] {
+  let isSlice = false;
   try {
     const fileContent = fs.readFileSync(path.resolve(__dirname, filePath), 'utf-8');
+    if (fileContent.includes("通用差异参数表")){
+      isSlice = true;
+    }
     const rawTables = extractTables(fileContent);
 
       // 解析每个表格
       const tableDataArray: TableData[] = rawTables.map(rawTable => parseTable(rawTable));
-      return tableDataArray;
+      return [tableDataArray, isSlice];
   } catch (error: any) {
       console.error(`Failed to read file: ${error.message}`);
-      return null;
+      return [[], false];
   }
 }
 
 export function markdownTableToJson(filePath: string): any[] | undefined {
-    let tableData = readMarkdownTable(filePath);
+    let [tableData, isSlice] = readMarkdownTable(filePath);
 
     let resultJson: any[] = [];
-    if (tableData){
-        tableData = tableData.slice(1);
+    if (tableData.length > 0){
+        if (isSlice){
+          tableData = tableData.slice(1);
+        }
         for (let record of tableData) {
             const headerOperator = record.header[0];
             const headerMindspore = record.header[1];
