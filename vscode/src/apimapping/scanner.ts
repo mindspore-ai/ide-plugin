@@ -36,7 +36,6 @@ class APIScanner{
                 if (!element.includes("(")) {
                     list.push(element);
                 } else {
-                    list = [];
                     list = attrList.slice(-1);
                     break;
                 }
