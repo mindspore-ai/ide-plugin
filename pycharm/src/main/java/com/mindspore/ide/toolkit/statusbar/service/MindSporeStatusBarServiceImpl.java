@@ -90,7 +90,7 @@ public class MindSporeStatusBarServiceImpl implements MindSporeStatusBarService 
                 @Override
                 public void actionPerformed(@NotNull AnActionEvent e) {
                     log.debug("choose version:{} to mapping", version);
-                    Task.Backgroundable task = new Task.Backgroundable(e.getProject(), "Changing to mindspore " + version) {
+                    Task.Backgroundable task = new Task.Backgroundable(e.getProject(), "Changing to mindspore " + version, false) {
                         @Override
                         public void run(@NotNull ProgressIndicator indicator) {
                             indicator.isRunning();
