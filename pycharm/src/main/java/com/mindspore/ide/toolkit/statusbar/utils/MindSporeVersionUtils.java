@@ -14,6 +14,7 @@ public class MindSporeVersionUtils {
         for (double i = startVersion; i <= endVersion; i = i + 0.1) {
             VERSION_LIST.add(String.valueOf(i));
         }
+        VERSION_LIST.add("master");
     }
 
     public static void addVersion(String version) {

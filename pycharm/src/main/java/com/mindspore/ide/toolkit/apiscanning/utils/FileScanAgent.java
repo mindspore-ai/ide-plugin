@@ -18,6 +18,7 @@ import org.apache.commons.collections.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -38,6 +39,8 @@ public class FileScanAgent {
 
     private Set<String> apiNameList;
 
+    private Set<String> sortedApiList;
+
     private List<Object[]> apiNameNullList;
     private List<Object[]> straightApiMappingList;
     private List<Object[]> blurredApiMappingList;
@@ -54,6 +57,7 @@ public class FileScanAgent {
         fromMap = new HashMap<>();
         fromAsMap = new HashMap<>();
         apiNameList = new LinkedHashSet<>();
+        sortedApiList = new LinkedHashSet<>();
     }
     public FileScanAgent(PsiFile psiFile) {
         this();
@@ -68,15 +72,13 @@ public class FileScanAgent {
         translateImport(psiFile, importMap, fromMap, fromAsMap);
         // 获取apiName
         translateCallExpression(psiFile);
-
-
-
+        // 过滤无效api，只含有字母数字点和下划线的认为是有效api
+        // 对api和import进行拼接，并搜索内容
+        sortedApiList.addAll(sortList());
     }
 
     public void assembleResultAndSearch() {
-        // 过滤无效api，只含有字母数字点和下划线的认为是有效api
-        // 对api和import进行拼接，并搜索内容
-        Set<String> sortedApiList = sortList();
+
         straightApiMappingList = new ArrayList<>();
         blurredApiMappingList = new ArrayList<>();
         apiNameNullList = new ArrayList<>();
@@ -89,7 +91,7 @@ public class FileScanAgent {
         for (PsiElement element : psiElement.getChildren()) {
             if (element instanceof PyCallExpression) {
                 PyCallExpression pyCallExpression = (PyCallExpression) element;
-                String apiString = pyCallExpression.getCallee().getText();
+                String apiString = pyCallExpression.getCallee().getText().replace("\\","");
                 String prefix;
                 String apiName;
                 String[] attrList = apiString.split("\\.");
@@ -98,6 +100,7 @@ public class FileScanAgent {
                     if (!single.contains("(")) {
                         resultList.add(single);
                     } else {
+                        resultList = new ArrayList<>();
                         resultList.add(attrList[attrList.length -1]);
                         break;
                     }
@@ -109,7 +112,7 @@ public class FileScanAgent {
                     prefix = NO_PACKAGE_PLACEHOLDER;
                     apiName = resultList.get(0);
                 }
-                formerFunction.add(new String[] {prefix, apiName});
+                formerFunction.add(new String[] {prefix, apiName.strip()});
                 translateCallExpressionInPyCallExpression(element, formerFunction);
             }
 //            else if (element instanceof PyReferenceExpression && !MSPsiUtils.isPsiImport(element) && element.getChildren().length > 0 && !element.getText().toLowerCase().equals(element.getText())) {
@@ -154,7 +157,7 @@ public class FileScanAgent {
                             }
                         } else {
                             // from mindspore import *; key是mindspore, value是null
-                            fromMap.put(pyFromImportStatement.getImportSourceQName().toString(), null);
+                            //fromMap.put(pyFromImportStatement.getImportSourceQName().toString(), null);
                         }
                     } else {
                         log.info("psiFile exceptions");
@@ -253,14 +256,33 @@ public class FileScanAgent {
                                 "#%E7%BC%BA%E5%A4%B1api%E5%A4%84%E7%90%86%E7%AD%96%E7%95%A5")});
             }
         }
+        sortMarkdownList(straightApiMappingList);
+        sortMarkdownList(blurredApiMappingList);
+        sortMarkdownList(nonMatchApiList);
         Objects.requireNonNullElse(apiNameNullList, straightApiMappingList).addAll(nonMatchApiList);
+    }
+
+    private void sortMarkdownList(List<Object[]> list) {
+        list.sort(Comparator.comparing(this::getApiName));
+    }
+
+    private String getApiName(Object[] obj) {
+        if (obj == null || obj.length < 0) {
+            return "";
+        } else if (obj[0] instanceof LinkInfo) {
+            return ((LinkInfo) obj[0]).getText();
+        } else if (obj[0] instanceof String) {
+            return (String) obj[0];
+        } else {
+            return "";
+        }
     }
 
     public void translateCallExpressionInPyCallExpression(PsiElement psiElement, List<String[]> formerFunction) {
         for (PsiElement element : psiElement.getChildren()) {
             if (element instanceof PyCallExpression) {
                 PyCallExpression pyCallExpression = (PyCallExpression) element;
-                String apiString = pyCallExpression.getCallee().getText();
+                String apiString = pyCallExpression.getCallee().getText().replace("\\","");
                 int lastDot = apiString.lastIndexOf('.');
                 String prefix;
                 String apiName;
@@ -271,7 +293,7 @@ public class FileScanAgent {
                     prefix = NO_PACKAGE_PLACEHOLDER;
                     apiName = apiString;
                 }
-                formerFunction.add(new String[] {prefix, apiName});
+                formerFunction.add(new String[] {prefix, apiName.strip()});
                 translateCallExpressionInPyCallExpression(element, formerFunction);
             } else if (element instanceof PyReferenceExpression && element.getChildren().length > 0 && !element.getText().toLowerCase().equals(element.getText())) {
                 apiNameList.add(element.getText());
@@ -298,7 +320,8 @@ public class FileScanAgent {
     }
 
 
-    public Set<String> sortList() {
+    public Set<String>
+    sortList() {
         apiNameList = filteringApi(apiNameList);
         Set<String> apiString = filteringData(apiNameList);
 
