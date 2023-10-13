@@ -123,9 +123,9 @@ function compareStringsAsNumbers(a: string, b: string): number {
     const [majorB, minorB] = b.split('.').map(part => parseInt(part, 10));
 
     // 比较主版本
-    if (majorA < majorB) {
+    if (majorA < majorB || Number.isNaN(majorA)) {
         return 1;
-    } else if (majorA > majorB) {
+    } else if (majorA > majorB || Number.isNaN(majorB)) {
         return -1;
     }
 
