@@ -4,6 +4,7 @@
   "description": "Add AI powered code completions to your VS Code",
   "version": "2.1.0",
   "publisher": "MindSpore",
+  "icon": "assets/MindSpore-logo.png",
   "engines": {
     "vscode": "^1.69.1"
   },
