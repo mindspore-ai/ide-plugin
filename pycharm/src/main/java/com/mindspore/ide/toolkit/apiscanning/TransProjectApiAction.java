@@ -42,7 +42,7 @@ public class TransProjectApiAction extends AnAction {
         long startTime = System.currentTimeMillis();
         if (!OperatorSearchService.INSTANCE.isInit()) {
             NotificationUtils.notify(NotificationUtils.NotifyGroup.SEARCH, NotificationType.WARNING,
-                    "Api Mapping resource is still loading, please try later!");
+                    "Api Mapping data is still loading, please try later!");
             return;
         }
 

@@ -38,8 +38,8 @@ export async function init(context: vscode.ExtensionContext) {
 
     vscode.commands.registerCommand('extension.openInputOptions', openInputOptions);
 
-    statusBarItem.text = `MindSpore ${currentVersion}`;
-    statusBarItem.tooltip = "点击此处切换版本";
+    statusBarItem.text = `API映射数据版本：MindSpore ${currentVersion}`;
+    statusBarItem.tooltip = "点击此处切换API映射数据版本";
     statusBarItem.command = 'extension.openInputOptions';
     statusBarItem.show();
 
@@ -99,8 +99,8 @@ export function showCustomInputBox() {
 function updateStatusBarItem(statusBarInputValue: StatusBarInput, selection: string) {
     switch (statusBarInputValue) {
         case StatusBarInput.good:
-            statusBarItem.text = `MindSpore ${selection}`;
-            statusBarItem.tooltip = "点击此处切换版本";
+            statusBarItem.text = `API映射数据版本：MindSpore ${selection}`;
+            statusBarItem.tooltip = "点击此处切换API映射数据版本";
             statusBarItem.command = 'extension.openInputOptions';
             statusBarItem.show();
             break;

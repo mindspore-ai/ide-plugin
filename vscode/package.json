@@ -2,7 +2,7 @@
   "name": "mindspore-dev-toolkit",
   "displayName": "MindSpore Dev Toolkit",
   "description": "Add AI powered code completions to your VS Code",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "publisher": "MindSpore",
   "engines": {
     "vscode": "^1.69.1"
@@ -18,12 +18,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "mindsporeCompletion.helloWorld",
-        "title": "Hello World"
-      },
-      {
         "command": "mindspore.scanLocalFile",
-        "title": "API Scan"
+        "title": "MindSpore API映射扫描 - 本文件"
       },
       {
         "command": "mindspore.refreshEntry",
@@ -35,12 +31,12 @@
       "activitybar": [
         {
           "id": "MindSporeActivityBar",
-          "title": "API Scan",
+          "title": "MindSpore API映射扫描",
           "icon": "icon.svg"
         },
         {
           "id": "MindSporeApiSearchBar",
-          "title": "API Search",
+          "title": "MindSpore API映射搜索",
           "icon": "mindspore_search_api.svg"
         }
       ]
@@ -49,7 +45,7 @@
       "MindSporeActivityBar": [
         {
           "id": "MindSporeTreeView",
-          "name": "API Scan"
+          "name": "本项目"
         }
       ],
       "MindSporeApiSearchBar": [

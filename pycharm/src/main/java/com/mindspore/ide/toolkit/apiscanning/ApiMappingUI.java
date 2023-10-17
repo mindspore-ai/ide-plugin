@@ -119,7 +119,8 @@ public class ApiMappingUI {
         return apiMappingUI;
     }
 
-    public void reload(Object[][] api, Object[][] papi, Object[][] apiNull, String fileName) {
+    public void reload(Object[][] api, Object[][] papi, Object[][] apiNull, String fileName, Project project) {
+        this.project = project;
         this.api = api;
         this.papi = papi;
         this.apiNull = apiNull;

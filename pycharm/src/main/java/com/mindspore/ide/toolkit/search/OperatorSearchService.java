@@ -55,7 +55,9 @@ public enum OperatorSearchService {
             if (!isInit && mdDataGet.pytorchMdStr.isEmpty()) {
                 NotificationUtils.notify(NotificationUtils.NotifyGroup.SEARCH,
                         NotificationType.ERROR,
-                        "Unable to get api-mapping about mindspore " + version);
+                        "Failed to retrieve API mapping data of MindSpore " + version +
+                                ". Please check if network is proper or version is right. MindSpore master option is " +
+                                "available as newest version.");
                 return false;
             }
             tempHub = new OperatorMapDataHub(mdDataGet);

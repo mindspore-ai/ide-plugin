@@ -25,14 +25,15 @@ public class ChangeMindSporeVersionAction extends AnAction implements DumbAware,
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent event) {
-        String input = Messages.showInputDialog(event.getProject(), "Please input mindSpore version:",
-                "Api Mapping", null, null, new InputVersionCheck(),null, "input should be like 2.1 or 2.1.0");
+        String input = Messages.showInputDialog(event.getProject(), "Please input MindSpore version:",
+                "API Mapping", null, null, new InputVersionCheck(),null, "input should be like 2.1 or 2.1.0");
         if (StringUtils.isEmpty(input)) {
             log.debug("cancel input version");
         } else {
             log.debug("input version is {}", input);
             String versionString = MindSporeVersionUtils.getBigVersion(input);
-            Task.Backgroundable task = new Task.Backgroundable(event.getProject(), "Changing to mindspore " + versionString, false) {
+            Task.Backgroundable task = new Task.Backgroundable(event.getProject(),
+                    "Changing to MindSpore " + versionString, false) {
                 @Override
                 public void run(@NotNull ProgressIndicator indicator) {
                     indicator.isRunning();
