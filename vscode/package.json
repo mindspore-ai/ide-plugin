@@ -4,7 +4,7 @@
   "description": "Add AI powered code completions to your VS Code",
   "version": "2.2.0",
   "publisher": "MindSpore",
-  "icon": "assets/MindSpore-logo.png",
+  "icon": "MindSpore-logo.png",
   "engines": {
     "vscode": "^1.69.1"
   },
@@ -33,12 +33,12 @@
         {
           "id": "MindSporeActivityBar",
           "title": "MindSpore API映射扫描",
-          "icon": "icon.svg"
+          "icon": "api_scan.svg"
         },
         {
           "id": "MindSporeApiSearchBar",
           "title": "MindSpore API映射搜索",
-          "icon": "mindspore_search_api.svg"
+          "icon": "api_scan.svg"
         }
       ]
     },
