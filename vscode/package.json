@@ -38,7 +38,7 @@
         {
           "id": "MindSporeApiSearchBar",
           "title": "MindSpore API映射搜索",
-          "icon": "api_scan.svg"
+          "icon": "api_search.svg"
         }
       ]
     },
