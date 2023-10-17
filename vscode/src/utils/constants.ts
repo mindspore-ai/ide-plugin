@@ -10,10 +10,12 @@ import yaml = require('js-yaml');
 export const X86_PYTHON_PORT = 50053;
 export const LINUX_PYTHON_PORT = 50055;
 export const PYTORCH_API_MAPPING_DOWNLOAD_URL_PREFIX = "https://gitee.com/mindspore/docs/raw/";
-export const PYTORCH_API_MAPPING_DOWNLOAD_URL_VERSION = "2.1";
 export const PYTORCH_API_MAPPING_DOWNLOAD_URL_SUFFIX = "/docs/mindspore/source_zh_cn/note/api_mapping/pytorch_api_mapping.md";
 export const PYTORCH_API_MAPPING_FILENAME = "pytorch_api_mapping.md";
-
+let pluginVersion = (vscode.extensions.getExtension('MindSpore.mindspore-dev-toolkit')?.packageJSON.version??"2.2.0").split('.');
+let major = parseInt(pluginVersion[0]);
+let minor = parseInt(pluginVersion[1]);
+export const  PYTORCH_API_MAPPING_DOWNLOAD_URL_VERSION = `${major}.${minor}`;
 export function generateApiMappingUrl(version?: string) {
     return PYTORCH_API_MAPPING_DOWNLOAD_URL_PREFIX + (version === "master"?"":"r") + (version ?? PYTORCH_API_MAPPING_DOWNLOAD_URL_VERSION) + PYTORCH_API_MAPPING_DOWNLOAD_URL_SUFFIX;
 }
