@@ -84,7 +84,7 @@ public enum ModelManager {
         });
         modelExecutor.execute(() -> {
             OperatorSearchService.INSTANCE.changeSearchDataHub(MindSporeVersionUtils.getBigVersion(CompleteConfig.PLUGIN_VERSION), true);
-            NotificationUtils.notify(NotificationUtils.NotifyGroup.SEARCH, NotificationType.INFORMATION,"Api mapping " +
+            NotificationUtils.notify(NotificationUtils.NotifyGroup.SEARCH, NotificationType.INFORMATION,"API mapping " +
                     "init successfully");
         });
     }

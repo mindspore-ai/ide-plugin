@@ -38,9 +38,6 @@ public class ApiMappingProjectUI {
     public ApiMappingProjectUI(Project project, VirtualFile choseFile) {
         this.project = project;
         this.chosenFile = choseFile;
-        this.apiMappingUI.setVisible(false);
-        this.noResultJLabel.setVisible(false);
-
     }
 
     public void initLoad(){
@@ -56,7 +53,7 @@ public class ApiMappingProjectUI {
      * @param fileScanAgent FileScanAgent
      * @param fileName trigger file name
      */
-    public void reload(FileScanAgent fileScanAgent, String fileName) {
+    public void reload(FileScanAgent fileScanAgent, String fileName, Project project) {
         fileScanAgent.assembleResultAndSearch();
         Object[][] api = fileScanAgent.apiArray();
         Object[][] papi = fileScanAgent.papiArray();
@@ -64,7 +61,7 @@ public class ApiMappingProjectUI {
         if (api.length > 0 || papi.length > 0 || apiNull.length > 0) {
             this.noResultJLabel.setVisible(false);
             this.apiMappingUI.setVisible(true);
-            this.apiMappingUI.reload(api, papi, apiNull, fileName);
+            this.apiMappingUI.reload(api, papi, apiNull, fileName, project);
         } else {
             this.noResultJLabel.setVisible(true);
             this.apiMappingUI.setVisible(false);

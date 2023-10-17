@@ -86,11 +86,12 @@ public class MindSporeStatusBarServiceImpl implements MindSporeStatusBarService 
         versions.remove(selectedVersion);
         DefaultActionGroup group = new DefaultActionGroup();
         for (final String version : versions) {
-            AnAction action = new VersionAction("mindspore " + version, EmptyIcon.ICON_16) {
+            AnAction action = new VersionAction("MindSpore " + version, EmptyIcon.ICON_16) {
                 @Override
                 public void actionPerformed(@NotNull AnActionEvent e) {
                     log.debug("choose version:{} to mapping", version);
-                    Task.Backgroundable task = new Task.Backgroundable(e.getProject(), "Changing to mindspore " + version, false) {
+                    Task.Backgroundable task = new Task.Backgroundable(e.getProject(),
+                            "API Mapping data Changing to MindSpore " + version, false) {
                         @Override
                         public void run(@NotNull ProgressIndicator indicator) {
                             indicator.isRunning();

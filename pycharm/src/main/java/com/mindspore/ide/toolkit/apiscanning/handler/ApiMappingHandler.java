@@ -128,7 +128,7 @@ public class ApiMappingHandler {
         ToolWindow toolWindow = toolWindowManager.getToolWindow("MindSporeApiMapping");
         ApiMappingProjectUI projectMap = projectContentMap.get(contentManager.getSelectedContent());
         String name = chosenFile.getName();
-        projectMap.reload(fileScanAgent,name);
+        projectMap.reload(fileScanAgent,name, myProject);
         ContentManager contentManagerLocal = toolWindow.getContentManager();
         contentManagerLocal.removeContent(contentManagerLocal.getSelectedContent(), true);
         Content content = ContentFactory.SERVICE.getInstance()

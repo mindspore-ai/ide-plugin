@@ -63,7 +63,8 @@ public class MindSporeStatusBarWidget extends EditorBasedStatusBarPopup {
             MindSporeStatusBarServiceImpl.setCurrentSelectedVersion(version);
             MindSporeVersionUtils.initVersionMap(version);
         }
-        EditorBasedStatusBarPopup.WidgetState state = new EditorBasedStatusBarPopup.WidgetState("", "mindspore " + version, true);
+        EditorBasedStatusBarPopup.WidgetState state = new EditorBasedStatusBarPopup.WidgetState("",
+                "API Mapping Data Version: MindSpore " + version, true);
         state.setIcon(MsIcons.MS_ICON_12PX);
         return state;
     }
@@ -80,7 +81,7 @@ public class MindSporeStatusBarWidget extends EditorBasedStatusBarPopup {
         }
         popupGroup.add(group);
         return JBPopupFactory.getInstance()
-                .createActionGroupPopup("Api Mapping",
+                .createActionGroupPopup("Api Mapping Data Version",
                         popupGroup,
                         context,
                         JBPopupFactory.ActionSelectionAid.SPEEDSEARCH,

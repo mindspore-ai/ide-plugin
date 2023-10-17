@@ -41,7 +41,7 @@ public class TransApiAction extends AnAction {
     public void actionPerformed(@NotNull AnActionEvent e) {
         if (!OperatorSearchService.INSTANCE.isInit()) {
             NotificationUtils.notify(NotificationUtils.NotifyGroup.SEARCH, NotificationType.WARNING,
-                    "Api Mapping resource is still loading, please try later!");
+                    "API Mapping data is still loading, please try later!");
             return;
         }
         DataContext dataContext = e.getDataContext();
