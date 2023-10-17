@@ -3,22 +3,16 @@ package com.mindspore.ide.toolkit.apiscanning;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.uiDesigner.core.GridConstraints;
-import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.mindspore.ide.toolkit.apiscanning.handler.ApiMappingHandler;
 import com.mindspore.ide.toolkit.apiscanning.utils.FileScanAgent;
 import com.mindspore.ide.toolkit.apiscanning.utils.VirtualFileTreeUtil;
 
 import javax.swing.Icon;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
-import java.awt.Dimension;
-import java.awt.Insets;
 
 public class ApiMappingProjectUI {
     public JSplitPane splitPane;
@@ -38,6 +32,8 @@ public class ApiMappingProjectUI {
     public ApiMappingProjectUI(Project project, VirtualFile choseFile) {
         this.project = project;
         this.chosenFile = choseFile;
+        this.apiMappingUI.setVisible(false);
+        this.noResultJLabel.setVisible(false);
     }
 
     public void initLoad(){
@@ -84,8 +80,5 @@ public class ApiMappingProjectUI {
             renderer.setDisabledIcon(leafIconFolder);
             tree1.setCellRenderer(renderer);
         }
-        this.apiMappingUI = ApiMappingUI.buildSelf(new Object[][]{}, new Object[][]{}, new Object[][]{}, project,
-                root.toString());
-        System.out.println(1);
     }
 }
