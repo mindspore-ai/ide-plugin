@@ -8,7 +8,7 @@
 
 #### API mapping
 
-- [BETA] API mapping data version can be switch to other version.
+- [BETA] API mapping data version can be switch to other versions.
 
 #### API mapping - API scan
 
