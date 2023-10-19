@@ -23,7 +23,7 @@ export async function addPlatform(pyJsonData: any[] | undefined) {
                 axios({
                     url: data.mindsporeURL,
                     method: 'get',
-                    timeout: 5000
+                    timeout: 30000
                 }).then((response: any) => {
                     let htmlText = response.data as string;
                     //apiName位置
@@ -70,7 +70,7 @@ export async function addSinglePlatform(data: any) {
             axios({
                 url: data.mindsporeURL,
                 method: 'get',
-                timeout: 1000
+                timeout: 3000
             }).then((response: any) => {
                 let htmlText = response.data as string;
                 //apiName位置

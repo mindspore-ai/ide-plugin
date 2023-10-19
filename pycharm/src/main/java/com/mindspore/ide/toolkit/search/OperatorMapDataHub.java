@@ -58,7 +58,7 @@ public class OperatorMapDataHub implements SearchEveryWhereDataHub<String, Opera
      *
      * api支持平台类型
      */
-    private String[] PLATFORM = {"Ascend", "GPU", "CPU"};
+    private static final String[] PLATFORM = {"Ascend", "GPU", "CPU"};
 
     /**
      * node数据
@@ -76,11 +76,11 @@ public class OperatorMapDataHub implements SearchEveryWhereDataHub<String, Opera
         } else {
             mdStringList(mdDataGet.pytorchMdStr, ApiType.PyTorch);
         }
-        if (mdDataGet.tensorflowMdStr.isEmpty()) {
-            mdStringList(MdPathString.TENSORFLOW_MD_STR, ApiType.TensorFlow);
-        } else {
-            mdStringList(mdDataGet.tensorflowMdStr, ApiType.TensorFlow);
-        }
+//        if (mdDataGet.tensorflowMdStr.isEmpty()) {
+//            mdStringList(MdPathString.TENSORFLOW_MD_STR, ApiType.TensorFlow);
+//        } else {
+//            mdStringList(mdDataGet.tensorflowMdStr, ApiType.TensorFlow);
+//        }
         for (Map.Entry<String, List<OperatorRecord>> entry : operatorMap.entrySet()) {
             suffixStringSplit(entry.getKey());
         }
@@ -142,7 +142,7 @@ public class OperatorMapDataHub implements SearchEveryWhereDataHub<String, Opera
         options.set(Parser.EXTENSIONS, Arrays.asList(TablesExtension.create()));
         Parser parser = Parser.builder(options).build();
         Node document = parser.parse(mdString);
-        ExecutorService executorService = Executors.newFixedThreadPool(64);
+        ExecutorService executorService = Executors.newFixedThreadPool(32);
         List<CompletableFuture<Void>> futures = new ArrayList<>();
         document.getChildIterator().forEachRemaining(paragraphNode -> {
             if (!(paragraphNode instanceof TableBlock)) {
@@ -259,14 +259,14 @@ public class OperatorMapDataHub implements SearchEveryWhereDataHub<String, Opera
         return operatorMap.getOrDefault(input, new ArrayList<>());
     }
 
-    private String getPlatformInfo(LinkInfo linkInfo) {
+    public static String getPlatformInfo(LinkInfo linkInfo) {
         String apiName = linkInfo.getText();
         List platformList = new ArrayList();
         if (!apiName.startsWith("mindspore.") || linkInfo.getUrl() == "") {
             return "";
         }
         try {
-            String htmlText = HttpRequests.request(linkInfo.getUrl()).connectTimeout(5000).readString();
+            String htmlText = HttpRequests.request(linkInfo.getUrl()).connectTimeout(10000).readString();
             int apiNameIndex = htmlText.indexOf("<dt class=\"sig sig-object py\" id=\"" + apiName);
             int platformIndex = htmlText.indexOf("支持平台", apiNameIndex);
             // md与html源码中得apiName不一致时，apiNameIndex为-1

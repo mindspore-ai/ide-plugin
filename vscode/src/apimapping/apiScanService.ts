@@ -36,24 +36,24 @@ async function apiScanHandler(uris: vscode.Uri | vscode.Uri[], label?: string, )
     }
     
     let htmlTable = await scanContentToWebview(Array.from(apiSet.values()));
-    if (htmlTable[0] != ''){
+    if (htmlTable[0] !== ''){
         convertiableTable = `
         <h3>可以转化的PyTorch API</h3>
         ${htmlTable[0]}
-        `
+        `;
     }
-    if (htmlTable[1] != ''){
+    if (htmlTable[1] !== ''){
         inconvertiableTable = `
         <h3>可能是torch.Tensor API的结果</h3>
         ${htmlTable[1]}
-        `
+        `;
     }
-    if (htmlTable[2] != ''){
+    if (htmlTable[2] !== ''){
         callChainTable = `
         <h3>暂未提供直接映射关系的PyTorch API</h3>
         <a style="display: block;margin-bottom: 1rem;" href="https://www.mindspore.cn/docs/zh-CN/master/migration_guide/analysis_and_preparation.html#%E7%BC%BA%E5%A4%B1api%E5%A4%84%E7%90%86%E7%AD%96%E7%95%A5">请阅：缺失API处理策略</a>
         ${htmlTable[2]}
-        `
+        `;
     }
     if (htmlTable[0] === '' && htmlTable[1] === '' && htmlTable[2] === ''){
         vscode.window.showInformationMessage("没有扫描到相关api");

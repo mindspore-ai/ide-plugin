@@ -23,11 +23,15 @@ export async function mapAPI(apis: string[]){
             let target = tempMap.get(api);
             if (target.platform  === undefined || target.platform === ""){
                 promiseList.push(addSinglePlatform(target).then(() => {
+                    let finalPlatform = target.platform;
+                    if (finalPlatform === "" || finalPlatform === undefined || finalPlatform === null){
+                        finalPlatform = "网络异常";
+                    }
                     let record = [
                         target.operatorURL?`[${target.operator1word}](${target.operatorURL})`:target.operator1word,
                         target.version,
                         target.mindsporeURL?`[${target.mindspore1word}](${target.mindsporeURL})`:target.mindspore1word,
-                        target.platform,
+                        finalPlatform,
                         target.diffURL?`[${target.remark}](${target.diffURL})`: target.remark];
                     convertible.set(api,record);
                 }));
@@ -52,11 +56,15 @@ export async function mapAPI(apis: string[]){
                     if (target) {
                         if (target.platform  === undefined || target.platform === ""){
                             promiseList.push(addSinglePlatform(target).then(() => {
+                                let finalPlatform = target.platform;
+                                if (finalPlatform === "" || finalPlatform === undefined || finalPlatform === null){
+                                    finalPlatform = "网络异常";
+                                }
                                 record = [
                                     target.operatorURL?`[${target.operator1word}](${target.operatorURL})`:target.operator1word,
                                     target.version,
                                     target.mindsporeURL?`[${target.mindspore1word}](${target.mindsporeURL})`:target.mindspore1word,
-                                    target.platform,
+                                    finalPlatform,
                                     target.diffURL?`[${target.remark}](${target.diffURL})`: target.remark],
                                 chainCall.set(apiName,record);
                             }));
