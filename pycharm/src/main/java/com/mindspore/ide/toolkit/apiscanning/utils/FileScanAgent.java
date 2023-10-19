@@ -235,7 +235,8 @@ public class FileScanAgent {
                 } else {
                     cells[2] = new LinkInfo(record.getMindSporeOperator(), record.getMindSporeLink());
                 }
-                cells[3] = record.getPlatform();
+                String platform = record.getPlatform();
+                cells[3] = platform.equals("")?"网络异常":platform;
                 if (Strings.isEmpty(record.getDescriptionLink())) { // 注释
                     cells[4] =
                             record.getDescription() + (record.isInWhiteList() ? "" : "（仅支持2.0及以上版本MindSpore）");
@@ -320,8 +321,7 @@ public class FileScanAgent {
     }
 
 
-    public Set<String>
-    sortList() {
+    public Set<String> sortList() {
         apiNameList = filteringApi(apiNameList);
         Set<String> apiString = filteringData(apiNameList);
 

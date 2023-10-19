@@ -29,23 +29,6 @@ import javax.swing.JTable;
  * @since 2022-12-16
  */
 public class ApiMappingUI {
-    private static final String[] API_COLUMNS =
-            {"Original Api", "Original Api Version", "MindSpore Api", "Platform", "Description"};
-
-    private static final String[] API_NULL_COLUMNS =
-            {"Original Api", "Description"};
-
-    private static final String[] PAPI_COLUMNS =
-            {"Original Api", "Original Api Version", "MindSpore Api", "Platform", "Description"};
-
-    private static final String NEW_LINE = "\n";
-
-    private static final String API = "可以转换为MindSpore API的PyTorch/TensorFlow API";
-
-    private static final String API_NULL = "暂未提供直接映射关系的PyTorch API";
-
-    private static final String PAPI = "可能是torch.Tensor API的结果";
-
     private Project project;
 
     private Object[][] api;
@@ -140,7 +123,7 @@ public class ApiMappingUI {
     }
 
     public void addApiPanel() {
-        apiJTable = new JTable(new MsTableModel(api, API_COLUMNS));
+        apiJTable = new JTable(new MsTableModel(api, ApiMappingUiUtil.API_COLUMNS));
         apiJTable.setDefaultRenderer(Object.class, new MsCellRender());
         apiJTable.addMouseListener(createListener(api, apiJTable));
         if (api.length > 0) {
@@ -153,7 +136,7 @@ public class ApiMappingUI {
     }
 
     public void addApiNullPanel() {
-        apiNullJTable = new JTable(new MsTableModel(apiNull, API_NULL_COLUMNS));
+        apiNullJTable = new JTable(new MsTableModel(apiNull, ApiMappingUiUtil.API_NULL_COLUMNS));
         apiNullJTable.setDefaultRenderer(Object.class, new MsCellRender());
         apiNullJTable.addMouseListener(createListener(apiNull, apiNullJTable));
         if (apiNull.length > 0) {
@@ -166,7 +149,7 @@ public class ApiMappingUI {
     }
 
     public void addPapiPanel() {
-        papiJTable = new JTable(new MsTableModel(papi, PAPI_COLUMNS));
+        papiJTable = new JTable(new MsTableModel(papi, ApiMappingUiUtil.PAPI_COLUMNS));
         papiJTable.setDefaultRenderer(Object.class, new MsCellRender());
         papiJTable.addMouseListener(createListener(papi, papiJTable));
         if (papi.length > 0) {
@@ -181,26 +164,10 @@ public class ApiMappingUI {
     public void buttonListener() {
         // 导出事件
         this.actionListener = e -> {
-            ExportDialog exportListDialog = new ExportDialog(initData().toString(), fileName);
+            ExportDialog exportListDialog = new ExportDialog(ApiMappingUiUtil.initData(api, apiNull, papi).toString(), fileName);
             exportListDialog.setVisible(true);
         };
         export.addActionListener(this.actionListener);
-    }
-
-
-    public StringBuilder initData() {
-        StringBuilder str = new StringBuilder();
-        str.append(API).append(",").append(NEW_LINE);
-        append(str, api);
-        if (apiNull.length > 0) {
-            str.append(",").append(NEW_LINE).append(API_NULL).append(",").append(NEW_LINE);
-            append(str, apiNull);
-        }
-        if (papi.length > 0) {
-            str.append(",").append(NEW_LINE).append(PAPI).append(",").append(NEW_LINE);
-            append(str, papi);
-        }
-        return str;
     }
 
     public void append(StringBuilder builder, Object[][] table) {
@@ -219,7 +186,7 @@ public class ApiMappingUI {
                 }
             }
             builder.setLength(builder.length() - 1);
-            builder.append(NEW_LINE);
+            builder.append(ApiMappingUiUtil.NEW_LINE);
         }
     }
 
