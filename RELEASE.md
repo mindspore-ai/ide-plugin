@@ -15,7 +15,7 @@
 - [BETA] API scan provides new info: supported platforms.
 - [BETA] API scan result on PyCharm is optimized.
 - [BETA] Export result to csv is now available on Visual Studio Code extension.
-- 
+
 #### API mapping - API search
 
 - [BETA] API search is now available on Visual Studio Code extension.
