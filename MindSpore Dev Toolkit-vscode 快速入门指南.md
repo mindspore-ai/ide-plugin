@@ -12,7 +12,7 @@ MindSpore Dev ToolKit 插件可支持[Visual Studio Code](https://code.visualstu
 
 ## 二、插件安装
 
-1. 获取[插件vsix包](https://ms-release.obs.cn-north-4.myhuaweicloud.com/2.1.0/IdePlugin/any/mindspore-dev-toolkit-2.1.0.vsix)。
+1. 获取[插件vsix包](https://ms-release.obs.cn-north-4.myhuaweicloud.com/2.2.0/IdePlugin/any/mindspore-dev-toolkit-2.2.0.vsix)。
 2. 点击左侧第五个按钮“Extensions”，点击右上角三个点，再点击“Install from VSIX...”
 
    ![img](./images/clip_image093.jpg)
@@ -45,7 +45,7 @@ MindSpore Dev ToolKit 插件可支持[Visual Studio Code](https://code.visualstu
 
 ### 简介
 
-API 映射指PyTorch API与MindSpore API的映射关系。在MindSpore Dev Toolkit中，提供了API映射搜索和API映射扫描两大功能。且用户可以自由切换API映射文件的版本。
+API 映射指PyTorch API与MindSpore API的映射关系。在MindSpore Dev Toolkit中，提供了API映射搜索和API映射扫描两大功能。且用户可以自由切换API映射数据的版本。
 
 ### API映射数据版本切换
 
@@ -67,11 +67,11 @@ API 映射指PyTorch API与MindSpore API的映射关系。在MindSpore Dev Toolk
 
    ![img](./images/clip_image133.jpg)
 
-5. 若切换成功，右下角信息提示切换成功，左下角状态栏展示切换后的MindSpore版本信息。
+5. 若切换成功，右下角信息提示切换成功，左下角状态栏展示切换后的API映射数据版本信息。
 
    ![img](./images/clip_image134.jpg)
 
-6. 若切换失败，右下角信息提示切换失败，左下角状态栏展示切换前的MindSpore版本信息。版本号不存在、网络错误会导致切换失败，请排查后再次尝试。如需查看最新文档，可以切换到master版本。
+6. 若切换失败，右下角信息提示切换失败，左下角状态栏展示切换前的API映射数据版本信息。版本号不存在、网络错误会导致切换失败，请排查后再次尝试。如需查看最新文档，可以切换到master版本。
 
    ![img](./images/clip_image135.jpg)
 
@@ -79,27 +79,25 @@ API 映射指PyTorch API与MindSpore API的映射关系。在MindSpore Dev Toolk
 
    ![img](./images/clip_image136.jpg)
 
-### API映射扫描
-
-#### 文件级API映射扫描
+### 文件级API映射扫描
 
 1. 在当前文件任意位置处右键，打开菜单，选择“扫描本地文件”。
 
    ![img](./images/clip_image116.jpg)
 
-2. 右边栏会弹出当前文件中扫描出的算子，包括“可以转化的PyTorch API”、“可能是torch.Tensor API的结果”、
-   “暂未提供直接映射关系的PyTorch API”三种扫描结果列表。
-   其中：
+2. 右边栏会弹出当前文件中扫描出的算子，包括“可以转化的PyTorch API”、“可能是torch.Tensor API的结果”、“暂未提供直接映射关系的PyTorch API”三种扫描结果列表。
 
-   - "可以转换的PyTorch API"指在文件中被使用的且可以转换为MindSpore API的PyTorch API
-   - "可能是torch.Tensor API"指名字和torch.Tensor的API名字相同，可能是torch.Tensor的API且可以转换为MindSpore API的API
-   - "暂未提供直接映射关系的PyTorch API"指虽然是PyTorch API或可能是torch.Tensor的API，但是暂时没有直接对应为MindSpore API的API
+    其中：
+
+    * "可以转换的PyTorch API"指在文件中被使用的且可以转换为MindSpore API的PyTorch API
+    * "可能是torch.Tensor API"指名字和torch.Tensor的API名字相同，可能是torch.Tensor的API且可以转换为MindSpore API的API
+    * "暂未提供直接映射关系的PyTorch API"指虽然是PyTorch API或可能是torch.Tensor的API，但是暂时没有直接对应为MindSpore API的API
 
    ![img](./images/clip_image117.jpg)
 
-#### 项目级API映射扫描
+### 项目级API映射扫描
 
-1. 点击Visual Studio Code左侧边栏MindSpore Dev Toolkit图标。
+1. 点击Visual Studio Code左侧边栏MindSpore API映射扫描图标。
 
    ![img](./images/clip_image118.jpg)
 
@@ -115,7 +113,7 @@ API 映射指PyTorch API与MindSpore API的映射关系。在MindSpore Dev Toolk
 
    ![img](./images/clip_image121.jpg)
 
-5. 蓝色字体部分均可以点击，会自动在用户默认浏览器中打开网页
+5. 蓝色字体部分均可以点击，会自动在用户默认浏览器中打开网页。
 
    ![img](./images/clip_image122.jpg)
 
@@ -123,7 +121,7 @@ API 映射指PyTorch API与MindSpore API的映射关系。在MindSpore Dev Toolk
 
 ### API映射搜索
 
-1. 点击Visual Studio Code左侧边栏API Search图标。
+1. 点击Visual Studio Code左侧边栏MindSpore API映射搜索图标。
 
    ![img](./images/clip_image124.jpg)
 

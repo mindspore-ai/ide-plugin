@@ -19,7 +19,7 @@ MindSpore Dev ToolKit 插件可支持[PyCharm](https://www.jetbrains.com/pycharm
 
 ## 二、插件安装
 
-1. 获取[插件Zip包](https://ms-release.obs.cn-north-4.myhuaweicloud.com/2.1.0/IdePlugin/any/MindSpore_Dev_ToolKit-2.1.0.zip)。
+1. 获取[插件Zip包](https://ms-release.obs.cn-north-4.myhuaweicloud.com/2.2.0/IdePlugin/any/MindSpore_Dev_ToolKit-2.2.0.zip)。
 2. 启动Pycharm单击左上菜单栏，选择File->Settings->Plugins->Install Plugin from Disk。
    如图：
 
@@ -123,15 +123,15 @@ MindSpore Dev ToolKit 插件可支持[PyCharm](https://www.jetbrains.com/pycharm
 ### 简介
 
 API 映射指PyTorch API与MindSpore API的映射关系。
-在MindSpore Dev Toolkit中，提供了API映射搜索和API映射扫描两大功能。且用户可以自由切换API映射文件的版本
+在MindSpore Dev Toolkit中，提供了API映射搜索和API映射扫描两大功能。且用户可以自由切换API映射数据的版本
 
 ### API映射数据版本切换
 
-1. 插件启动时，默认使用与插件目前版本相同的API映射文档版本。 API映射文档版本在右下显示，此版本号仅影响本章节的API映射功能，不会改变环境中的MindSpore版本。
-   
+1. 插件启动时，默认使用与插件目前版本相同的API映射数据版本。 API映射数据版本在右下显示，此版本号仅影响本章节的API映射功能，不会改变环境中的MindSpore版本。
+
    ![img](./images/clip_image137.jpg)
 
-2. 点击API映射文档版本，弹出选择列表。可以选择点击预设版本切换至其他版本，也可以选择"other version"输入其他版本号尝试切换。
+2. 点击API映射数据版本，弹出选择列表。可以选择点击预设版本切换至其他版本，也可以选择"other version"输入其他版本号尝试切换。
 
    ![img](./images/clip_image138.jpg)
 
@@ -143,11 +143,11 @@ API 映射指PyTorch API与MindSpore API的映射关系。
 
    ![img](./images/clip_image140.jpg)
 
-5. 若切换成功，右下状态栏展示切换后的MindSpore版本信息。
+5. 若切换成功，右下状态栏展示切换后的API映射数据版本信息。
 
    ![img](./images/clip_image141.jpg)
 
-6. 若切换失败，右下状态栏展示切换前的MindSpore版本信息。版本号不存在、网络错误会导致切换失败，请排查后再次尝试。如需查看最新文档，可以切换到master版本。
+6. 若切换失败，右下状态栏展示切换前的API映射数据版本信息。版本号不存在、网络错误会导致切换失败，请排查后再次尝试。如需查看最新文档，可以切换到master版本。
 
    ![img](./images/clip_image142.jpg)
 
@@ -177,11 +177,18 @@ API 映射指PyTorch API与MindSpore API的映射关系。
 
 ### 文件级别API扫描
 
-1. 在当前文件任意位置处右键，打开菜单，点击菜单最上方的"API Scan"。
+1. 在当前文件任意位置处点击鼠标右键，打开菜单，点击菜单最上方的"API scan"。
 
    ![img](./images/clip_image100.jpg)
 
-2. 右边栏会自动弹出，展示扫描出的算子，并展示包含名称，网址等信息的详细列表。若本文件中未扫描到算子，则不会弹出窗口。
+2. 右边栏会自动弹出，展示扫描出的API，并展示包含名称，网址等信息的详细列表。若本文件中未扫描到API，则不会弹出窗口。
+
+    其中：
+
+    * "可以转换为MindSpore API的PyTorch/TensorFlow API"指在文件中被使用的且可以转换为MindSpore API的PyTorch或TensorFlow API
+    * "暂时不能转换的API"指虽然是PyTorch或TensorFlow API的API，但是暂时没有直接对应为MindSpore API的API
+    * "可能是PyTorch/TensorFlow API的情况"指因为链式调用的原因，有可能是PyTorch或TensorFlow的API的可转换情况
+    * TensorFlow API扫描是实验性功能
 
    ![img](./images/clip_image101.jpg)
 
@@ -195,17 +202,17 @@ API 映射指PyTorch API与MindSpore API的映射关系。
 
 ### 项目级别API扫描
 
-1. 在当前文件任意位置处右键，打开菜单，点击菜单上方第二个"API Scan project-level"，或在上方工具栏选择"Tools"，再选择"API Scan project-level"。
+1. 在当前文件任意位置处点击鼠标右键，打开菜单，点击菜单上方第二个"API scan project-level"，或在上方工具栏选择"Tools"，再选择"API scan project-level"。
 
    ![img](./images/clip_image104.jpg)
 
    ![img](./images/clip_image105.jpg)
 
-2. 右边栏会弹出整个项目中扫描出的算子，并展示包含名称，网址等信息的详细列表。
+2. 右边栏会弹出整个项目中扫描出的API，并展示包含名称，网址等信息的详细列表。
 
    ![img](./images/clip_image106.jpg)
 
-3. 在上方框中可以选择单个文件，下方框中将单独展示此文件中的算子，文件选择可以随意切换。
+3. 在上方框中可以选择单个文件，下方框中将单独展示此文件中的API，文件选择可以随意切换。
 
    ![img](./images/clip_image107.jpg)
 
@@ -215,7 +222,7 @@ API 映射指PyTorch API与MindSpore API的映射关系。
 
    ![img](./images/clip_image109.jpg)
 
-5. 点击”导出“按钮，可将内容导出到csv表格。
+5. 点击"导出"按钮，可将内容导出到csv表格。
 
    ![img](./images/clip_image110.jpg)
 
