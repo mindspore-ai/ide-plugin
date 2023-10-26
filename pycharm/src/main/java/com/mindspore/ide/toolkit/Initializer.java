@@ -1,6 +1,11 @@
 package com.mindspore.ide.toolkit;
 
 import com.intellij.ide.AppLifecycleListener;
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.progress.Task;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Messages;
 import com.mindspore.ide.toolkit.common.events.EventCenter;
 import com.mindspore.ide.toolkit.common.events.ProjectEvents;
 import com.mindspore.ide.toolkit.common.utils.PathUtils;
@@ -8,10 +13,12 @@ import com.mindspore.ide.toolkit.guide.GuideUserListener;
 import com.mindspore.ide.toolkit.quesionnaire.QuestionnaireListener;
 import com.mindspore.ide.toolkit.search.MdDataGet;
 import com.mindspore.ide.toolkit.search.MsVersionDataConfig;
+import com.mindspore.ide.toolkit.search.OperatorSearchService;
 import com.mindspore.ide.toolkit.smartcomplete.SmartCompleteListener;
 import com.mindspore.ide.toolkit.ui.search.GlobalSearchListener;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -24,8 +31,8 @@ public class Initializer implements AppLifecycleListener {
         AppLifecycleListener.super.appFrameCreated(commandLineArgs);
         initListener();
         PathUtils.initResourceFolder();
-        MdDataGet.getInstance().getMdStr(MsVersionDataConfig.getInstance().parseVersionJsonFile().get(0));
         EventCenter.INSTANCE.publish(new ProjectEvents.AppFrameCreated());
+
     }
 
     private void initListener() {

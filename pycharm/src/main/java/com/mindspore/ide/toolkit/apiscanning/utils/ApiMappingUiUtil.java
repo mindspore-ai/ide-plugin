@@ -13,13 +13,22 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class ApiMappingUiUtil {
-    private static final String NEW_LINE = "\n";
+    public static final String NEW_LINE = "\n";
 
-    private static final String API = "可以转换为MindSpore API的PyTorch/TensorFlow API";
+    public static final String[] API_COLUMNS =
+            {"Original Api", "Original Api Version", "MindSpore Api", "Platform", "Description"};
 
-    private static final String API_NULL = "暂时不能转换的API";
+    public static final String[] API_NULL_COLUMNS =
+            {"Original Api", "Description","Missing API Processing Policy"};
 
-    private static final String PAPI = "可能是PyTorch/TensorFlow API的情况";
+    public static final String[] PAPI_COLUMNS =
+            {"Original Api", "Original Api Version", "MindSpore Api", "Platform", "Description"};
+
+    public static final String API = "可以转换为MindSpore API的PyTorch API";
+
+    public static final String API_NULL = "暂未提供直接映射关系的PyTorch API";
+
+    public static final String PAPI = "可能是torch.Tensor API的结果";
 
     public static void buttonListener(JButton export, ActionListener actionListener) {
         // 导出事件
@@ -29,15 +38,22 @@ public class ApiMappingUiUtil {
 
     public static StringBuilder initData(Object[][] api, Object[][] apiNull, Object[][] papi) {
         StringBuilder str = new StringBuilder();
-        str.append(API).append(",").append(NEW_LINE);
-        append(str, api);
-        if (apiNull.length > 0) {
-            str.append(",").append(NEW_LINE).append(API_NULL).append(",").append(NEW_LINE);
-            append(str, apiNull);
+        if (api.length > 0) {
+            str.append(API).append(",").append(NEW_LINE);
+            str.append(String.join(",", API_COLUMNS)).append(",").append(NEW_LINE);
+            append(str, api);
+            str.append(",").append(NEW_LINE);
         }
         if (papi.length > 0) {
-            str.append(",").append(NEW_LINE).append(PAPI).append(",").append(NEW_LINE);
+            str.append(PAPI).append(",").append(NEW_LINE);
+            str.append(String.join(",", PAPI_COLUMNS)).append(",").append(NEW_LINE);
             append(str, papi);
+            str.append(",").append(NEW_LINE);
+        }
+        if (apiNull.length > 0) {
+            str.append(API_NULL).append(",").append(NEW_LINE);
+            str.append(String.join(",", API_NULL_COLUMNS)).append(",").append(NEW_LINE);
+            append(str, apiNull);
         }
         return str;
     }

@@ -58,10 +58,10 @@ export namespace CompleteReply {
 }
 
 export class ResultEntries extends jspb.Message {
-  clearResultentryList(): void;
-  getResultentryList(): Array<ResultEntry>;
-  setResultentryList(value: Array<ResultEntry>): void;
-  addResultentry(value?: ResultEntry, index?: number): ResultEntry;
+  clearResultEntryList(): void;
+  getResultEntryList(): Array<ResultEntry>;
+  setResultEntryList(value: Array<ResultEntry>): void;
+  addResultEntry(value?: ResultEntry, index?: number): ResultEntry;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ResultEntries.AsObject;
@@ -75,7 +75,7 @@ export class ResultEntries extends jspb.Message {
 
 export namespace ResultEntries {
   export type AsObject = {
-    resultentryList: Array<ResultEntry.AsObject>,
+    resultEntryList: Array<ResultEntry.AsObject>,
   }
 }
 

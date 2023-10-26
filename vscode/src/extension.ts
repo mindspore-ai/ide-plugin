@@ -3,13 +3,16 @@
 import { homedir } from 'os';
 import { join } from 'path';
 import * as vscode from 'vscode';
-import {fsExistsSync} from "./fileUtil";
+import {fsExistsSync} from "./utils/fileUtil";
 import * as fs from "fs";
-import { ADDITIONAL_CHARACTERS, WhitzardProvider } from './provider';
+import { ADDITIONAL_CHARACTERS, WhitzardProvider } from './completion/provider';
 import { logger } from './log/log4js';
-import { getUserFileContent } from './getUserFileContent';
-import { MyTreeData } from './myTreeData';
-import * as scanner from './scanner';
+import * as apiScanService from './apimapping/apiScanService';
+import * as changeVersionInteractive from './apimapping/changeVersionInteractive';
+import { ProjectTreeData } from './apimapping/projectTreeView';
+import * as scanner from './apimapping/scanner';
+import { OpenWebProvider } from './apimapping/SearchWebviewProvider';
+import { changeVersion } from './apimapping/apiMappingData';
 let whitzardCompletionProvider: WhitzardProvider;
 
 
@@ -23,7 +26,8 @@ async function init(){
 
 export async function activate(context: vscode.ExtensionContext) {
 	await init();
-	getUserFileContent(context);
+	changeVersionInteractive.init(context);
+	apiScanService.init(context);
 	let versionNumber = context.extension.packageJSON.version;
 	context.subscriptions.push(vscode.commands.registerCommand('getContext', () => versionNumber));
 
@@ -31,18 +35,21 @@ export async function activate(context: vscode.ExtensionContext) {
 		whitzardCompletionProvider = result;
 		const pythonProvider = vscode.languages.registerCompletionItemProvider([{language: 'python'}],whitzardCompletionProvider, ...ADDITIONAL_CHARACTERS);
 		context.subscriptions.push(pythonProvider);
-		vscode.window.showInformationMessage("MindSpore Dev Toolkit智能补全启动成功！")
+		vscode.window.showInformationMessage("MindSpore Dev Toolkit智能补全启动成功！");
 
 	});
 
-	// register treeview
-	vscode.window.registerTreeDataProvider('MindSporeTreeView', new MyTreeData());
+	const provider = new OpenWebProvider(context.extensionUri);
+	context.subscriptions.push(
+		vscode.window.registerWebviewViewProvider(OpenWebProvider.viewType, provider));
+
+	// register tree view
+	vscode.window.registerTreeDataProvider('MindSporeTreeView', new ProjectTreeData());
 }
 
 // This method is called when your extension is deactivated
 export function deactivate() {
-	logger.info("deativate start!");
-	return whitzardCompletionProvider?.decativate();
-
+	logger.info("deactivate start!");
+	return whitzardCompletionProvider?.deactivate();
 }
 

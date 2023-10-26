@@ -519,7 +519,7 @@ proto.proto.ResultEntries.prototype.toObject = function(opt_includeInstance) {
  */
 proto.proto.ResultEntries.toObject = function(includeInstance, msg) {
   var f, obj = {
-    resultentryList: jspb.Message.toObjectList(msg.getResultentryList(),
+    resultEntryList: jspb.Message.toObjectList(msg.getResultEntryList(),
     proto.proto.ResultEntry.toObject, includeInstance)
   };
 
@@ -560,7 +560,7 @@ proto.proto.ResultEntries.deserializeBinaryFromReader = function(msg, reader) {
     case 1:
       var value = new proto.proto.ResultEntry;
       reader.readMessage(value,proto.proto.ResultEntry.deserializeBinaryFromReader);
-      msg.addResultentry(value);
+      msg.addResultEntry(value);
       break;
     default:
       reader.skipField();
@@ -591,7 +591,7 @@ proto.proto.ResultEntries.prototype.serializeBinary = function() {
  */
 proto.proto.ResultEntries.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getResultentryList();
+  f = message.getResultEntryList();
   if (f.length > 0) {
     writer.writeRepeatedMessage(
       1,
@@ -606,7 +606,7 @@ proto.proto.ResultEntries.serializeBinaryToWriter = function(message, writer) {
  * repeated ResultEntry resultEntry = 1;
  * @return {!Array<!proto.proto.ResultEntry>}
  */
-proto.proto.ResultEntries.prototype.getResultentryList = function() {
+proto.proto.ResultEntries.prototype.getResultEntryList = function() {
   return /** @type{!Array<!proto.proto.ResultEntry>} */ (
     jspb.Message.getRepeatedWrapperField(this, proto.proto.ResultEntry, 1));
 };
@@ -616,7 +616,7 @@ proto.proto.ResultEntries.prototype.getResultentryList = function() {
  * @param {!Array<!proto.proto.ResultEntry>} value
  * @return {!proto.proto.ResultEntries} returns this
 */
-proto.proto.ResultEntries.prototype.setResultentryList = function(value) {
+proto.proto.ResultEntries.prototype.setResultEntryList = function(value) {
   return jspb.Message.setRepeatedWrapperField(this, 1, value);
 };
 
@@ -626,7 +626,7 @@ proto.proto.ResultEntries.prototype.setResultentryList = function(value) {
  * @param {number=} opt_index
  * @return {!proto.proto.ResultEntry}
  */
-proto.proto.ResultEntries.prototype.addResultentry = function(opt_value, opt_index) {
+proto.proto.ResultEntries.prototype.addResultEntry = function(opt_value, opt_index) {
   return jspb.Message.addToRepeatedWrapperField(this, 1, opt_value, proto.proto.ResultEntry, opt_index);
 };
 
@@ -635,8 +635,8 @@ proto.proto.ResultEntries.prototype.addResultentry = function(opt_value, opt_ind
  * Clears the list making it empty but non-null.
  * @return {!proto.proto.ResultEntries} returns this
  */
-proto.proto.ResultEntries.prototype.clearResultentryList = function() {
-  return this.setResultentryList([]);
+proto.proto.ResultEntries.prototype.clearResultEntryList = function() {
+  return this.setResultEntryList([]);
 };
 
 

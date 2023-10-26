@@ -40,7 +40,7 @@ public class CompleteConfig {
 
     private static final String DEFAULT_RESOURCE_PATH = PathUtils.getDefaultResourcePath();
 
-    private static final String PLUGIN_VERSION = getPluginVersion();
+    public static final String PLUGIN_VERSION = getPluginVersion();
 
     private static final String PRODUCT_NAME_WITH_EDITION = ApplicationNamesInfo
             .getInstance().getFullProductNameWithEdition();

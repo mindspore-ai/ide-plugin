@@ -5,6 +5,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.stream.JsonReader;
 import com.mindspore.ide.toolkit.common.utils.GsonUtils;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
@@ -68,11 +69,21 @@ public class MsVersionDataConfig {
      */
     @Getter
     @Setter
+    @AllArgsConstructor
     public static class MsVersionData {
         private String mdVersion;
 
         private String pytorchMdUrl;
 
         private String tensorflowMdUrl;
+    }
+
+    public static MsVersionData newVersionData(String version) {
+        String mdVersion = (version.equals("master")?"":"r") + version;
+        String pytorchMdUrl = "https://gitee.com/mindspore/docs/raw/" + mdVersion + "/docs/mindspore/source_zh_cn/note" +
+                "/api_mapping/pytorch_api_mapping.md";
+        String tensorflowMdUrl = "https://gitee.com/mindspore/docs/raw/" + mdVersion + "/docs/mindspore/source_zh_cn" +
+                "/note/api_mapping/tensorflow_api_mapping.md";
+        return new MsVersionData(mdVersion, pytorchMdUrl, tensorflowMdUrl);
     }
 }

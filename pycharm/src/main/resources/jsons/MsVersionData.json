@@ -1,6 +1,6 @@
 [
   {
-    "mdVersion": "r2.0",
+    "mdVersion": "r2.1",
     "pytorchMdUrl": "https://gitee.com/mindspore/docs/raw/r2.1/docs/mindspore/source_zh_cn/note/api_mapping/pytorch_api_mapping.md",
     "tensorflowMdUrl": "https://gitee.com/mindspore/docs/raw/r2.1/docs/mindspore/source_zh_cn/note/api_mapping/tensorflow_api_mapping.md"
   }

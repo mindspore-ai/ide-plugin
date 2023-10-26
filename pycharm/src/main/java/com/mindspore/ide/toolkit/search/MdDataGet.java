@@ -1,18 +1,10 @@
 package com.mindspore.ide.toolkit.search;
 
-import com.mindspore.ide.toolkit.common.utils.HttpUtils;
-
-import org.apache.http.client.methods.CloseableHttpResponse;
+import com.intellij.util.io.HttpRequests;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.stream.Collectors;
 
 /**
  * 获取md数据
@@ -22,32 +14,15 @@ import java.util.stream.Collectors;
 public class MdDataGet {
     private static final String NEW_LINE = "\n";
 
-    public static String pytorchMdStr = "";
-
-    public static String tensorflowMdStr = "";
-
     private static final Logger LOG = LoggerFactory.getLogger(MdDataGet.class);
 
-    private static String mdVersion = "";
+    private String mdVersion = "";
 
-    private MdDataGet() {
-    }
+    public String pytorchMdStr = "";
 
-    /**
-     * 获取单例
-     *
-     * @return MdDataGet
-     */
-    public static MdDataGet getInstance() {
-        return SingleMdDataGet.INSTANCE;
-    }
+    public String tensorflowMdStr = "";
 
-    /**
-     * 获取网络请求md内容
-     *
-     * @param msVersionData msVersionData
-     */
-    public void getMdStr(MsVersionDataConfig.MsVersionData msVersionData) {
+    public MdDataGet(MsVersionDataConfig.MsVersionData msVersionData) {
         mdVersion = msVersionData.getMdVersion();
         pytorchMdStr = getPytorchMdStr(msVersionData.getPytorchMdUrl());
         tensorflowMdStr = getTensorflowMdStr(msVersionData.getTensorflowMdUrl());
@@ -82,22 +57,12 @@ public class MdDataGet {
      */
     private String getMdData(String url, int timeout) {
         String mdData;
-        try (CloseableHttpResponse response = HttpUtils.doGet(url, new HashMap<>(), timeout)) {
-            if (response == null) {
-                mdData = "";
-            } else if (response.getStatusLine().getStatusCode() == HttpURLConnection.HTTP_OK) {
-                mdData = new BufferedReader(new InputStreamReader(response.getEntity().getContent(), StandardCharsets.UTF_8)).lines().collect(Collectors.joining(NEW_LINE));
-            } else {
-                mdData = "";
-            }
+        try {
+            mdData = HttpRequests.request(url).connectTimeout(timeout).readString();
         } catch (IOException ioException) {
             mdData = "";
             LOG.warn("get md data failed: {}", ioException.toString());
         }
         return mdData;
-    }
-
-    private static class SingleMdDataGet {
-        private static final MdDataGet INSTANCE = new MdDataGet();
     }
 }

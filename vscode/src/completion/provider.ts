@@ -1,10 +1,10 @@
 import { credentials } from '@grpc/grpc-js';
 import { promisify } from 'util';
 import * as vscode from 'vscode';
-import { GreeterClient } from './grpc/recommendation_grpc_pb';
-import { CompleteReply, CompleteRequest } from './grpc/recommendation_pb';
-import { logger } from './log/log4js';
-import { getTransformerXLPort } from './portutils';
+import { GreeterClient } from '../grpc/recommendation_grpc_pb';
+import { CompleteReply, CompleteRequest } from '../grpc/recommendation_pb';
+import { logger } from '../log/log4js';
+import { getTransformerXLPort } from '../utils/portUtils';
 import { getTransformerXLServer, TransformerXLServer } from './server';
 
 const MAX_LENGTH = 300;
@@ -61,7 +61,7 @@ export class WhitzardProvider implements vscode.CompletionItemProvider{
         }
         const getRecommendation = promisify(this.client.getRecommendation).bind(this.client);
         const reply = await getRecommendation(request) as CompleteReply;
-        const resultList = reply.getResults()?.getResultentryList();
+        const resultList = reply.getResults()?.getResultEntryList();
         logger.debug("mindspore model response data:", JSON.stringify(resultList));
         let completionList: vscode.CompletionItem[] = [];
         const uniqPrefix = new Set();
@@ -95,7 +95,7 @@ export class WhitzardProvider implements vscode.CompletionItemProvider{
         logger.debug("recommend response data:", JSON.stringify(completionList));
         return completionList;
     }
-    public async decativate(){
+    public async deactivate(){
         this.client?.close();
         return this.transformerXLServer?.kill();
     }

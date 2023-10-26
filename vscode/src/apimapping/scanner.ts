@@ -1,10 +1,5 @@
 import * as TreeSitter from "web-tree-sitter";
 import * as path from "path";
-import { downloadFile } from "./download";
-import * as scanAPI from "./scanAPI";
-import { Constants } from "./constants";
-import { homedir } from "os";
-import { join } from "path";
 let parser: TreeSitter;
 export async function init() {
     await TreeSitter.init({
@@ -12,15 +7,13 @@ export async function init() {
             return path.resolve(__dirname, `../tree-sitter.wasm`);
         }
     });
-    parser = new TreeSitter();
     const python = await TreeSitter.Language.load(path.resolve(__dirname, `../tree-sitter-python.wasm`));
+    parser = new TreeSitter();
     parser.setLanguage(python);
-    let downloadFlag = await downloadFile(Constants.PYTORCH_API_MAPPING_DOWNLOAD_URL, Constants.PYTORCH_API_MAPPING_FILENAME, join(homedir(), ".mindspore"), 2000);
-	scanAPI.initApiMap(downloadFlag);
 }
 
 
-export function apiScan(data:string) {
+export function scanAPI(data:string) {
     const tree = parser?.parse(data);
     let scanner = new APIScanner();
     scanner.iter(tree.rootNode);
@@ -29,7 +22,7 @@ export function apiScan(data:string) {
 
 class APIScanner{
     importMap = new Map<string, string>();
-    apiList : string[] = [];
+    apiList = new Set<string>();
 
     getApiList() {
         return this.apiList;
@@ -43,8 +36,7 @@ class APIScanner{
                 if (!element.includes("(")) {
                     list.push(element);
                 } else {
-                    list = [];
-                    list.push(...attrList.slice(-1));
+                    list = attrList.slice(-1);
                     break;
                 }
             }
@@ -60,11 +52,8 @@ class APIScanner{
             }
 
 
-            this.apiList.push(result);
+            this.apiList.add(result);
         }
-        // if ("attribute" == node.type) {
-        //     apiList.push(node.text);
-        // }
         if ("import_statement" === node.type) {
             node.children.forEach(element => {
                 if ("dotted_name" === element.type) {

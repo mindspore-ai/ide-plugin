@@ -1,15 +1,18 @@
 package com.mindspore.ide.toolkit.smartcomplete;
 
+import com.intellij.notification.NotificationType;
 import com.mindspore.ide.toolkit.common.utils.FileUtils;
+import com.mindspore.ide.toolkit.common.utils.NotificationUtils;
 import com.mindspore.ide.toolkit.protomessage.CompleteReply;
+import com.mindspore.ide.toolkit.search.OperatorSearchService;
 import com.mindspore.ide.toolkit.smartcomplete.grpc.CompletionException;
-
+import com.mindspore.ide.toolkit.statusbar.utils.MindSporeVersionUtils;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.Optional;
 
 /**
  * 模型管理组件，所有涉及到模型的动作，都直接和该类对接
@@ -78,6 +81,11 @@ public enum ModelManager {
                     startCurrentModelAndStopOldModel();
                 }
             }
+        });
+        modelExecutor.execute(() -> {
+            OperatorSearchService.INSTANCE.changeSearchDataHub(MindSporeVersionUtils.getBigVersion(CompleteConfig.PLUGIN_VERSION), true);
+            NotificationUtils.notify(NotificationUtils.NotifyGroup.SEARCH, NotificationType.INFORMATION,"API mapping " +
+                    "init successfully");
         });
     }
 

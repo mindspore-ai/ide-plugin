@@ -1,5 +1,10 @@
 package com.mindspore.ide.toolkit.search.entity;
 
+import com.intellij.openapi.application.ApplicationManager;
+import com.mindspore.ide.toolkit.search.OperatorMapDataHub;
+
+import java.util.concurrent.ExecutionException;
+
 /**
  * entity for operator search value
  *
@@ -15,6 +20,11 @@ public class OperatorRecord {
      * mindspore url
      */
     private String mindSporeLink;
+
+    /**
+     * mindspore platform
+     */
+    private String platform;
 
     /**
      * 版本号
@@ -46,7 +56,7 @@ public class OperatorRecord {
      */
     private ApiType apiType;
 
-    private boolean inWhiteList;
+    private boolean inWhiteList = false;
 
     public boolean isInWhiteList() {
         return inWhiteList;
@@ -96,6 +106,11 @@ public class OperatorRecord {
         return this;
     }
 
+    public OperatorRecord setPlatform(String platform) {
+        this.platform = platform;
+        return this;
+    }
+
     public String getMindSporeOperator() {
         return mindSporeOperator;
     }
@@ -131,4 +146,15 @@ public class OperatorRecord {
     public String getShowText() {
         return originalOperator + " -> " + mindSporeOperator;
     }
+
+    public String getPlatform() {
+        if (platform == null || platform == "") {
+            try {
+                platform = ApplicationManager.getApplication().executeOnPooledThread(() ->
+                OperatorMapDataHub.getPlatformInfo(new LinkInfo(mindSporeOperator, mindSporeLink))).get();
+            } catch (InterruptedException e) {
+            } catch (ExecutionException e) {
+            }
+        }
+        return platform;}
 }
